@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#7F77DD">
+<title>GraphFlow — จัดการงานกราฟิก</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --purple:#7F77DD;--purple-light:#EEEDFE;--purple-dark:#534AB7;--purple-border:#AFA9EC;
+  --teal-light:#E1F5EE;--teal:#1D9E75;--teal-dark:#0F6E56;
+  --amber-light:#FAEEDA;--amber:#854F0B;
+  --blue-light:#E6F1FB;--blue:#185FA5;
+  --green-light:#EAF3DE;--green:#3B6D11;
+  --red-light:#FCEBEB;--red:#A32D2D;--red-mid:#E24B4A;
+  --gray-light:#F1EFE8;--gray:#5F5E5A;--gray-dark:#2C2C2A;
+  --bg:#F8F7FF;--surface:#fff;--border:rgba(0,0,0,0.1);
+  --text:#1a1a2e;--text2:#5a5a7a;--text3:#9999bb;
+  --radius:14px;--radius-sm:10px;--h:60px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif}
+body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative}
+
+/* ── SAFE AREA ── */
+.safe-top{height:env(safe-area-inset-top,0px);background:var(--surface);flex-shrink:0}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--surface);border-bottom:0.5px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;min-height:52px}
+.logo{font-size:17px;font-weight:700;letter-spacing:-0.5px;color:var(--text)}
+.logo span{color:var(--purple)}
+.me-pill{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;background:var(--purple-light);color:var(--purple-dark);font-size:13px;font-weight:500;margin-left:auto;cursor:pointer;border:none;min-height:36px}
+.btn-add{width:36px;height:36px;border-radius:50%;background:var(--purple);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+
+/* ── SCROLL AREA ── */
+.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:20px}
+
+/* ── BROADCAST ── */
+.bc-type-btn{display:flex;align-items:center;gap:8px;padding:12px 14px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--bg);cursor:pointer;font-size:13px;font-weight:600;color:var(--text2);min-height:50px}
+.bc-type-btn.sel{background:var(--purple-light);border-color:var(--purple-border);color:var(--purple-dark)}
+.bc-type-icon{font-size:20px;flex-shrink:0}
+.bc-type-label{font-size:13px;font-weight:600}
+.bc-card{background:var(--surface);border-radius:var(--radius);margin:0 12px 10px;border:0.5px solid var(--border);overflow:hidden}
+.bc-card-header{padding:12px 14px;display:flex;align-items:flex-start;gap:10px}
+.bc-type-circle{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.bc-card-body{padding:0 14px 12px}
+.bc-subject{font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px}
+.bc-message{font-size:13px;color:var(--text2);line-height:1.6}
+.bc-meta{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px}
+.bc-datetime-pill{display:inline-flex;align-items:center;gap:5px;background:var(--bg);border-radius:20px;padding:5px 10px;font-size:12px;font-weight:600;margin:8px 0 4px;border:0.5px solid var(--border)}
+.bc-link-pill{display:flex;align-items:center;gap:7px;background:var(--bg);border-radius:10px;padding:9px 12px;margin-top:6px;border:0.5px solid var(--border);text-decoration:none;cursor:pointer}
+.bc-link-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.bc-to-row{display:flex;flex-wrap:wrap;gap:4px;padding:6px 14px 10px}
+.bc-to-chip{display:flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.bc-unread-badge{background:var(--red-mid);color:#fff;font-size:10px;border-radius:20px;padding:1px 6px;margin-left:4px;font-weight:700}
+.bc-compose-fab{position:fixed;bottom:calc(68px + env(safe-area-inset-bottom,0px));right:16px;width:52px;height:52px;border-radius:50%;background:var(--purple);color:#fff;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 16px rgba(127,119,221,.5);z-index:50}
+.bc-compose-fab.visible{display:flex}
+.bc-temp-link{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:var(--radius-sm);padding:9px 12px;margin-bottom:6px;border:0.5px solid var(--border)}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{background:var(--surface);border-top:0.5px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;padding-bottom:env(safe-area-inset-bottom,0px);flex-shrink:0}
+.bottom-nav::-webkit-scrollbar{display:none}
+.nav-btn{flex:0 0 64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:10px 4px;border:none;background:none;cursor:pointer;color:var(--text3);min-height:56px;position:relative}
+.nav-btn.active{color:var(--purple)}
+.nav-btn i{font-size:22px}
+.nav-label{font-size:10px;font-weight:500;white-space:nowrap}
+.nav-dot{position:absolute;top:8px;right:calc(50% - 14px);width:7px;height:7px;border-radius:50%;background:var(--red-mid);border:1.5px solid var(--surface)}
+
+/* ── KPI ── */
+.kpi-hero{background:linear-gradient(135deg,#534AB7 0%,#7F77DD 100%);padding:20px 16px 24px;color:#fff}
+.kpi-score{font-size:56px;font-weight:800;line-height:1;letter-spacing:-2px}
+.kpi-score-label{font-size:14px;opacity:.8;margin-top:4px}
+.kpi-bar-wrap{background:rgba(255,255,255,.25);border-radius:8px;height:10px;margin-top:12px;overflow:hidden}
+.kpi-bar-fill{height:100%;border-radius:8px;background:#fff;transition:width .6s ease}
+.kpi-card{background:var(--surface);border-radius:var(--radius);margin:0 12px 8px;border:0.5px solid var(--border);padding:14px}
+.kpi-metric-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border)}
+.kpi-metric-row:last-child{border-bottom:none}
+.kpi-metric-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.kpi-metric-label{font-size:13px;font-weight:600;color:var(--text);flex:1}
+.kpi-metric-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.kpi-score-sm{font-size:18px;font-weight:800;color:var(--text)}
+.kpi-star-row{display:flex;gap:2px}
+.kpi-member-card{background:var(--surface);border-radius:var(--radius);margin:0 12px 8px;border:0.5px solid var(--border);padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.kpi-rank{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+
+/* ── TIMELINE ── */
+.tl-page-item{margin:0 12px 8px}
+.tl-task-header{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;padding:12px 14px;border:0.5px solid var(--border);border-bottom:none;display:flex;align-items:center;gap:10px}
+.tl-task-body{background:var(--bg);border:0.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:0 14px}
+.tl-step-row{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:0.5px solid var(--border)}
+.tl-step-row:last-child{border-bottom:none}
+.tl-step-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.tl-step-name{font-size:12px;font-weight:600;color:var(--text);flex:1}
+.tl-step-dur{font-size:11px;color:var(--text3)}
+.tl-step-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px}
+.bottleneck-banner{margin:0 12px 10px;background:#FFF3E0;border-radius:var(--radius);padding:12px 14px;border:0.5px solid #FAC775;display:flex;gap:10px;align-items:flex-start}
+.bn-icon{width:36px;height:36px;border-radius:50%;background:#FAEEDA;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+
+/* ── PAGES ── */
+.page{display:none;height:100%}
+.page.active{display:block}
+
+/* ── SECTION HEADER ── */
+.sec-header{padding:16px 16px 8px;display:flex;align-items:center;justify-content:space-between}
+.sec-title{font-size:18px;font-weight:700;color:var(--text)}
+.sec-sub{font-size:13px;color:var(--text3)}
+
+/* ── STAT ROW ── */
+.stat-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:0 16px 12px}
+.stat-card{background:var(--surface);border-radius:var(--radius-sm);padding:12px 14px;border:0.5px solid var(--border)}
+.stat-num{font-size:26px;font-weight:700;color:var(--text)}
+.stat-label{font-size:12px;color:var(--text3);margin-top:2px}
+
+/* ── FILTER CHIPS ── */
+.chip-row{display:flex;gap:6px;padding:0 16px 12px;overflow-x:auto;scrollbar-width:none}
+.chip-row::-webkit-scrollbar{display:none}
+.chip{padding:7px 14px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:var(--surface);color:var(--text2);white-space:nowrap;flex-shrink:0;min-height:36px}
+.chip.on{background:var(--purple-light);color:var(--purple-dark);border-color:var(--purple-border)}
+
+/* ── TASK CARD ── */
+.task-card{background:var(--surface);border-radius:var(--radius);margin:0 12px 8px;border:0.5px solid var(--border);cursor:pointer;overflow:hidden;transition:transform .1s}
+.task-card:active{transform:scale(.98)}
+.task-card.blocked{border-left:3px solid var(--red-mid)}
+.card-inner{padding:14px}
+.card-top{display:flex;align-items:flex-start;gap:10px}
+.status-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;position:relative}
+.si-dot{position:absolute;bottom:0px;right:0px;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;border:2px solid var(--surface)}
+.card-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:3px;line-height:1.3}
+.card-sub{font-size:12px;color:var(--text3)}
+.card-footer{display:flex;align-items:center;gap:6px;margin-top:10px;flex-wrap:wrap}
+.pill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.pill-new{background:var(--blue-light);color:var(--blue)}
+.pill-wip{background:#FFF3E0;color:#E65100}
+.pill-blocked{background:var(--red-light);color:var(--red)}
+.pill-review{background:var(--purple-light);color:var(--purple-dark)}
+.pill-approved{background:var(--green-light);color:var(--green)}
+.pill-done{background:var(--gray-light);color:var(--gray)}
+.due-tag{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:2px}
+.tag-badge{font-size:11px;display:flex;align-items:center;gap:2px;padding:2px 7px;border-radius:20px}
+.badge-fb{background:var(--amber-light);color:var(--amber)}
+.badge-file{background:var(--purple-light);color:var(--purple-dark)}
+.avatar-stack{display:flex;align-items:center;margin-left:auto}
+.av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:2px solid var(--surface)}
+.av+.av{margin-left:-6px}
+.av-p{background:#EEEDFE;color:#534AB7}.av-n{background:#E1F5EE;color:#0F6E56}.av-s{background:#FAEEDA;color:#854F0B}.av-b{background:#FCEBEB;color:#A32D2D}.av-k{background:#E6F1FB;color:#185FA5}.av-d{background:#F1EFE8;color:#5F5E5A}
+.step-bar{display:flex;gap:3px;margin-top:8px}
+.step-seg{flex:1;height:3px;border-radius:2px;background:rgba(0,0,0,0.08)}
+.step-seg.done{background:var(--teal)}
+.step-seg.active{background:var(--purple)}
+.step-seg.blocked{background:var(--red-mid)}
+
+/* ── SHEET (BOTTOM SHEET MODAL) ── */
+.sheet-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:flex-end}
+.sheet-overlay.show{display:flex}
+.sheet{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-height:92dvh;overflow-y:auto;padding-bottom:env(safe-area-inset-bottom,16px)}
+.sheet-handle{width:36px;height:4px;background:rgba(0,0,0,.15);border-radius:2px;margin:12px auto 0}
+.sheet-title{font-size:17px;font-weight:700;color:var(--text);padding:14px 18px 0}
+.sheet-body{padding:14px 18px}
+.sheet-section{font-size:12px;font-weight:600;color:var(--text3);margin-bottom:6px;margin-top:14px;text-transform:uppercase;letter-spacing:.5px}
+.sheet-section:first-child{margin-top:0}
+
+/* ── FORM ── */
+.f-label{font-size:13px;color:var(--text2);margin-bottom:4px;margin-top:12px;display:block}
+.f-label:first-child{margin-top:0}
+.f-input{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--bg);font-size:15px;color:var(--text);-webkit-appearance:none}
+.f-input:focus{outline:none;border-color:var(--purple)}
+.f-select{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--bg);font-size:15px;color:var(--text);-webkit-appearance:none}
+.f-textarea{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--bg);font-size:14px;color:var(--text);resize:none;font-family:inherit;min-height:80px}
+.f-textarea:focus{outline:none;border-color:var(--purple)}
+.m-chips{display:flex;flex-wrap:wrap;gap:7px}
+.m-chip{display:flex;align-items:center;gap:5px;padding:8px 14px;border-radius:20px;border:0.5px solid var(--border);background:var(--bg);font-size:13px;cursor:pointer;color:var(--text2);font-weight:500;min-height:40px}
+.m-chip.sel{background:var(--purple-light);color:var(--purple-dark);border-color:var(--purple-border)}
+
+/* ── ACTION BUTTONS ── */
+.action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:4px}
+.action-btn{padding:14px 10px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;min-height:50px;color:var(--text)}
+.action-btn:active{opacity:.7}
+.action-btn.primary{background:var(--purple-light);border-color:var(--purple-border);color:var(--purple-dark)}
+.action-btn.success{background:var(--green-light);border-color:#C0DD97;color:var(--green)}
+.action-btn.danger{background:var(--red-light);border-color:#F7C1C1;color:var(--red)}
+.action-btn.amber{background:var(--amber-light);border-color:#FAC775;color:var(--amber)}
+.big-btn{width:100%;padding:16px;border-radius:var(--radius);border:none;background:var(--purple);color:#fff;font-size:16px;font-weight:700;cursor:pointer;min-height:52px;margin-top:16px}
+.big-btn:active{opacity:.85}
+.outline-btn{width:100%;padding:14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface);color:var(--text2);font-size:15px;font-weight:500;cursor:pointer;min-height:50px}
+
+/* ── STEP FLOW ── */
+.step-flow-row{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:10px 0}
+.step-node{padding:5px 10px;font-size:11px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--bg);color:var(--text3);white-space:nowrap}
+.step-node.done-s{background:var(--teal-light);border-color:#9FE1CB;color:var(--teal-dark)}
+.step-node.active-s{background:var(--purple-light);border-color:var(--purple-border);color:var(--purple-dark);font-weight:600}
+.step-node.blocked-s{background:var(--red-light);border-color:#F7C1C1;color:var(--red);font-weight:600}
+.step-arr{font-size:11px;color:var(--text3)}
+
+/* ── COMMENT ── */
+.comment-item{background:var(--bg);border-radius:var(--radius-sm);padding:12px;margin-bottom:8px;border-left:3px solid transparent}
+.comment-item.type-feedback{border-left-color:var(--red-mid)}
+.comment-item.type-question{border-left-color:#378ADD}
+.comment-item.type-approve{border-left-color:var(--teal)}
+.comment-item.type-note{border-left-color:#B4B2A9}
+.comment-head{display:flex;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap}
+.comment-name{font-size:13px;font-weight:600;color:var(--text)}
+.comment-time{font-size:11px;color:var(--text3);margin-left:auto}
+.cmt-tag{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600}
+.ct-feedback{background:var(--red-light);color:var(--red)}
+.ct-question{background:var(--blue-light);color:var(--blue)}
+.ct-approve{background:var(--green-light);color:var(--green)}
+.ct-note{background:var(--gray-light);color:var(--gray)}
+.comment-text{font-size:13px;color:var(--text2);line-height:1.5}
+.resolved-tag{font-size:11px;color:var(--green);display:flex;align-items:center;gap:2px}
+.resolve-btn{font-size:12px;color:var(--text3);border:none;background:none;cursor:pointer;padding:4px 8px;border-radius:8px}
+.type-chip-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.type-chip{padding:7px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:0.5px solid var(--border);background:var(--bg);color:var(--text2);min-height:36px}
+.tc-sel-feedback{background:var(--red-light);color:var(--red);border-color:#F7C1C1}
+.tc-sel-question{background:var(--blue-light);color:var(--blue);border-color:#B5D4F4}
+.tc-sel-approve{background:var(--green-light);color:var(--green);border-color:#C0DD97}
+.tc-sel-note{background:var(--gray-light);color:var(--gray);border-color:#D3D1C7}
+
+/* ── FILE LINK ── */
+.file-row{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:7px}
+.file-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.file-name{font-size:13px;font-weight:600;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-meta{font-size:11px;color:var(--text3)}
+.file-open{padding:7px 13px;border-radius:20px;font-size:12px;font-weight:600;border:0.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;flex-shrink:0}
+.file-del{width:32px;height:32px;border-radius:8px;border:none;background:none;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+
+/* ── TIMELINE ── */
+.tl-item{display:flex;gap:10px;padding-bottom:12px;position:relative}
+.tl-item:not(:last-child)::before{content:'';position:absolute;left:13px;top:26px;width:0.5px;bottom:0;background:var(--border)}
+.tl-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.tl-content{flex:1;padding-top:4px}
+.tl-text{font-size:13px;color:var(--text2)}
+.tl-time{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* ── ACTIVITY ── */
+.act-item{display:flex;gap:10px;padding:12px 16px;border-bottom:0.5px solid var(--border)}
+.act-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;background:var(--purple-light)}
+.act-body{flex:1;min-width:0}
+.act-head{font-size:13px;color:var(--text);line-height:1.4}
+.act-time{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* ── MEMBER PAGE ── */
+.member-hero{background:var(--surface);padding:20px 16px 16px;border-bottom:0.5px solid var(--border)}
+.member-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px 16px}
+
+/* ── LOGIN ── */
+.login-wrap{display:flex;flex-direction:column;min-height:100dvh;background:var(--bg)}
+.login-hero{background:var(--surface);padding:48px 24px 32px;text-align:center;border-bottom:0.5px solid var(--border)}
+.login-icon{width:72px;height:72px;background:var(--purple-light);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 16px}
+.login-body{padding:24px 20px}
+.login-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px}
+.login-sub{font-size:14px;color:var(--text3)}
+.role-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.role-chip{flex:1;min-width:90px;padding:12px 8px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface);font-size:13px;font-weight:600;cursor:pointer;color:var(--text2);display:flex;flex-direction:column;align-items:center;gap:5px;min-height:70px;justify-content:center}
+.role-chip.sel{background:var(--purple-light);border-color:var(--purple-border);color:var(--purple-dark)}
+.role-chip i{font-size:22px}
+.link-text{font-size:14px;color:var(--purple);cursor:pointer;text-decoration:none;text-align:center;display:block;margin-top:12px}
+.err-text{font-size:13px;color:var(--red);text-align:center;min-height:18px}
+
+/* ── EXPORT PAGE ── */
+.export-row{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--surface);margin-bottom:1px;cursor:pointer}
+.export-row:active{opacity:.7}
+.export-icon{width:40px;height:40px;border-radius:10px;background:var(--purple-light);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--purple-dark);flex-shrink:0}
+.export-title{font-size:14px;font-weight:600;color:var(--text)}
+.export-sub{font-size:12px;color:var(--text3);margin-top:1px}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:48px 24px;color:var(--text3)}
+.empty i{font-size:48px;display:block;margin-bottom:12px}
+.empty p{font-size:15px}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:calc(70px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:#26215C;color:#CECBF6;padding:11px 20px;border-radius:20px;font-size:14px;font-weight:500;z-index:999;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="safe-top"></div>
+
+<!-- LOGIN SCREEN -->
+<div id="login-wrap" class="login-wrap" style="display:none;position:fixed;inset:0;z-index:500;overflow-y:auto">
+  <div class="login-hero">
+    <div class="login-icon"><i class="ti ti-layers-subtract" style="color:#7F77DD"></i></div>
+    <div class="login-title"><span style="color:#7F77DD">Graph</span>Flow</div>
+    <div class="login-sub">ระบบจัดการงานกราฟิก</div>
+  </div>
+  <div class="login-body">
+    <div id="lm-pick">
+      <p style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:12px">เลือกสมาชิก</p>
+      <div id="member-pick-list"></div>
+      <a class="link-text" onclick="showNewMember()">+ สร้างบัญชีใหม่</a>
+      <div class="err-text" id="login-err"></div>
+      <button class="big-btn" onclick="doLogin()">เข้าสู่ระบบ</button>
+    </div>
+    <div id="lm-new" style="display:none">
+      <label class="f-label">ชื่อเล่น</label>
+      <input class="f-input" id="new-nick" placeholder="เช่น โบ, มิ้น, ปาล์ม" maxlength="12">
+      <label class="f-label" style="margin-top:14px">บทบาท</label>
+      <div class="role-chips">
+        <button class="role-chip sel" id="rc-designer" onclick="pickRole('designer')"><i class="ti ti-pencil"></i>นักออกแบบ</button>
+        <button class="role-chip" id="rc-lead" onclick="pickRole('lead')"><i class="ti ti-crown"></i>หัวหน้าทีม</button>
+        <button class="role-chip" id="rc-boss" onclick="pickRole('boss')"><i class="ti ti-star"></i>หัวหน้า</button>
+      </div>
+      <div class="err-text" id="new-err" style="margin-top:10px"></div>
+      <button class="big-btn" onclick="doCreateMember()">สร้างบัญชี</button>
+      <button class="outline-btn" style="margin-top:8px" onclick="showPickMember()">← กลับ</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo"><span>Graph</span>Flow</div>
+  <button class="me-pill" id="me-pill" onclick="openMeSheet()">
+    <span id="me-name">-</span>
+    <i class="ti ti-chevron-down" style="font-size:14px"></i>
+  </button>
+  <button class="btn-add" onclick="openNewTaskSheet()" aria-label="สร้างงานใหม่"><i class="ti ti-plus"></i></button>
+</div>
+
+<!-- PAGES -->
+<div class="scroll-area" id="scroll-area">
+
+  <!-- BOARD PAGE -->
+  <div class="page active" id="page-board">
+    <div style="padding:14px 16px 4px">
+      <input class="f-input" id="search-input" placeholder="ค้นหางาน..." oninput="renderTasks()" style="margin-bottom:0">
+    </div>
+    <div class="chip-row" id="filter-chips" style="padding-top:10px">
+      <button class="chip on" onclick="setFilter(this,'all')">ทั้งหมด</button>
+      <button class="chip" onclick="setFilter(this,'mine')">งานของฉัน</button>
+      <button class="chip" onclick="setFilter(this,'blocked')"><i class="ti ti-alert-triangle" style="font-size:12px"></i> ติดปัญหา</button>
+      <button class="chip" onclick="setFilter(this,'review')">รอตรวจ</button>
+      <button class="chip" onclick="setFilter(this,'done')">เสร็จแล้ว</button>
+    </div>
+    <div id="task-list"></div>
+  </div>
+
+  <!-- ACTIVITY PAGE -->
+  <div class="page" id="page-activity">
+    <div class="sec-header"><div class="sec-title">กิจกรรม</div><div class="sec-sub" id="act-count"></div></div>
+    <div class="chip-row" id="act-filter-chips">
+      <button class="chip on" onclick="setActFilter(this,'all')">ทั้งหมด</button>
+      <button class="chip" onclick="setActFilter(this,'create')">สร้าง</button>
+      <button class="chip" onclick="setActFilter(this,'status')">สถานะ</button>
+      <button class="chip" onclick="setActFilter(this,'comment')">คอมเม้น</button>
+      <button class="chip" onclick="setActFilter(this,'blocked')">ติดปัญหา</button>
+      <button class="chip" onclick="setActFilter(this,'done')">เสร็จ</button>
+    </div>
+    <div id="activity-list"></div>
+  </div>
+
+  <!-- TEAM PAGE -->
+  <div class="page" id="page-team">
+    <div class="sec-header"><div class="sec-title">ทีม</div></div>
+    <div id="team-list"></div>
+  </div>
+
+  <!-- EXPORT PAGE -->
+  <div class="page" id="page-export">
+    <div class="sec-header"><div class="sec-title">ส่งออก</div></div>
+    <div class="stat-row" id="stat-grid"></div>
+    <div style="margin:0 12px 12px;background:var(--surface);border-radius:var(--radius);overflow:hidden;border:0.5px solid var(--border)">
+      <div class="export-row" onclick="exportCSV()"><div class="export-icon"><i class="ti ti-table-export"></i></div><div><div class="export-title">ส่งออก CSV</div><div class="export-sub">เปิดใน Excel / Google Sheets</div></div><i class="ti ti-chevron-right" style="font-size:16px;color:var(--text3);margin-left:auto"></i></div>
+      <div class="export-row" onclick="exportDone()"><div class="export-icon"><i class="ti ti-archive"></i></div><div><div class="export-title">งานเสร็จแล้ว</div><div class="export-sub">ประวัติพร้อมผู้ทำ</div></div><i class="ti ti-chevron-right" style="font-size:16px;color:var(--text3);margin-left:auto"></i></div>
+      <div class="export-row" onclick="exportActivity()"><div class="export-icon"><i class="ti ti-report"></i></div><div><div class="export-title">Activity Log</div><div class="export-sub">ทุกการดำเนินการของทีม</div></div><i class="ti ti-chevron-right" style="font-size:16px;color:var(--text3);margin-left:auto"></i></div>
+    </div>
+    <div style="padding:0 12px"><div style="background:var(--surface);border-radius:var(--radius);overflow:hidden;border:0.5px solid var(--border)">
+      <div style="padding:12px 14px;border-bottom:0.5px solid var(--border);font-size:13px;font-weight:600;color:var(--text2)">สรุปรายคน</div>
+      <div id="per-person-stat"></div>
+    </div></div>
+  </div>
+
+  <!-- NOTIF PAGE (inside scroll-area like other pages) -->
+  <div class="page" id="page-notif">
+    <div class="sec-header">
+      <div class="sec-title">แจ้งเตือน</div>
+      <button style="font-size:13px;color:var(--purple);border:none;background:none;cursor:pointer;padding:4px" onclick="markAllRead()">อ่านทั้งหมด</button>
+    </div>
+    <div id="notif-list"></div>
+  </div>
+
+  <!-- KPI PAGE -->
+  <div class="page" id="page-kpi">
+    <div class="sec-header"><div class="sec-title">คะแนน KPI</div><div class="sec-sub" id="kpi-period">เดือนนี้</div></div>
+    <div id="kpi-body"></div>
+  </div>
+
+  <!-- TIMELINE / BOTTLENECK PAGE -->
+  <div class="page" id="page-timeline">
+    <div class="sec-header"><div class="sec-title">Timeline & คอขวด</div></div>
+    <div id="timeline-body"></div>
+  </div>
+
+  <!-- BROADCAST PAGE -->
+  <div class="page" id="page-broadcast">
+    <div class="sec-header">
+      <div class="sec-title">แจ้งทีม</div>
+      <div class="sec-sub" id="bc-unread-count"></div>
+    </div>
+    <!-- Filter chips -->
+    <div class="chip-row" id="bc-filter-chips">
+      <button class="chip on" onclick="setBcFilter(this,'all')">ทั้งหมด</button>
+      <button class="chip" onclick="setBcFilter(this,'meet')">🗓 ประชุม</button>
+      <button class="chip" onclick="setBcFilter(this,'task')">📋 มอบหมาย</button>
+      <button class="chip" onclick="setBcFilter(this,'remind')">⏰ เตือน</button>
+      <button class="chip" onclick="setBcFilter(this,'info')">📢 ประกาศ</button>
+    </div>
+    <div id="broadcast-feed"></div>
+    <!-- Compose FAB -->
+    <div style="height:80px"></div>
+  </div>
+
+  <!-- MEMBER DETAIL PAGE -->
+  <div class="page" id="page-member-detail">
+    <div id="member-detail-body"></div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn active" id="nav-board" onclick="switchPage('board')"><i class="ti ti-layout-list"></i><span class="nav-label">งาน</span></button>
+  <button class="nav-btn" id="nav-kpi" onclick="switchPage('kpi')"><i class="ti ti-award"></i><span class="nav-label">KPI</span></button>
+  <button class="nav-btn" id="nav-timeline" onclick="switchPage('timeline')"><i class="ti ti-timeline"></i><span class="nav-label">Timeline</span></button>
+  <button class="nav-btn" id="nav-activity" onclick="switchPage('activity')"><i class="ti ti-activity"></i><span class="nav-label">กิจกรรม</span></button>
+  <button class="nav-btn" id="nav-team" onclick="switchPage('team')"><i class="ti ti-users"></i><span class="nav-label">ทีม</span></button>
+  <button class="nav-btn" id="nav-broadcast" onclick="switchPage('broadcast')"><i class="ti ti-speakerphone"></i><span class="nav-label">แจ้งทีม</span><span class="nav-dot" id="bc-dot" style="display:none"></span></button>
+  <button class="nav-btn" id="nav-export" onclick="switchPage('export')"><i class="ti ti-download"></i><span class="nav-label">ส่งออก</span></button>
+  <button class="nav-btn" id="nav-notif" onclick="switchPage('notif')"><i class="ti ti-bell"></i><span class="nav-label">แจ้งเตือน</span><span class="nav-dot" id="notif-dot" style="display:none"></span></button>
+</div>
+
+<!-- COMPOSE FAB -->
+<button class="bc-compose-fab" id="bc-fab" onclick="openCompose()">
+  <i class="ti ti-pencil-plus"></i>
+</button>
+
+<!-- SHEETS (BOTTOM MODALS) -->
+<!-- TASK DETAIL SHEET -->
+<div class="sheet-overlay" id="sheet-detail" onclick="closeSheet('detail')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="detail-title"></div>
+    <div class="sheet-body" id="detail-body"></div>
+  </div>
+</div>
+
+<!-- NEW TASK SHEET -->
+<div class="sheet-overlay" id="sheet-new" onclick="closeSheet('new')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">สร้างงานใหม่</div>
+    <div class="sheet-body">
+      <label class="f-label">ชื่องาน</label>
+      <input class="f-input" id="n-name" placeholder="เช่น แบนเนอร์โปรโมชั่น">
+      <label class="f-label">ลูกค้า / โปรเจกต์</label>
+      <input class="f-input" id="n-client" placeholder="ชื่อลูกค้า">
+      <label class="f-label">ผู้รับผิดชอบ</label>
+      <div class="m-chips" id="n-members" style="margin-top:6px"></div>
+      <label class="f-label">วันกำหนดส่ง</label>
+      <input class="f-input" id="n-due" type="date">
+      <label class="f-label">ความสำคัญ</label>
+      <select class="f-select" id="n-priority"><option value="normal">ปกติ</option><option value="high">ด่วน</option></select>
+      <label class="f-label">หมายเหตุ</label>
+      <textarea class="f-textarea" id="n-note" placeholder="รายละเอียดเพิ่มเติม"></textarea>
+      <button class="big-btn" onclick="createTask()">สร้างงาน</button>
+      <button class="outline-btn" style="margin-top:8px" onclick="closeSheet('new')">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ACTION SHEET -->
+<div class="sheet-overlay" id="sheet-action" onclick="closeSheet('action')">
+  <div class="sheet" onclick="event.stopPropagation()" style="max-height:60dvh">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="action-title"></div>
+    <div class="sheet-body">
+      <label class="f-label">หมายเหตุ (ไม่บังคับ)</label>
+      <textarea class="f-textarea" id="action-note" placeholder="ระบุรายละเอียด..." style="min-height:80px"></textarea>
+      <button class="big-btn" id="action-confirm-btn" onclick="confirmAction()"></button>
+      <button class="outline-btn" style="margin-top:8px" onclick="closeSheet('action')">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMPOSE BROADCAST SHEET -->
+<div class="sheet-overlay" id="sheet-compose" onclick="closeSheet('compose')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">✉️ แจ้งทีม</div>
+    <div class="sheet-body">
+      <!-- Type selector -->
+      <label class="f-label" style="margin-top:0">ประเภทการแจ้ง</label>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:2px" id="bc-type-grid">
+        <button class="bc-type-btn sel" id="bct-meet" onclick="pickBcType('meet')"><span class="bc-type-icon">🗓</span><span class="bc-type-label">นัดประชุม</span></button>
+        <button class="bc-type-btn" id="bct-task" onclick="pickBcType('task')"><span class="bc-type-icon">📋</span><span class="bc-type-label">มอบหมายงาน</span></button>
+        <button class="bc-type-btn" id="bct-remind" onclick="pickBcType('remind')"><span class="bc-type-icon">⏰</span><span class="bc-type-label">เตือนกำหนดส่ง</span></button>
+        <button class="bc-type-btn" id="bct-info" onclick="pickBcType('info')"><span class="bc-type-icon">📢</span><span class="bc-type-label">ประกาศทั่วไป</span></button>
+      </div>
+
+      <!-- To -->
+      <label class="f-label">ส่งถึง</label>
+      <div class="m-chips" id="bc-to-chips"></div>
+
+      <!-- Subject -->
+      <label class="f-label">หัวข้อ</label>
+      <input class="f-input" id="bc-subject" placeholder="เช่น ประชุมทีม สรุปงานสัปดาห์นี้">
+
+      <!-- Message -->
+      <label class="f-label">ข้อความ</label>
+      <textarea class="f-textarea" id="bc-message" placeholder="รายละเอียด วาระ หรือสิ่งที่ต้องเตรียม..." style="min-height:90px"></textarea>
+
+      <!-- Date & Time (show for meet/remind) -->
+      <div id="bc-datetime-wrap">
+        <label class="f-label">วันที่ / เวลา</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <input class="f-input" id="bc-date" type="date">
+          <input class="f-input" id="bc-time" type="time">
+        </div>
+      </div>
+
+      <!-- Link -->
+      <label class="f-label">แนบลิงก์ (ไม่บังคับ)</label>
+      <div id="bc-links-list" style="margin-bottom:6px"></div>
+      <div style="display:flex;gap:8px">
+        <input class="f-input" id="bc-link-label" placeholder="ชื่อลิงก์ เช่น Google Meet" style="flex:1">
+        <input class="f-input" id="bc-link-url" placeholder="https://..." style="flex:2">
+        <button onclick="addBcLink()" style="padding:10px 14px;border-radius:var(--radius-sm);border:none;background:var(--purple);color:#fff;font-size:16px;cursor:pointer;flex-shrink:0"><i class="ti ti-plus"></i></button>
+      </div>
+
+      <button class="big-btn" onclick="sendBroadcast()" style="margin-top:16px">
+        <i class="ti ti-send" style="font-size:17px"></i> ส่งแจ้งทีม
+      </button>
+      <button class="outline-btn" style="margin-top:8px" onclick="closeSheet('compose')">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ME SHEET -->
+<div class="sheet-overlay" id="sheet-me" onclick="closeSheet('me')">
+  <div class="sheet" onclick="event.stopPropagation()" style="max-height:70dvh">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">โปรไฟล์</div>
+    <div class="sheet-body">
+      <div id="me-sheet-body"></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SK='gf_mob_v1';
+let db={broadcasts:[
+  {id:1,type:'meet',from:'บอส',to:['ปาล์ม','นัท','สาย','กาย'],subject:'ประชุมสรุปงานสัปดาห์นี้',message:'ขอนัดประชุมสรุปงานกันครับ เตรียม progress งานมาด้วย',date:'2026-06-10',time:'10:00',links:[{label:'Google Meet',url:'https://meet.google.com/abc-defg-hij',icon:'ti-brand-google',color:'#3B6D11',bg:'#EAF3DE'}],readBy:['บอส'],time_sent:'06/06 09:00'},
+  {id:2,type:'task',from:'สาย',to:['ปาล์ม'],subject:'มอบหมาย: แบนเนอร์ TrueMove รอบสอง',message:'ขอให้แก้ไขสีพื้นหลังตาม feedback ของบอส ส่งภายในวันศุกร์ครับ',date:'2026-06-12',time:'17:00',links:[{label:'Design Brief',url:'https://drive.google.com/file/brief',icon:'ti-brand-google-drive',color:'#3B6D11',bg:'#EAF3DE'}],readBy:['สาย','ปาล์ม'],time_sent:'06/06 14:00'},
+  {id:3,type:'remind',from:'สาย',to:['ปาล์ม','นัท','กาย'],subject:'⏰ เตือน: งาน Packaging ใกล้ครบกำหนด',message:'Packaging กล่องขนม SnackBrand ยังติดปัญหาอยู่ รบกวนช่วย followup ลูกค้าด้วยครับ',date:'2026-06-10',time:'09:00',links:[],readBy:['สาย'],time_sent:'07/06 08:30'},
+],members:[
+  {id:'p',name:'ปาล์ม',cls:'av-p',init:'P',role:'designer'},
+  {id:'n',name:'นัท',cls:'av-n',init:'N',role:'designer'},
+  {id:'s',name:'สาย',cls:'av-s',init:'S',role:'lead'},
+  {id:'b',name:'บอส',cls:'av-b',init:'B',role:'boss'},
+  {id:'k',name:'กาย',cls:'av-k',init:'K',role:'designer'},
+],tasks:[
+  {id:1,name:'แบนเนอร์โปรโมชั่นกรกฎา',client:'TrueMove',assignees:['ปาล์ม'],due:'2026-06-12',priority:'high',status:'review',step:2,note:'ขนาด 1200x628 px',
+   links:[{id:1,name:'Design Draft v2',url:'https://figma.com/file/ex1',addedBy:'ปาล์ม',time:'05/06 15:00'}],
+   comments:[{id:1,author:'บอส',type:'feedback',text:'ขอเปลี่ยนสีพื้นหลังเป็นโทนน้ำเงินเข้มครับ',mention:'ปาล์ม',time:'06/06 11:30',resolved:false}],
+   log:[{time:'03/06 09:00',user:'นัท',action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'},{time:'06/06 10:00',user:'ปาล์ม',action:'ส่งตรวจ',icon:'ti-send',color:'#534AB7'}]},
+  {id:2,name:'โลโก้ HealthPlus',client:'HealthPlus',assignees:['นัท','กาย'],due:'2026-06-15',priority:'normal',status:'wip',step:1,note:'',links:[],
+   comments:[{id:2,author:'บอส',type:'feedback',text:'แนวทางที่ 2 ดูดีที่สุด',mention:'นัท',time:'05/06 09:00',resolved:true}],
+   log:[{time:'04/06',user:'สาย',action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'}]},
+  {id:3,name:'Packaging กล่องขนม',client:'SnackBrand',assignees:['สาย'],due:'2026-06-10',priority:'high',status:'blocked',step:1,note:'รอ brief จากลูกค้า',links:[],
+   comments:[{id:3,author:'สาย',type:'note',text:'รอลูกค้าส่ง spec กล่อง',mention:'บอส',time:'07/06 09:00',resolved:false}],
+   log:[{time:'07/06',user:'สาย',action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'},{time:'07/06 09:00',user:'สาย',action:'ติดปัญหา',icon:'ti-alert-triangle',color:'#E24B4A'}]},
+  {id:4,name:'Social Post ฤดูร้อน',client:'FashionX',assignees:['ปาล์ม','นัท'],due:'2026-06-01',priority:'normal',status:'done',step:5,note:'',
+   links:[{id:2,name:'Final Files',url:'https://drive.google.com/drive/ex4',addedBy:'ปาล์ม',time:'01/06'}],
+   comments:[{id:4,author:'บอส',type:'approve',text:'งานผ่านแล้วครับ สวยมาก',mention:'',time:'01/06',resolved:false}],
+   log:[{time:'25/05',user:'นัท',action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'},{time:'01/06',user:'ปาล์ม',action:'ส่งมอบเสร็จ',icon:'ti-archive',color:'#5F5E5A'}]},
+],activityLog:[
+  {id:1,actor:'นัท',action:'สร้างงาน',target:'แบนเนอร์โปรโมชั่นกรกฎา',taskId:1,type:'create',time:'03/06 09:00'},
+  {id:2,actor:'บอส',action:'เพิ่ม feedback',target:'แบนเนอร์โปรโมชั่นกรกฎา',taskId:1,type:'comment',time:'06/06 11:30'},
+  {id:3,actor:'ปาล์ม',action:'ส่งตรวจ',target:'แบนเนอร์โปรโมชั่นกรกฎา',taskId:1,type:'status',time:'06/06 10:00'},
+  {id:4,actor:'สาย',action:'แจ้งติดปัญหา',target:'Packaging กล่องขนม',taskId:3,type:'blocked',time:'07/06 09:00'},
+  {id:5,actor:'ปาล์ม',action:'ส่งมอบเสร็จ',target:'Social Post ฤดูร้อน',taskId:4,type:'done',time:'01/06 10:00'},
+],nextId:10,nextCid:100,nextLid:200,nextAid:20};
+
+let currentUser=null;
+let boardFilter='all';
+let actFilter='all';
+let bcFilter='all';
+let selectedNewMembers=new Set();
+let selectedRole='designer';
+let selectedLoginMember=null;
+let selectedCmtType='note';
+let pendingAction=null;
+let notifications=[];
+let detailTaskId=null;
+let detailSubPage='files';
+let bcType='meet';
+let bcTempLinks=[];
+let bcSelectedTo=new Set();
+
+const STATUS_MAP={new:'สั่งงานใหม่',wip:'กำลังทำ',blocked:'ติดปัญหา',review:'รอตรวจ',approved:'อนุมัติแล้ว',done:'เสร็จสิ้น',rejected:'ปฏิเสธ'};
+const STEPS=['รับงาน','ออกแบบ','ตรวจสอบ','แก้ไข','อนุมัติ','ส่งมอบ'];
+const COMMENT_TYPES={feedback:'แก้ไข',question:'สอบถาม',approve:'ผ่าน',note:'หมายเหตุ'};
+const FILE_TYPES=[
+  {label:'Figma',icon:'ti-vector-triangle',bg:'#FBEAF0',color:'#993556',match:u=>u.includes('figma.com')},
+  {label:'Drive',icon:'ti-brand-google-drive',bg:'#EAF3DE',color:'#3B6D11',match:u=>u.includes('drive.google')||u.includes('docs.google')},
+  {label:'Dropbox',icon:'ti-brand-dropbox',bg:'#E6F1FB',color:'#185FA5',match:u=>u.includes('dropbox.com')},
+  {label:'Notion',icon:'ti-note',bg:'#F1EFE8',color:'#5F5E5A',match:u=>u.includes('notion.so')},
+  {label:'Canva',icon:'ti-layout',bg:'#EEEDFE',color:'#534AB7',match:u=>u.includes('canva.com')},
+  {label:'ลิงก์',icon:'ti-link',bg:'#F1EFE8',color:'#5F5E5A',match:()=>true},
+];
+const ACT_COLORS={create:'#7F77DD',comment:'#378ADD',status:'#854F0B',blocked:'#E24B4A',done:'#3B6D11',file:'#534AB7',member:'#1D9E75',other:'#888780'};
+const ACT_ICONS={create:'ti-circle-plus',comment:'ti-message-2',status:'ti-refresh',blocked:'ti-alert-triangle',done:'ti-archive',file:'ti-paperclip',member:'ti-users',other:'ti-edit'};
+const STATUS_ICONS={
+  new:{icon:'ti-inbox',bg:'#E6F1FB',fg:'#185FA5',dot:'',dotBg:'',label:'สั่งใหม่'},
+  wip:{icon:'ti-brush',bg:'#FFF3E0',fg:'#E65100',dot:'',dotBg:'',label:'กำลังทำ'},
+  blocked:{icon:'ti-lock',bg:'#FCEBEB',fg:'#A32D2D',dot:'ti-x',dotBg:'#E24B4A',label:'ติดปัญหา'},
+  review:{icon:'ti-eye',bg:'#EEEDFE',fg:'#534AB7',dot:'ti-clock',dotBg:'#7F77DD',label:'รอตรวจ'},
+  approved:{icon:'ti-circle-check',bg:'#EAF3DE',fg:'#3B6D11',dot:'ti-check',dotBg:'#639922',label:'อนุมัติ'},
+  done:{icon:'ti-check',bg:'#E1F5EE',fg:'#0F6E56',dot:'',dotBg:'',label:'เสร็จ'},
+  rejected:{icon:'ti-circle-x',bg:'#FCEBEB',fg:'#A32D2D',dot:'',dotBg:'',label:'ปฏิเสธ'},
+};
+
+function saveDb(){try{localStorage.setItem(SK,JSON.stringify(db));}catch(e){}}
+function loadDb(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);Object.assign(db,d);}}catch(e){}}
+loadDb();
+
+function ts(){const d=new Date();return`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
+function getM(n){return db.members.find(m=>m.name===n)||{name:n,cls:'av-d',init:(n||'?')[0],role:'designer'};}
+function detectFT(u){return FILE_TYPES.find(f=>f.match(u))||FILE_TYPES[FILE_TYPES.length-1];}
+function addAct(actor,action,target,taskId,type){db.activityLog.unshift({id:db.nextAid++,actor,action,target,taskId,type,time:ts()});if(db.activityLog.length>200)db.activityLog=db.activityLog.slice(0,200);saveDb();}
+function initNotifs(){notifications=[];db.tasks.forEach(t=>{t.comments.forEach(c=>{if(!c.resolved&&c.mention===currentUser&&c.author!==currentUser)notifications.push({taskId:t.id,taskName:t.name,comment:c,read:false});});});}
+function fbCount(t){return t.comments.filter(c=>!c.resolved).length;}
+
+function avHTML(name,size=24){const m=getM(name);return`<div class="av ${m.cls}" style="width:${size}px;height:${size}px;font-size:${Math.round(size*.42)}px">${m.init}</div>`;}
+function avStack(as,size=24){if(!as||!as.length)return'';return`<div class="avatar-stack">${as.slice(0,3).map(n=>avHTML(n,size)).join('')}${as.length>3?`<div class="av av-d" style="width:${size}px;height:${size}px;font-size:${Math.round(size*.36)}px;background:var(--gray-light);color:var(--gray)">+${as.length-3}</div>`:''}</div>`;}
+function sIcon(status,size=44,showLabel=false){const s=STATUS_ICONS[status]||STATUS_ICONS.new;const ic=`<div class="status-icon" style="width:${size}px;height:${size}px;border-radius:50%;background:${s.bg}"><i class="ti ${s.icon}" style="color:${s.fg};font-size:${Math.round(size*.46)}px"></i>${s.dot?`<div class="si-dot" style="background:${s.dotBg}"><i class="ti ${s.dot}" style="color:#fff;font-size:8px"></i></div>`:''}</div>`;if(!showLabel)return ic;return`<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">${ic}<span style="font-size:9px;font-weight:600;color:${s.fg};white-space:nowrap">${s.label}</span></div>`;}
+function sPill(s){const m={new:'pill-new',wip:'pill-wip',blocked:'pill-blocked',review:'pill-review',approved:'pill-approved',done:'pill-done',rejected:'pill-blocked'};return`<span class="pill ${m[s]||'pill-new'}">${STATUS_MAP[s]||s}</span>`;}
+function fmtDue(d){if(!d)return'';const diff=Math.ceil((new Date(d)-new Date())/86400000);const color=diff<=0?'#A32D2D':diff<=2?'#D85A30':diff<=5?'#854F0B':'var(--text3)';return`<span class="due-tag" style="color:${color}"><i class="ti ti-calendar" style="font-size:11px"></i>${d}${diff<=0?' (เกิน!)':diff<=2?' (ด่วน!)':''}</span>`;}
+function stepBar(step,status,count=6){return`<div class="step-bar">${Array.from({length:count},(_,i)=>`<div class="step-seg ${i<step?'done':i===step?(status==='blocked'?'blocked':'active'):''}"></div>`).join('')}</div>`;}
+
+/* ── LOGIN ── */
+function buildLoginPick(){
+  const el=document.getElementById('member-pick-list');if(!el)return;
+  el.innerHTML=`<div class="m-chips" style="margin-bottom:14px">${db.members.map(m=>`<button class="m-chip ${selectedLoginMember===m.name?'sel':''}" onclick="pickLoginMember('${m.name}')">${avHTML(m.name,20)}<span>${m.name}</span></button>`).join('')}</div>`;
+}
+function pickLoginMember(n){selectedLoginMember=n;buildLoginPick();}
+function showNewMember(){document.getElementById('lm-pick').style.display='none';document.getElementById('lm-new').style.display='block';}
+function showPickMember(){document.getElementById('lm-pick').style.display='block';document.getElementById('lm-new').style.display='none';}
+function pickRole(r){selectedRole=r;['designer','lead','boss'].forEach(x=>{const e=document.getElementById('rc-'+x);if(e)e.classList.toggle('sel',x===r);});}
+function doLogin(){if(!selectedLoginMember){document.getElementById('login-err').textContent='กรุณาเลือกสมาชิก';return;}loginAs(selectedLoginMember);}
+function doCreateMember(){
+  const nick=document.getElementById('new-nick').value.trim();
+  const err=document.getElementById('new-err');
+  if(!nick){err.textContent='กรุณาใส่ชื่อเล่น';return;}
+  if(db.members.find(m=>m.name===nick)){err.textContent='ชื่อนี้มีอยู่แล้ว';return;}
+  const classes=['av-p','av-n','av-s','av-b','av-k','av-d'];
+  db.members.push({id:'u'+Date.now(),name:nick,cls:classes[db.members.length%classes.length],init:nick[0].toUpperCase(),role:selectedRole});
+  addAct(nick,'สร้างบัญชีใหม่','ระบบ',null,'member');
+  saveDb();loginAs(nick);
+}
+function loginAs(name){
+  currentUser=name;
+  try{localStorage.setItem('gf_user',name);}catch(e){}
+  document.getElementById('login-wrap').style.display='none';
+  document.getElementById('me-name').textContent=name;
+  selectedNewMembers=new Set([name]);
+  initNotifs();renderAll();
+  addAct(name,'เข้าสู่ระบบ','ระบบ',null,'other');
+  saveDb();
+}
+function doLogout(){if(!confirm('ออกจากระบบ?'))return;currentUser=null;try{localStorage.removeItem('gf_user');}catch(e){}document.getElementById('login-wrap').style.display='flex';selectedLoginMember=null;buildLoginPick();}
+
+/* ── PAGE SWITCH ── */
+function switchPage(p){
+  ['board','activity','team','export','notif','member-detail','kpi','timeline','broadcast'].forEach(x=>{
+    const pe=document.getElementById('page-'+x);if(pe)pe.style.display='none';
+    const ne=document.getElementById('nav-'+x);if(ne)ne.classList.remove('active');
+  });
+  const pe=document.getElementById('page-'+p);if(pe)pe.style.display='block';
+  const ne=document.getElementById('nav-'+p);if(ne)ne.classList.add('active');
+  if(p==='activity')renderActivity();
+  if(p==='team')renderTeam();
+  if(p==='export')renderExport();
+  if(p==='notif')renderNotif();
+  if(p==='kpi')renderKPI();
+  if(p==='timeline')renderTimeline();
+  if(p==='broadcast'){renderBroadcast();document.getElementById('bc-fab').classList.add('visible');}
+  else document.getElementById('bc-fab').classList.remove('visible');
+  document.getElementById('scroll-area').scrollTop=0;
+}
+
+/* ── BOARD ── */
+function setFilter(btn,f){boardFilter=f;document.querySelectorAll('#filter-chips .chip').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderTasks();}
+function getFiltered(){
+  const q=(document.getElementById('search-input')||{}).value||'';
+  return db.tasks.filter(t=>{
+    if(q&&!t.name.toLowerCase().includes(q.toLowerCase())&&!t.client.toLowerCase().includes(q.toLowerCase()))return false;
+    if(boardFilter==='mine')return t.assignees&&t.assignees.includes(currentUser);
+    if(boardFilter==='blocked')return t.status==='blocked';
+    if(boardFilter==='review')return t.status==='review';
+    if(boardFilter==='done')return t.status==='done';
+    if(boardFilter==='all')return t.status!=='done';
+    return true;
+  });
+}
+function renderTasks(){
+  const list=document.getElementById('task-list');if(!list)return;
+  const filtered=getFiltered();
+  updateNotifDot();
+  if(!filtered.length){list.innerHTML=`<div class="empty"><i class="ti ti-mood-empty"></i><p>ไม่มีงานในหมวดนี้</p></div>`;return;}
+  list.innerHTML=filtered.map(t=>`
+    <div class="task-card ${t.status==='blocked'?'blocked':''}" onclick="openDetail(${t.id})">
+      <div class="card-inner">
+        <div class="card-top">
+          ${sIcon(t.status,44,true)}
+          <div style="flex:1;min-width:0">
+            <div class="card-title">${t.priority==='high'?'<i class="ti ti-flame" style="color:#D85A30;font-size:13px"></i> ':''} ${t.name}</div>
+            <div class="card-sub">${t.client} · ${STEPS[t.step]||''}</div>
+          </div>
+          ${avStack(t.assignees||[])}
+        </div>
+        ${stepBar(t.step,t.status)}
+        <div class="card-footer">
+          ${sPill(t.status)}
+          ${fmtDue(t.due)}
+          ${fbCount(t)?`<span class="tag-badge badge-fb"><i class="ti ti-message-2" style="font-size:10px"></i>${fbCount(t)}</span>`:''}
+          ${(t.links||[]).length?`<span class="tag-badge badge-file"><i class="ti ti-paperclip" style="font-size:10px"></i>${t.links.length}</span>`:''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ── DETAIL SHEET ── */
+function openDetail(id){
+  detailTaskId=id;detailSubPage='info';
+  const t=db.tasks.find(x=>x.id===id);if(!t)return;
+  notifications.filter(n=>n.taskId===id).forEach(n=>n.read=true);
+  renderDetailSheet(t);
+  document.getElementById('sheet-detail').classList.add('show');
+  updateNotifDot();
+}
+function renderDetailSheet(t){
+  const si=STATUS_ICONS[t.status]||STATUS_ICONS.new;
+  document.getElementById('detail-title').innerHTML=`<div style="display:flex;align-items:center;gap:10px">${sIcon(t.status,32)}<span>${t.name}</span></div>`;
+  const tabs=['info','actions','comments','files','log'];
+  const tabLabels={info:'ข้อมูล',actions:'สถานะ',comments:'Feedback',files:'ไฟล์',log:'ประวัติ'};
+  const fbc=fbCount(t);
+  document.getElementById('detail-body').innerHTML=`
+    <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none">
+      ${tabs.map(tab=>`<button style="padding:7px 14px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:0.5px solid ${detailSubPage===tab?'var(--purple-border)':'var(--border)'};background:${detailSubPage===tab?'var(--purple-light)':'var(--surface)'};color:${detailSubPage===tab?'var(--purple-dark)':'var(--text2)'};white-space:nowrap;flex-shrink:0;min-height:36px" onclick="switchDetailSub(${t.id},'${tab}')">${tabLabels[tab]}${tab==='comments'&&fbc?` <span style="background:#E24B4A;color:#fff;font-size:10px;border-radius:20px;padding:1px 5px">${fbc}</span>`:''}</button>`).join('')}
+    </div>
+    <div id="detail-sub-content">${renderDetailSub(t)}</div>
+  `;
+}
+function switchDetailSub(id,sub){
+  detailSubPage=sub;
+  const t=db.tasks.find(x=>x.id===id);if(!t)return;
+  renderDetailSheet(t);
+}
+function renderDetailSub(t){
+  if(detailSubPage==='info')return renderInfoTab(t);
+  if(detailSubPage==='actions')return renderActionsTab(t);
+  if(detailSubPage==='comments')return renderCommentsTab(t);
+  if(detailSubPage==='files')return renderFilesTab(t);
+  if(detailSubPage==='log')return renderLogTab(t);
+  return '';
+}
+function renderInfoTab(t){
+  return`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center">${sPill(t.status)}${t.priority==='high'?'<span class="pill" style="background:#FEF0E0;color:#D85A30"><i class="ti ti-flame" style="font-size:11px"></i> ด่วน</span>':''}<span style="font-size:13px;color:var(--text3)">${t.client}</span>${fmtDue(t.due)}</div>
+  <div class="sheet-section">ผู้รับผิดชอบ</div>
+  <div class="m-chips" id="ass-editor-${t.id}">${db.members.map(m=>{const sel=(t.assignees||[]).includes(m.name);return`<button class="m-chip ${sel?'sel':''}" onclick="toggleAss(${t.id},'${m.name}')">${avHTML(m.name,18)}<span>${m.name}</span>${sel?'<i class="ti ti-check" style="font-size:12px;color:var(--purple-dark)"></i>':''}</button>`;}).join('')}</div>
+  <div class="sheet-section" style="margin-top:14px">ขั้นตอน</div>
+  <div class="step-flow-row">${STEPS.map((s,i)=>`<span class="step-node ${i<t.step?'done-s':i===t.step?(t.status==='blocked'?'blocked-s':'active-s'):''}">${s}</span>${i<STEPS.length-1?'<span class="step-arr">›</span>':''}`).join('')}</div>
+  ${t.note?`<div style="background:var(--bg);border-radius:var(--radius-sm);padding:12px;font-size:13px;color:var(--text2);margin-top:8px">${t.note}</div>`:''}`;
+}
+function toggleAss(taskId,name){
+  const t=db.tasks.find(x=>x.id===taskId);if(!t)return;
+  if(!t.assignees)t.assignees=[];
+  if(t.assignees.includes(name)){if(t.assignees.length<=1){showToast('ต้องมีผู้รับผิดชอบอย่างน้อย 1 คน');return;}t.assignees=t.assignees.filter(a=>a!==name);}
+  else t.assignees.push(name);
+  addAct(currentUser,'แก้ไขผู้รับผิดชอบ',t.name,t.id,'member');
+  const ae=document.getElementById(`ass-editor-${taskId}`);
+  if(ae)ae.innerHTML=db.members.map(m=>{const sel=t.assignees.includes(m.name);return`<button class="m-chip ${sel?'sel':''}" onclick="toggleAss(${taskId},'${m.name}')">${avHTML(m.name,18)}<span>${m.name}</span>${sel?'<i class="ti ti-check" style="font-size:12px;color:var(--purple-dark)"></i>':''}</button>`;}).join('');
+  saveDb();renderTasks();showToast('อัปเดตผู้รับผิดชอบ ✓');
+}
+function renderActionsTab(t){
+  const actions=[];
+  if(t.status==='new')actions.push({key:'start',label:'รับงาน',icon:'ti-player-play',cls:'primary'});
+  if(['wip','blocked'].includes(t.status))actions.push({key:'submit',label:'ส่งตรวจ',icon:'ti-send',cls:''});
+  if(t.status==='wip')actions.push({key:'block',label:'ติดปัญหา',icon:'ti-alert-triangle',cls:'amber'});
+  if(t.status==='blocked')actions.push({key:'unblock',label:'แก้ปัญหาแล้ว',icon:'ti-player-play',cls:'primary'});
+  if(t.status==='review'){actions.push({key:'approve',label:'อนุมัติ',icon:'ti-circle-check',cls:'success'});actions.push({key:'reject',label:'ส่งแก้ไข',icon:'ti-arrow-back',cls:'danger'});}
+  if(t.status==='approved')actions.push({key:'done',label:'ส่งมอบเสร็จ',icon:'ti-archive',cls:'success'});
+  if(!actions.length)return`<div style="text-align:center;padding:24px;color:var(--text3);font-size:14px">งานเสร็จสิ้นแล้ว</div>`;
+  return`<div class="action-grid">${actions.map(a=>`<button class="action-btn ${a.cls}" onclick="doAction(${t.id},'${a.key}')"><i class="ti ${a.icon}"></i>${a.label}</button>`).join('')}</div>`;
+}
+function renderCommentsTab(t){
+  const cmts=t.comments.map(c=>`<div class="comment-item type-${c.type} ${c.resolved?'comment-resolved':''}">
+    <div class="comment-head">${avHTML(c.author,22)}<span class="comment-name">${c.author}</span>
+      ${getM(c.author).role==='boss'?'<span class="pill" style="background:var(--red-light);color:var(--red);font-size:10px">หัวหน้า</span>':''}
+      <span class="cmt-tag ct-${c.type}">${COMMENT_TYPES[c.type]}</span>
+      <span class="comment-time">${c.time}</span>
+      ${c.resolved?'<span class="resolved-tag"><i class="ti ti-check"></i>แก้แล้ว</span>':`<button class="resolve-btn" onclick="resolveComment(${t.id},${c.id})"><i class="ti ti-check"></i> แก้แล้ว</button>`}
+    </div>
+    <div class="comment-text">${c.mention&&c.mention!==c.author?`<span style="color:var(--purple-dark);font-weight:600">@${c.mention}</span> `:''}${c.text}</div>
+  </div>`).join('');
+  const input=`<div style="margin-top:14px">
+    <div class="type-chip-row">${Object.entries(COMMENT_TYPES).map(([k,v])=>`<button class="type-chip ${selectedCmtType===k?'tc-sel-'+k:''}" id="tc-${t.id}-${k}" onclick="selCmtType(${t.id},'${k}')">${v}</button>`).join('')}</div>
+    <textarea class="f-textarea" id="cmt-${t.id}" placeholder="พิมพ์คอมเม้น..." style="min-height:72px"></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+      <span style="font-size:13px;color:var(--text3);flex-shrink:0">@mention</span>
+      <select class="f-select" id="cmm-${t.id}" style="flex:1"><option value="">ไม่ระบุ</option>${db.members.map(m=>`<option value="${m.name}">${m.name}</option>`).join('')}</select>
+    </div>
+    <button class="big-btn" onclick="addComment(${t.id})" style="margin-top:10px"><i class="ti ti-send" style="font-size:16px"></i> ส่ง</button>
+  </div>`;
+  return(cmts||`<div style="text-align:center;padding:20px;color:var(--text3);font-size:14px"><i class="ti ti-message-off" style="font-size:32px;display:block;margin-bottom:8px"></i>ยังไม่มีคอมเม้น</div>`)+input;
+}
+function selCmtType(tid,type){
+  selectedCmtType=type;
+  Object.keys(COMMENT_TYPES).forEach(k=>{const e=document.getElementById(`tc-${tid}-${k}`);if(e)e.className=`type-chip ${type===k?'tc-sel-'+k:''}`;});
+}
+function addComment(tid){
+  const t=db.tasks.find(x=>x.id===tid);if(!t)return;
+  const text=(document.getElementById(`cmt-${tid}`)||{}).value||'';
+  if(!text.trim()){showToast('กรุณาพิมพ์คอมเม้น');return;}
+  const mention=(document.getElementById(`cmm-${tid}`)||{}).value||'';
+  const tt=ts();
+  const c={id:db.nextCid++,author:currentUser,type:selectedCmtType,text:text.trim(),mention,time:tt,resolved:false};
+  t.comments.push(c);
+  if(mention&&mention!==currentUser)notifications.push({taskId:t.id,taskName:t.name,comment:c,read:false});
+  t.log.push({time:tt,user:currentUser,action:`คอมเม้น (${COMMENT_TYPES[selectedCmtType]})`,icon:'ti-message-2',color:'#7F77DD'});
+  addAct(currentUser,`เพิ่ม${COMMENT_TYPES[selectedCmtType]}`,t.name,t.id,'comment');
+  saveDb();renderDetailSheet(t);renderTasks();updateNotifDot();showToast('ส่งคอมเม้นเรียบร้อย ✓');
+}
+function resolveComment(tid,cid){
+  const t=db.tasks.find(x=>x.id===tid);if(!t)return;
+  const c=t.comments.find(x=>x.id===cid);if(c)c.resolved=true;
+  notifications=notifications.filter(n=>!(n.taskId===tid&&n.comment.id===cid));
+  addAct(currentUser,'ทำเครื่องหมายแก้ไข',t.name,t.id,'comment');
+  saveDb();renderDetailSheet(t);renderTasks();updateNotifDot();showToast('ทำเครื่องหมายแก้ไขแล้ว ✓');
+}
+function renderFilesTab(t){
+  const fHtml=(t.links||[]).map(l=>{const ft=detectFT(l.url);return`<div class="file-row">
+    <div class="file-icon" style="background:${ft.bg}"><i class="ti ${ft.icon}" style="color:${ft.color}"></i></div>
+    <div style="flex:1;min-width:0"><div class="file-name">${l.name}</div><div class="file-meta">${ft.label} · ${l.addedBy}</div></div>
+    <a class="file-open" href="${l.url}" target="_blank" onclick="event.stopPropagation()"><i class="ti ti-external-link" style="font-size:13px"></i>เปิด</a>
+    <button class="file-del" onclick="delLink(${t.id},${l.id});event.stopPropagation()"><i class="ti ti-trash"></i></button>
+  </div>`;}).join('')||`<div style="text-align:center;padding:20px;color:var(--text3);font-size:14px"><i class="ti ti-paperclip" style="font-size:32px;display:block;margin-bottom:8px"></i>ยังไม่มีไฟล์แนบ</div>`;
+  return`<div id="ll-${t.id}">${fHtml}</div>
+  <div style="margin-top:14px;background:var(--bg);border-radius:var(--radius-sm);padding:14px">
+    <input class="f-input" id="ln-${t.id}" placeholder="ชื่อไฟล์" style="margin-bottom:8px">
+    <div style="display:flex;gap:8px">
+      <input class="f-input" id="lu-${t.id}" placeholder="URL ไฟล์" style="flex:1">
+      <button style="padding:12px 16px;border-radius:var(--radius-sm);border:none;background:var(--purple);color:#fff;font-size:14px;font-weight:600;cursor:pointer;flex-shrink:0" onclick="addLink(${t.id})"><i class="ti ti-plus"></i></button>
+    </div>
+  </div>`;
+}
+function addLink(tid){
+  const t=db.tasks.find(x=>x.id===tid);if(!t)return;
+  const name=(document.getElementById(`ln-${tid}`)||{}).value.trim();
+  let url=(document.getElementById(`lu-${tid}`)||{}).value.trim();
+  if(!url){showToast('กรุณาใส่ URL');return;}
+  if(!/^https?:\/\//i.test(url))url='https://'+url;
+  const ft=detectFT(url);const tt=ts();
+  if(!t.links)t.links=[];
+  t.links.push({id:db.nextLid++,name:name||ft.label+' ลิงก์',url,addedBy:currentUser,time:tt});
+  t.log.push({time:tt,user:currentUser,action:`แนบไฟล์: ${name||ft.label}`,icon:'ti-paperclip',color:'#534AB7'});
+  addAct(currentUser,`แนบไฟล์ "${name||ft.label}"`,t.name,t.id,'file');
+  saveDb();renderDetailSheet(t);renderTasks();showToast('แนบไฟล์เรียบร้อย ✓');
+}
+function delLink(tid,lid){
+  const t=db.tasks.find(x=>x.id===tid);if(!t)return;
+  const l=t.links.find(x=>x.id===lid);
+  addAct(currentUser,`ลบไฟล์ "${l?l.name:''}"`,t.name,t.id,'file');
+  t.links=t.links.filter(x=>x.id!==lid);
+  saveDb();renderDetailSheet(t);renderTasks();showToast('ลบลิงก์แล้ว');
+}
+function renderLogTab(t){
+  return`<ul style="list-style:none">${t.log.map(l=>`<li class="tl-item"><div class="tl-dot" style="background:#EEEDFE"><i class="ti ${l.icon}" style="color:${l.color};font-size:13px"></i></div><div class="tl-content"><div class="tl-text"><span style="font-weight:600">${l.user}</span> ${l.action}</div><div class="tl-time">${l.time}</div></div></li>`).join('')}</ul>`;
+}
+
+/* ── ACTION FLOW ── */
+function doAction(id,action){
+  pendingAction={id,action};
+  const labels={start:'รับงาน',submit:'ส่งตรวจ',approve:'อนุมัติงาน',reject:'ส่งแก้ไข',done:'ส่งมอบเสร็จ',block:'แจ้งติดปัญหา',unblock:'แก้ปัญหาแล้ว'};
+  document.getElementById('action-title').textContent=labels[action]||action;
+  document.getElementById('action-note').value='';
+  document.getElementById('action-confirm-btn').textContent=labels[action]||action;
+  closeSheet('detail');
+  document.getElementById('sheet-action').classList.add('show');
+}
+function confirmAction(){
+  if(!pendingAction)return;
+  const {id,action}=pendingAction;const t=db.tasks.find(x=>x.id===id);if(!t)return;
+  const note=document.getElementById('action-note').value;const tt=ts();
+  const map={start:{status:'wip',step:1,action:'รับงาน',icon:'ti-player-play',color:'#854F0B',type:'status'},submit:{status:'review',step:2,action:'ส่งตรวจ',icon:'ti-send',color:'#534AB7',type:'status'},approve:{status:'approved',step:4,action:'อนุมัติ',icon:'ti-circle-check',color:'#3B6D11',type:'status'},reject:{status:'wip',step:3,action:'ส่งแก้ไข',icon:'ti-arrow-back',color:'#993C1D',type:'status'},done:{status:'done',step:5,action:'ส่งมอบเสร็จ',icon:'ti-archive',color:'#5F5E5A',type:'done'},block:{status:'blocked',step:t.step,action:'ติดปัญหา',icon:'ti-alert-triangle',color:'#E24B4A',type:'blocked'},unblock:{status:'wip',step:t.step,action:'แก้ปัญหาแล้ว',icon:'ti-player-play',color:'#854F0B',type:'status'}};
+  const m=map[action];if(!m)return;
+  t.status=m.status;t.step=m.step;
+  t.log.push({time:tt,user:currentUser,action:m.action+(note?' — '+note:''),icon:m.icon,color:m.color});
+  addAct(currentUser,m.action+(note?' — '+note.slice(0,20):''),t.name,t.id,m.type);
+  closeSheet('action');pendingAction=null;saveDb();renderTasks();showToast('อัปเดตสถานะ ✓');
+}
+
+/* ── NEW TASK ── */
+function openNewTaskSheet(){
+  selectedNewMembers=new Set([currentUser]);
+  renderNewMemberChips();
+  document.getElementById('n-name').value='';
+  document.getElementById('n-client').value='';
+  document.getElementById('n-due').value='';
+  document.getElementById('n-note').value='';
+  document.getElementById('sheet-new').classList.add('show');
+}
+function renderNewMemberChips(){
+  const el=document.getElementById('n-members');if(!el)return;
+  el.innerHTML=db.members.map(m=>`<button class="m-chip ${selectedNewMembers.has(m.name)?'sel':''}" onclick="toggleNewM('${m.name}')">${avHTML(m.name,18)}<span>${m.name}</span>${selectedNewMembers.has(m.name)?'<i class="ti ti-check" style="font-size:12px;color:var(--purple-dark)"></i>':''}</button>`).join('');
+}
+function toggleNewM(name){if(selectedNewMembers.has(name))selectedNewMembers.delete(name);else selectedNewMembers.add(name);renderNewMemberChips();}
+function createTask(){
+  const name=document.getElementById('n-name').value.trim();
+  if(!name){showToast('กรุณาใส่ชื่องาน');return;}
+  if(!selectedNewMembers.size){showToast('กรุณาเลือกผู้รับผิดชอบ');return;}
+  const tt=ts();
+  const task={id:db.nextId++,name,client:document.getElementById('n-client').value.trim()||'-',assignees:Array.from(selectedNewMembers),due:document.getElementById('n-due').value,priority:document.getElementById('n-priority').value,status:'new',step:0,note:document.getElementById('n-note').value,links:[],comments:[],log:[{time:tt,user:currentUser,action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'}]};
+  db.tasks.unshift(task);
+  addAct(currentUser,'สร้างงาน',name,task.id,'create');
+  closeSheet('new');saveDb();renderTasks();showToast('สร้างงานใหม่เรียบร้อย ✓');
+}
+
+/* ── ME SHEET ── */
+function openMeSheet(){
+  const m=getM(currentUser);
+  document.getElementById('me-sheet-body').innerHTML=`
+    <div style="display:flex;align-items:center;gap:12px;padding:4px 0 16px;border-bottom:0.5px solid var(--border);margin-bottom:16px">
+      ${avHTML(currentUser,44)}
+      <div><div style="font-size:16px;font-weight:700;color:var(--text)">${currentUser}</div>
+      <div style="font-size:13px;color:var(--text3)">${m.role==='boss'?'หัวหน้า':m.role==='lead'?'หัวหน้าทีม':'นักออกแบบ'}</div></div>
+    </div>
+    <label class="f-label" style="margin-top:0">เปลี่ยนชื่อเล่น</label>
+    <input class="f-input" id="edit-nick" value="${currentUser}" maxlength="12">
+    <label class="f-label">บทบาท</label>
+    <div class="role-chips" id="edit-role-chips">
+      <button class="role-chip ${m.role==='designer'?'sel':''}" id="erc-designer" onclick="editPickRole('designer')"><i class="ti ti-pencil"></i>นักออกแบบ</button>
+      <button class="role-chip ${m.role==='lead'?'sel':''}" id="erc-lead" onclick="editPickRole('lead')"><i class="ti ti-crown"></i>หัวหน้าทีม</button>
+      <button class="role-chip ${m.role==='boss'?'sel':''}" id="erc-boss" onclick="editPickRole('boss')"><i class="ti ti-star"></i>หัวหน้า</button>
+    </div>
+    <button class="big-btn" onclick="saveProfile()" style="margin-top:16px">บันทึก</button>
+    <button class="outline-btn" style="margin-top:8px;color:var(--red)" onclick="doLogout()"><i class="ti ti-logout" style="font-size:15px"></i> ออกจากระบบ</button>
+  `;
+  let editRole2=m.role||'designer';
+  window._editRole=editRole2;
+  document.getElementById('sheet-me').classList.add('show');
+}
+function editPickRole(r){
+  window._editRole=r;
+  ['designer','lead','boss'].forEach(x=>{const e=document.getElementById('erc-'+x);if(e)e.classList.toggle('sel',x===r);});
+}
+function saveProfile(){
+  const nick=document.getElementById('edit-nick').value.trim();
+  if(!nick){showToast('กรุณาใส่ชื่อเล่น');return;}
+  const m=db.members.find(x=>x.name===currentUser);if(!m)return;
+  const oldName=m.name;
+  if(nick!==oldName&&db.members.find(x=>x.name===nick)){showToast('ชื่อนี้มีอยู่แล้ว');return;}
+  m.name=nick;m.init=nick[0].toUpperCase();m.role=window._editRole||m.role;
+  if(nick!==oldName){
+    db.tasks.forEach(t=>{t.assignees=(t.assignees||[]).map(a=>a===oldName?nick:a);t.log.forEach(l=>{if(l.user===oldName)l.user=nick;});t.comments.forEach(c=>{if(c.author===oldName)c.author=nick;if(c.mention===oldName)c.mention=nick;});(t.links||[]).forEach(l=>{if(l.addedBy===oldName)l.addedBy=nick;});});
+    db.activityLog.forEach(a=>{if(a.actor===oldName)a.actor=nick;});
+    notifications.forEach(n=>{if(n.comment.author===oldName)n.comment.author=nick;if(n.comment.mention===oldName)n.comment.mention=nick;});
+    currentUser=nick;
+    try{localStorage.setItem('gf_user',nick);}catch(e){}
+    document.getElementById('me-name').textContent=nick;
+    selectedNewMembers=new Set([nick]);
+  }
+  addAct(nick,'แก้ไขโปรไฟล์','ระบบ',null,'member');
+  saveDb();closeSheet('me');renderAll();showToast('บันทึกโปรไฟล์แล้ว ✓');
+}
+
+/* ── ACTIVITY ── */
+function setActFilter(btn,f){actFilter=f;document.querySelectorAll('#act-filter-chips .chip').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderActivity();}
+function renderActivity(){
+  const list=document.getElementById('activity-list');if(!list)return;
+  const filtered=actFilter==='all'?db.activityLog:db.activityLog.filter(a=>a.type===actFilter);
+  const cnt=document.getElementById('act-count');if(cnt)cnt.textContent=filtered.length+' รายการ';
+  list.innerHTML=filtered.map(a=>`<div class="act-item" ${a.taskId?`onclick="openDetail(${a.taskId});switchPage('board')"`:''} style="${a.taskId?'cursor:pointer':''}">
+    <div class="act-dot" style="background:#EEEDFE"><i class="ti ${ACT_ICONS[a.type]||'ti-edit'}" style="color:${ACT_COLORS[a.type]||'#888780'};font-size:15px"></i></div>
+    <div class="act-body">
+      <div class="act-head">${avHTML(a.actor,20)}&nbsp;<span style="font-weight:600">${a.actor}</span> <span style="color:var(--text3)">${a.action}</span> <span style="color:var(--purple-dark)">${a.target}</span></div>
+      <div class="act-time">${a.time}</div>
+    </div>
+  </div>`).join('')||`<div class="empty"><i class="ti ti-history"></i><p>ยังไม่มีกิจกรรม</p></div>`;
+}
+
+/* ── TEAM ── */
+function renderTeam(){
+  const el=document.getElementById('team-list');if(!el)return;
+  el.innerHTML=db.members.map(m=>{
+    const active=db.tasks.filter(t=>t.assignees&&t.assignees.includes(m.name)&&t.status!=='done').length;
+    const done=db.tasks.filter(t=>t.assignees&&t.assignees.includes(m.name)&&t.status==='done').length;
+    return`<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--surface);border-bottom:0.5px solid var(--border);cursor:pointer" onclick="viewMemberDetail('${m.name}')">
+      ${avHTML(m.name,40)}
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:600;color:var(--text)">${m.name}${m.name===currentUser?'<span style="color:var(--purple);font-size:13px"> (คุณ)</span>':''}</div>
+        <div style="font-size:12px;color:var(--text3)">${m.role==='boss'?'หัวหน้า':m.role==='lead'?'หัวหน้าทีม':'นักออกแบบ'}</div>
+        <div style="display:flex;gap:7px;margin-top:5px">
+          ${active?`<span style="font-size:11px;background:var(--amber-light);color:var(--amber);padding:2px 8px;border-radius:20px;font-weight:500">${active} งาน</span>`:''}
+          <span style="font-size:11px;background:var(--green-light);color:var(--green);padding:2px 8px;border-radius:20px;font-weight:500">${done} เสร็จ</span>
+        </div>
+      </div>
+      <i class="ti ti-chevron-right" style="font-size:18px;color:var(--text3)"></i>
+    </div>`;
+  }).join('');
+}
+function viewMemberDetail(name){
+  const m=getM(name);
+  const active=db.tasks.filter(t=>t.assignees&&t.assignees.includes(name)&&t.status!=='done');
+  const done=db.tasks.filter(t=>t.assignees&&t.assignees.includes(name)&&t.status==='done');
+  const pg=document.getElementById('page-member-detail');
+  pg.innerHTML=`
+    <div style="background:var(--surface);border-bottom:0.5px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px">
+      <button onclick="switchPage('team')" style="width:36px;height:36px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-arrow-left" style="font-size:20px;color:var(--text)"></i></button>
+      ${avHTML(name,40)}
+      <div><div style="font-size:16px;font-weight:700;color:var(--text)">${name}</div><div style="font-size:12px;color:var(--text3)">${m.role==='boss'?'หัวหน้า':m.role==='lead'?'หัวหน้าทีม':'นักออกแบบ'}</div></div>
+    </div>
+    <div class="member-stats">
+      <div class="stat-card"><div class="stat-num" style="color:var(--amber)">${active.length}</div><div class="stat-label">งานอยู่ระหว่างทำ</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--green)">${done.length}</div><div class="stat-label">งานเสร็จแล้ว</div></div>
+    </div>
+    ${active.length?`<div style="padding:0 16px 6px;font-size:13px;font-weight:600;color:var(--text3)">งานอยู่ระหว่างทำ</div>${active.map(t=>`<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface);border-bottom:0.5px solid var(--border);cursor:pointer" onclick="switchPage('board');openDetail(${t.id})">${sIcon(t.status,36)}<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--text)">${t.name}</div><div style="font-size:12px;color:var(--text3)">${t.client} · ${fmtDue(t.due)||'-'}</div></div>${sPill(t.status)}</div>`).join('')}`:''}
+    <div style="padding:14px 16px 6px;font-size:13px;font-weight:600;color:var(--text3)">งานเสร็จแล้ว (${done.length})</div>
+    ${done.length?done.map(t=>`<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface);border-bottom:0.5px solid var(--border)"><div class="status-icon" style="width:36px;height:36px;background:var(--gray-light)"><i class="ti ti-archive" style="color:var(--gray);font-size:18px"></i></div><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--text)">${t.name}</div><div style="font-size:12px;color:var(--text3)">${t.client} · ทีม: ${(t.assignees||[]).join(', ')}</div></div><span style="font-size:11px;color:var(--text3)">${(t.log[t.log.length-1]||{}).time||''}</span></div>`).join(''):`<div style="text-align:center;padding:24px;color:var(--text3)">ยังไม่มีงานเสร็จ</div>`}
+  `;
+  switchPage('member-detail');
+}
+
+/* ── NOTIF ── */
+function updateNotifDot(){const n=notifications.filter(x=>!x.read).length;const d=document.getElementById('notif-dot');if(d)d.style.display=n?'block':'none';}
+function renderNotif(){
+  const el=document.getElementById('notif-list');if(!el)return;
+  if(!notifications.length){el.innerHTML=`<div class="empty"><i class="ti ti-bell-off"></i><p>ไม่มีการแจ้งเตือน</p></div>`;return;}
+  el.innerHTML=notifications.slice().reverse().map(n=>`<div style="display:flex;gap:10px;padding:14px 16px;background:${n.read?'var(--surface)':'#F5F4FF'};border-bottom:0.5px solid var(--border);cursor:pointer" onclick="openDetail(${n.taskId});switchPage('board')">
+    ${avHTML(n.comment.author,32)}
+    <div style="flex:1;min-width:0">
+      <div style="font-size:14px;color:var(--text);margin-bottom:3px"><span style="font-weight:600">${n.comment.author}</span> ${COMMENT_TYPES[n.comment.type]==='แก้ไข'?'ขอแก้ไขงาน':'ส่ง '+COMMENT_TYPES[n.comment.type]}</div>
+      <div style="font-size:12px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${n.taskName}: ${n.comment.text}</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:3px">${n.comment.time}</div>
+    </div>
+    ${!n.read?`<div style="width:8px;height:8px;border-radius:50%;background:var(--red-mid);flex-shrink:0;margin-top:4px"></div>`:''}
+  </div>`).join('');
+}
+function markAllRead(){notifications.forEach(n=>n.read=true);renderNotif();updateNotifDot();}
+
+/* ── EXPORT ── */
+function renderExport(){
+  const sg=document.getElementById('stat-grid');
+  if(sg){const bs=s=>db.tasks.filter(t=>t.status===s).length;
+    sg.innerHTML=`<div class="stat-card"><div class="stat-num">${db.tasks.length}</div><div class="stat-label">งานทั้งหมด</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--amber)">${bs('wip')}</div><div class="stat-label">กำลังทำ</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--red)">${bs('blocked')}</div><div class="stat-label">ติดปัญหา</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--green)">${bs('done')}</div><div class="stat-label">เสร็จแล้ว</div></div>`;}
+  const pp=document.getElementById('per-person-stat');
+  if(pp){pp.innerHTML=db.members.map(m=>{const nt=db.tasks.filter(t=>t.assignees&&t.assignees.includes(m.name));const done=nt.filter(t=>t.status==='done').length;const active=nt.filter(t=>t.status!=='done').length;return`<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:0.5px solid var(--border);cursor:pointer" onclick="viewMemberDetail('${m.name}')">${avHTML(m.name,32)}<div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--text)">${m.name}</div><div style="font-size:12px;color:var(--text3)">${active} งาน active</div></div><span style="font-size:12px;background:var(--green-light);color:var(--green);padding:3px 9px;border-radius:20px;font-weight:500">${done} เสร็จ</span><i class="ti ti-chevron-right" style="font-size:16px;color:var(--text3)"></i></div>`;}).join('');}
+}
+function exportCSV(){
+  const h=['ID','ชื่องาน','ลูกค้า','ผู้รับผิดชอบ','สถานะ','ขั้นตอน','กำหนดส่ง','ความสำคัญ'];
+  const r=db.tasks.map(t=>[t.id,t.name,t.client,(t.assignees||[]).join(', '),STATUS_MAP[t.status],STEPS[t.step],t.due,t.priority==='high'?'ด่วน':'ปกติ']);
+  const csv=[h,...r].map(row=>row.map(c=>`"${String(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv'}));a.download='tasks.csv';a.click();showToast('ดาวน์โหลด CSV ✓');
+}
+function exportDone(){
+  const done=db.tasks.filter(t=>t.status==='done');
+  const h=['ชื่องาน','ลูกค้า','ทีม','กำหนดส่ง','ส่งมอบเมื่อ'];
+  const r=done.map(t=>[t.name,t.client,(t.assignees||[]).join(', '),t.due,(t.log[t.log.length-1]||{}).time||'-']);
+  const csv=[h,...r].map(row=>row.map(c=>`"${String(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv'}));a.download='done.csv';a.click();showToast(`ส่งออก ${done.length} งาน ✓`);
+}
+function exportActivity(){
+  const h=['เวลา','ผู้ดำเนินการ','กิจกรรม','เป้าหมาย','ประเภท'];
+  const r=db.activityLog.map(a=>[a.time,a.actor,a.action,a.target,a.type]);
+  const csv=[h,...r].map(row=>row.map(c=>`"${String(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv'}));a.download='activity.csv';a.click();showToast('ส่งออก Activity Log ✓');
+}
+
+/* ── KPI ── */
+function calcKPI(member){
+  const all=db.tasks.filter(t=>(t.assignees||[]).includes(member));
+  const done=all.filter(t=>t.status==='done').length;
+  const total=all.length;
+  const blocked=all.filter(t=>t.status==='blocked').length;
+  const onTime=all.filter(t=>t.status==='done'&&t.due&&new Date(t.due)>=new Date(t.log[t.log.length-1]?.time?.split(' ')[0]||t.due)).length;
+  const feedbackResolved=all.reduce((a,t)=>a+t.comments.filter(c=>c.resolved).length,0);
+  const feedbackOpen=all.reduce((a,t)=>a+t.comments.filter(c=>!c.resolved).length,0);
+  const completionRate=total?Math.round(done/total*100):0;
+  const onTimeRate=done?Math.round(onTime/done*100):100;
+  const qualityRate=Math.max(0,100-feedbackOpen*10);
+  const blockPenalty=blocked*8;
+  const score=Math.min(100,Math.round((completionRate*0.35)+(onTimeRate*0.35)+(qualityRate*0.3)-blockPenalty));
+  return{score,completionRate,onTimeRate,qualityRate,done,total,blocked,feedbackOpen,feedbackResolved,onTime};
+}
+function starHTML(score){
+  const stars=score>=90?5:score>=75?4:score>=60?3:score>=45?2:1;
+  return Array.from({length:5},(_,i)=>`<i class="ti ti-star${i<stars?'-filled':''}" style="font-size:16px;color:${i<stars?'#EF9F27':'#D3D1C7'}"></i>`).join('');
+}
+function gradeColor(s){return s>=90?'#3B6D11':s>=75?'#185FA5':s>=60?'#854F0B':s>=45?'#D85A30':'#A32D2D';}
+function gradeLabel(s){return s>=90?'ดีเยี่ยม':s>=75?'ดี':s>=60?'พอใช้':s>=45?'ต้องปรับปรุง':'ต่ำกว่าเกณฑ์';}
+
+function renderKPI(){
+  const el=document.getElementById('kpi-body');if(!el)return;
+  const myKPI=calcKPI(currentUser);
+  const allScores=db.members.map(m=>({m,k:calcKPI(m.name)})).sort((a,b)=>b.k.score-a.k.score);
+  const myRank=allScores.findIndex(x=>x.m.name===currentUser)+1;
+
+  el.innerHTML=`
+  <!-- MY SCORE HERO -->
+  <div class="kpi-hero">
+    <div style="display:flex;align-items:flex-start;gap:12px">
+      <div style="flex:1">
+        <div style="font-size:13px;opacity:.8;margin-bottom:4px">คะแนน KPI ของคุณ</div>
+        <div class="kpi-score">${myKPI.score}</div>
+        <div style="font-size:14px;opacity:.85;margin-top:2px">${gradeLabel(myKPI.score)} · อันดับ ${myRank}/${db.members.length}</div>
+        <div class="kpi-bar-wrap" style="margin-top:14px"><div class="kpi-bar-fill" style="width:${myKPI.score}%"></div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;background:rgba(255,255,255,.15);border-radius:12px;padding:10px 12px">
+        <div class="kpi-star-row">${starHTML(myKPI.score)}</div>
+        <div style="font-size:11px;opacity:.8">ดาว ${myKPI.score>=90?5:myKPI.score>=75?4:myKPI.score>=60?3:myKPI.score>=45?2:1}/5</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY METRICS -->
+  <div style="padding:12px 12px 0">
+    <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">เกณฑ์คะแนนของคุณ</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-metric-row">
+      <div class="kpi-metric-icon" style="background:#EAF3DE"><i class="ti ti-check" style="color:#3B6D11"></i></div>
+      <div style="flex:1"><div class="kpi-metric-label">อัตราเสร็จงาน</div><div class="kpi-metric-sub">งานเสร็จ ${myKPI.done} / ${myKPI.total} งาน</div></div>
+      <div>
+        <div class="kpi-score-sm" style="color:${gradeColor(myKPI.completionRate)}">${myKPI.completionRate}%</div>
+        <div style="font-size:10px;color:var(--text3);text-align:right">น้ำหนัก 35%</div>
+      </div>
+    </div>
+    <div class="kpi-metric-row">
+      <div class="kpi-metric-icon" style="background:#E6F1FB"><i class="ti ti-clock" style="color:#185FA5"></i></div>
+      <div style="flex:1"><div class="kpi-metric-label">ส่งงานทันกำหนด</div><div class="kpi-metric-sub">ทันกำหนด ${myKPI.onTime} / ${myKPI.done} งาน</div></div>
+      <div>
+        <div class="kpi-score-sm" style="color:${gradeColor(myKPI.onTimeRate)}">${myKPI.onTimeRate}%</div>
+        <div style="font-size:10px;color:var(--text3);text-align:right">น้ำหนัก 35%</div>
+      </div>
+    </div>
+    <div class="kpi-metric-row">
+      <div class="kpi-metric-icon" style="background:#FBEAF0"><i class="ti ti-rosette" style="color:#993556"></i></div>
+      <div style="flex:1"><div class="kpi-metric-label">คุณภาพงาน</div><div class="kpi-metric-sub">feedback ค้าง ${myKPI.feedbackOpen} รายการ</div></div>
+      <div>
+        <div class="kpi-score-sm" style="color:${gradeColor(myKPI.qualityRate)}">${myKPI.qualityRate}%</div>
+        <div style="font-size:10px;color:var(--text3);text-align:right">น้ำหนัก 30%</div>
+      </div>
+    </div>
+    ${myKPI.blocked?`<div class="kpi-metric-row">
+      <div class="kpi-metric-icon" style="background:#FCEBEB"><i class="ti ti-lock" style="color:#A32D2D"></i></div>
+      <div style="flex:1"><div class="kpi-metric-label">งานติดปัญหา</div><div class="kpi-metric-sub">หักคะแนน ${myKPI.blocked*8} คะแนน</div></div>
+      <div><div class="kpi-score-sm" style="color:#A32D2D">-${myKPI.blocked*8}</div></div>
+    </div>`:''}
+  </div>
+
+  <!-- TEAM RANKING -->
+  <div style="padding:12px 12px 0">
+    <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">อันดับทีม</div>
+  </div>
+  ${allScores.map(({m,k},i)=>{
+    const rank=i+1;
+    const isMe=m.name===currentUser;
+    const rankColor=rank===1?'#EF9F27':rank===2?'#888780':rank===3?'#CD7F32':'var(--text3)';
+    const rankBg=rank===1?'#FAEEDA':rank===2?'#F1EFE8':rank===3?'#FAEEDA':'var(--bg)';
+    return`<div class="kpi-member-card" style="${isMe?'border-color:var(--purple-border);background:var(--purple-light)':''}">
+      <div class="kpi-rank" style="background:${rankBg};color:${rankColor}">${rank}</div>
+      ${avHTML(m.name,36)}
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:700;color:var(--text)">${m.name}${isMe?' <span style="font-size:11px;color:var(--purple-dark)">(คุณ)</span>':''}</div>
+        <div style="display:flex;gap:2px;margin-top:3px">${starHTML(k.score)}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:20px;font-weight:800;color:${gradeColor(k.score)}">${k.score}</div>
+        <div style="font-size:11px;color:var(--text3)">${gradeLabel(k.score)}</div>
+      </div>
+    </div>`;
+  }).join('')}
+
+  <!-- KPI LEGEND -->
+  <div style="margin:0 12px 16px;padding:12px 14px;background:var(--bg);border-radius:var(--radius);border:0.5px solid var(--border)">
+    <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px">เกณฑ์คะแนน</div>
+    ${[['90–100','ดีเยี่ยม','#3B6D11'],['75–89','ดี','#185FA5'],['60–74','พอใช้','#854F0B'],['45–59','ต้องปรับปรุง','#D85A30'],['0–44','ต่ำกว่าเกณฑ์','#A32D2D']].map(([r,l,c])=>`<div style="display:flex;align-items:center;gap:8px;padding:4px 0"><div style="width:8px;height:8px;border-radius:50%;background:${c};flex-shrink:0"></div><span style="font-size:12px;color:var(--text2);flex:1">${l}</span><span style="font-size:12px;color:${c};font-weight:600">${r} คะแนน</span></div>`).join('')}
+  </div>`;
+}
+
+/* ── TIMELINE / BOTTLENECK ── */
+function renderTimeline(){
+  const el=document.getElementById('timeline-body');if(!el)return;
+
+  const STEP_NAMES=['รับงาน','ออกแบบ','ตรวจสอบ','แก้ไข','อนุมัติ','ส่งมอบ'];
+  const STEP_COLORS=['#185FA5','#854F0B','#534AB7','#D85A30','#3B6D11','#5F5E5A'];
+
+  const allTasks=db.tasks;
+  const bottleneck={};
+  STEP_NAMES.forEach((_,i)=>{bottleneck[i]=0;});
+  allTasks.forEach(t=>{
+    if(t.status!=='done'){
+      const stuckStep=t.step;
+      bottleneck[stuckStep]=(bottleneck[stuckStep]||0)+1;
+    }
+  });
+  const maxBottle=Math.max(1,...Object.values(bottleneck));
+  const topBottleIdx=Object.entries(bottleneck).sort((a,b)=>b[1]-a[1]).filter(x=>x[1]>0);
+
+  // Build bottleneck summary banner
+  let bannerHTML='';
+  if(topBottleIdx.length){
+    const [topIdx,topCount]=topBottleIdx[0];
+    bannerHTML=`<div class="bottleneck-banner">
+      <div class="bn-icon"><i class="ti ti-alert-circle" style="color:#854F0B;font-size:20px"></i></div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:#854F0B;margin-bottom:3px">คอขวดหลัก: ขั้นตอน "${STEP_NAMES[topIdx]}"</div>
+        <div style="font-size:12px;color:#854F0B">มีงานค้างอยู่ ${topCount} งาน — ควรเพิ่มทรัพยากรหรือตรวจสอบปัญหาขั้นตอนนี้</div>
+      </div>
+    </div>`;
+  }
+
+  // Funnel bar chart
+  const funnelHTML=`
+  <div style="margin:0 12px 8px;background:var(--surface);border-radius:var(--radius);padding:14px;border:0.5px solid var(--border)">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px"><i class="ti ti-filter" style="font-size:14px;vertical-align:-2px;margin-right:4px"></i>งานค้างแต่ละขั้นตอน</div>
+    ${STEP_NAMES.map((name,i)=>{
+      const cnt=bottleneck[i]||0;
+      const pct=Math.round(cnt/maxBottle*100);
+      const isHot=cnt===Math.max(...Object.values(bottleneck))&&cnt>0;
+      return`<div style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="width:8px;height:8px;border-radius:50%;background:${STEP_COLORS[i]}"></div>
+            <span style="font-size:12px;font-weight:600;color:var(--text)">${name}</span>
+            ${isHot&&cnt>0?'<span style="font-size:10px;background:#FAEEDA;color:#854F0B;padding:1px 6px;border-radius:20px;font-weight:600">คอขวด</span>':''}
+          </div>
+          <span style="font-size:13px;font-weight:800;color:${cnt>0?STEP_COLORS[i]:'var(--text3)'}">${cnt}</span>
+        </div>
+        <div style="background:rgba(0,0,0,.07);border-radius:4px;height:8px;overflow:hidden">
+          <div style="width:${pct}%;height:100%;background:${STEP_COLORS[i]};border-radius:4px;transition:width .5s ease"></div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+
+  // Per-task timeline
+  const taskTimelineHTML=allTasks.map(t=>{
+    const logs=t.log||[];
+    const hasBlockedLog=logs.some(l=>l.action&&l.action.includes('ติดปัญหา'));
+    const isBlocked=t.status==='blocked';
+    const isDone=t.status==='done';
+    const dueDate=t.due?new Date(t.due):null;
+    const overdue=dueDate&&!isDone&&dueDate<new Date();
+
+    const stepsHTML=STEP_NAMES.map((sname,si)=>{
+      const wasHere=logs.filter(l=>{
+        const stepActions={'รับงาน':0,'เริ่มออกแบบ':1,'ส่งตรวจ':2,'ส่งแก้ไข':3,'อนุมัติ':4,'ส่งมอบเสร็จ':5};
+        return l.icon==='ti-circle-plus'&&si===0||
+              (l.icon==='ti-pencil'&&si===1)||
+              (l.icon==='ti-send'&&si===2)||
+              (l.icon==='ti-arrow-back'&&si===3)||
+              (l.icon==='ti-circle-check'&&si===4)||
+              (l.icon==='ti-archive'&&si===5);
+      });
+      const isCurrentStep=t.step===si;
+      const isDoneStep=si<t.step;
+      const isBlockedHere=isBlocked&&isCurrentStep;
+
+      let dotColor=isDoneStep?'#1D9E75':isBlockedHere?'#E24B4A':isCurrentStep?STEP_COLORS[si]:'#D3D1C7';
+      let tagHTML='';
+      if(isBlockedHere)tagHTML='<span class="tl-step-tag" style="background:#FCEBEB;color:#A32D2D">ติดปัญหา</span>';
+      else if(isDoneStep)tagHTML='<span class="tl-step-tag" style="background:#EAF3DE;color:#3B6D11">ผ่าน</span>';
+      else if(isCurrentStep)tagHTML=`<span class="tl-step-tag" style="background:${si===2||si===4?'#EEEDFE':'#FAEEDA'};color:${si===2||si===4?'#534AB7':'#854F0B'}">${si===2?'รอตรวจ':si===4?'รออนุมัติ':'กำลังทำ'}</span>`;
+      else tagHTML='<span class="tl-step-tag" style="background:#F1EFE8;color:#B4B2A9">รอ</span>';
+
+      const logEntry=wasHere.length?wasHere[0]:null;
+      return`<div class="tl-step-row">
+        <div class="tl-step-dot" style="background:${dotColor}"></div>
+        <div style="flex:1"><div class="tl-step-name">${sname}</div>${logEntry?`<div class="tl-step-dur">${logEntry.user} · ${logEntry.time}</div>`:'<div class="tl-step-dur" style="color:#D3D1C7">ยังไม่ถึง</div>'}</div>
+        ${tagHTML}
+      </div>`;
+    }).join('');
+
+    return`<div class="tl-page-item">
+      <div class="tl-task-header">
+        ${sIcon(t.status,36)}
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:700;color:var(--text)">${t.name}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px">${t.client}${t.due?' · กำหนด '+t.due:''}${overdue?' <span style="color:#A32D2D;font-weight:600">(เกินกำหนด!)</span>':''}</div>
+        </div>
+        ${isBlocked?'<span style="font-size:11px;background:#FCEBEB;color:#A32D2D;padding:3px 8px;border-radius:20px;font-weight:600">ติดปัญหา</span>':''}
+        ${overdue&&!isDone?'<span style="font-size:11px;background:#FFF3E0;color:#E65100;padding:3px 8px;border-radius:20px;font-weight:600">เกินกำหนด</span>':''}
+        ${isDone?'<span style="font-size:11px;background:#EAF3DE;color:#3B6D11;padding:3px 8px;border-radius:20px;font-weight:600">เสร็จแล้ว</span>':''}
+      </div>
+      <div class="tl-task-body">${stepsHTML}</div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML=bannerHTML+funnelHTML+`
+  <div style="padding:12px 12px 4px"><div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">Timeline รายงาน</div></div>
+  `+taskTimelineHTML;
+}
+
+/* ── BROADCAST ── */
+const BC_TYPES={
+  meet:{label:'นัดประชุม',emoji:'🗓',bg:'#EAF3DE',color:'#3B6D11',icon:'ti-calendar-event'},
+  task:{label:'มอบหมายงาน',emoji:'📋',bg:'#E6F1FB',color:'#185FA5',icon:'ti-clipboard-list'},
+  remind:{label:'เตือนกำหนดส่ง',emoji:'⏰',bg:'#FAEEDA',color:'#854F0B',icon:'ti-clock'},
+  info:{label:'ประกาศ',emoji:'📢',bg:'#EEEDFE',color:'#534AB7',icon:'ti-speakerphone'},
+};
+const LINK_ICONS=[
+  {match:u=>u.includes('meet.google'),icon:'ti-brand-google',bg:'#EAF3DE',color:'#3B6D11',label:'Google Meet'},
+  {match:u=>u.includes('zoom.us'),icon:'ti-brand-zoom',bg:'#E6F1FB',color:'#185FA5',label:'Zoom'},
+  {match:u=>u.includes('drive.google')||u.includes('docs.google'),icon:'ti-brand-google-drive',bg:'#EAF3DE',color:'#3B6D11',label:'Google Drive'},
+  {match:u=>u.includes('figma.com'),icon:'ti-vector-triangle',bg:'#FBEAF0',color:'#993556',label:'Figma'},
+  {match:u=>u.includes('notion.so'),icon:'ti-note',bg:'#F1EFE8',color:'#5F5E5A',label:'Notion'},
+  {match:u=>u.includes('canva.com'),icon:'ti-layout',bg:'#EEEDFE',color:'#534AB7',label:'Canva'},
+  {match:u=>u.includes('line.me')||u.includes('lin.ee'),icon:'ti-brand-line',bg:'#EAF3DE',color:'#3B6D11',label:'LINE'},
+  {match:u=>u.includes('teams.microsoft'),icon:'ti-brand-teams',bg:'#E6F1FB',color:'#185FA5',label:'MS Teams'},
+  {match:()=>true,icon:'ti-link',bg:'#F1EFE8',color:'#5F5E5A',label:'ลิงก์'},
+];
+function detectLinkIcon(url){return LINK_ICONS.find(l=>l.match(url))||LINK_ICONS[LINK_ICONS.length-1];}
+function bcUnreadCount(){
+  if(!currentUser)return 0;
+  return (db.broadcasts||[]).filter(b=>b.to.includes(currentUser)&&!(b.readBy||[]).includes(currentUser)).length;
+}
+function updateBcDot(){
+  const n=bcUnreadCount();
+  const d=document.getElementById('bc-dot');if(d)d.style.display=n?'block':'none';
+  const cnt=document.getElementById('bc-unread-count');if(cnt)cnt.textContent=n?`${n} ยังไม่อ่าน`:'';
+}
+
+function setBcFilter(btn,f){
+  bcFilter=f;
+  document.querySelectorAll('#bc-filter-chips .chip').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderBroadcast();
+}
+
+function renderBroadcast(){
+  const el=document.getElementById('broadcast-feed');if(!el)return;
+  updateBcDot();
+  const all=(db.broadcasts||[]).slice().reverse();
+  const filtered=bcFilter==='all'?all:all.filter(b=>b.type===bcFilter);
+  if(!filtered.length){
+    el.innerHTML=`<div style="text-align:center;padding:48px 24px;color:var(--text3)"><div style="font-size:48px;margin-bottom:12px">📭</div><div style="font-size:15px">ยังไม่มีการแจ้ง</div><div style="font-size:13px;margin-top:6px">กด ✏️ เพื่อแจ้งทีม</div></div>`;
+    return;
+  }
+  el.innerHTML=filtered.map(b=>{
+    const bt=BC_TYPES[b.type]||BC_TYPES.info;
+    const isUnread=b.to.includes(currentUser)&&!(b.readBy||[]).includes(currentUser);
+    const isToMe=b.to.includes(currentUser)||b.from===currentUser;
+    const readCount=(b.readBy||[]).length;
+    const toMe=b.from===currentUser?'คุณ':b.from;
+
+    const dtPill=(b.date||b.time)?`<div class="bc-datetime-pill">
+      <i class="ti ti-calendar" style="font-size:13px;color:${bt.color}"></i>
+      <span style="color:${bt.color}">${b.date||''} ${b.time?b.time+'น.':''}</span>
+    </div>`:'';
+
+    const linksHTML=(b.links||[]).map(l=>`
+      <a class="bc-link-pill" href="${l.url}" target="_blank">
+        <div class="bc-link-icon" style="background:${l.bg||'#F1EFE8'}">
+          <i class="ti ${l.icon||'ti-link'}" style="color:${l.color||'#5F5E5A'}"></i>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600;color:var(--text)">${l.label}</div>
+          <div style="font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.url}</div>
+        </div>
+        <i class="ti ti-external-link" style="font-size:14px;color:var(--text3);flex-shrink:0"></i>
+      </a>`).join('');
+
+    const toList=b.to.slice(0,3).map(n=>`<div class="bc-to-chip" style="background:${getM(n).cls.replace('av-','').length>0?'var(--purple-light)':'var(--bg)'};color:var(--purple-dark)">${avHTML(n,16)}<span>${n}</span></div>`).join('')
+      +(b.to.length>3?`<div class="bc-to-chip" style="background:var(--bg);color:var(--text3)">+${b.to.length-3} คน</div>`:'');
+
+    return`<div class="bc-card" style="${isUnread?'border-color:'+bt.color+';border-width:1.5px':''}" onclick="markBcRead(${b.id})">
+      ${isUnread?`<div style="background:${bt.bg};padding:5px 14px;display:flex;align-items:center;gap:5px"><div style="width:6px;height:6px;border-radius:50%;background:${bt.color}"></div><span style="font-size:11px;font-weight:700;color:${bt.color}">ยังไม่อ่าน</span></div>`:''}
+      <div class="bc-card-header">
+        <div class="bc-type-circle" style="background:${bt.bg}">${bt.emoji}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px">
+            <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:${bt.bg};color:${bt.color}">${bt.label}</span>
+            <span style="font-size:11px;color:var(--text3)">${b.time_sent}</span>
+          </div>
+          <div class="bc-subject">${b.subject}</div>
+          <div class="bc-meta" style="margin-top:3px">${avHTML(b.from,18)}&nbsp;<span style="font-weight:600">${b.from===currentUser?'คุณ':b.from}</span> แจ้ง</div>
+        </div>
+      </div>
+      <div class="bc-card-body">
+        <div class="bc-message">${b.message}</div>
+        ${dtPill}
+        ${linksHTML}
+        <div style="margin-top:10px;padding-top:8px;border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;flex-wrap:wrap;gap:4px">${toList}</div>
+          <div style="font-size:11px;color:var(--text3);white-space:nowrap;flex-shrink:0">อ่านแล้ว ${readCount}/${b.to.length+1}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function markBcRead(id){
+  const b=(db.broadcasts||[]).find(x=>x.id===id);
+  if(!b)return;
+  if(!b.readBy)b.readBy=[];
+  if(!b.readBy.includes(currentUser))b.readBy.push(currentUser);
+  saveDb();updateBcDot();renderBroadcast();
+}
+
+/* Compose */
+function openCompose(){
+  bcType='meet';bcTempLinks=[];
+  bcSelectedTo=new Set(db.members.filter(m=>m.name!==currentUser).map(m=>m.name));
+  document.getElementById('bc-subject').value='';
+  document.getElementById('bc-message').value='';
+  document.getElementById('bc-date').value='';
+  document.getElementById('bc-time').value='';
+  document.getElementById('bc-link-label').value='';
+  document.getElementById('bc-link-url').value='';
+  document.getElementById('bc-links-list').innerHTML='';
+  // reset type buttons
+  ['meet','task','remind','info'].forEach(t=>{
+    const el=document.getElementById('bct-'+t);if(el)el.classList.toggle('sel',t==='meet');
+  });
+  renderBcToChips();
+  const dw=document.getElementById('bc-datetime-wrap');
+  if(dw)dw.style.display='block';
+  document.getElementById('sheet-compose').classList.add('show');
+}
+function pickBcType(t){
+  bcType=t;
+  ['meet','task','remind','info'].forEach(x=>{
+    const el=document.getElementById('bct-'+x);if(el)el.classList.toggle('sel',x===t);
+  });
+  const dw=document.getElementById('bc-datetime-wrap');
+  if(dw)dw.style.display=(t==='meet'||t==='remind')?'block':'none';
+}
+function renderBcToChips(){
+  const el=document.getElementById('bc-to-chips');if(!el)return;
+  const others=db.members.filter(m=>m.name!==currentUser);
+  el.innerHTML=others.map(m=>`<button class="m-chip ${bcSelectedTo.has(m.name)?'sel':''}" onclick="toggleBcTo('${m.name}')">${avHTML(m.name,18)}<span>${m.name}</span>${bcSelectedTo.has(m.name)?'<i class="ti ti-check" style="font-size:12px;color:var(--purple-dark)"></i>':''}</button>`).join('');
+}
+function toggleBcTo(name){
+  if(bcSelectedTo.has(name))bcSelectedTo.delete(name);else bcSelectedTo.add(name);
+  renderBcToChips();
+}
+function addBcLink(){
+  const label=document.getElementById('bc-link-label').value.trim();
+  let url=document.getElementById('bc-link-url').value.trim();
+  if(!url){showToast('กรุณาใส่ URL');return;}
+  if(!/^https?:\/\//i.test(url))url='https://'+url;
+  const li=detectLinkIcon(url);
+  const finalLabel=label||li.label;
+  bcTempLinks.push({label:finalLabel,url,icon:li.icon,color:li.color,bg:li.bg});
+  document.getElementById('bc-link-label').value='';
+  document.getElementById('bc-link-url').value='';
+  const ll=document.getElementById('bc-links-list');
+  if(ll)ll.innerHTML=bcTempLinks.map((l,i)=>`<div class="bc-temp-link">
+    <div class="bc-link-icon" style="background:${l.bg}"><i class="ti ${l.icon}" style="color:${l.color}"></i></div>
+    <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--text)">${l.label}</div><div style="font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.url}</div></div>
+    <button onclick="removeBcLink(${i})" style="border:none;background:none;cursor:pointer;color:var(--text3);font-size:16px;padding:4px"><i class="ti ti-x"></i></button>
+  </div>`).join('');
+  showToast('เพิ่มลิงก์แล้ว ✓');
+}
+function removeBcLink(i){
+  bcTempLinks.splice(i,1);
+  const ll=document.getElementById('bc-links-list');
+  if(ll)ll.innerHTML=bcTempLinks.map((l,idx)=>`<div class="bc-temp-link">
+    <div class="bc-link-icon" style="background:${l.bg}"><i class="ti ${l.icon}" style="color:${l.color}"></i></div>
+    <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--text)">${l.label}</div><div style="font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.url}</div></div>
+    <button onclick="removeBcLink(${idx})" style="border:none;background:none;cursor:pointer;color:var(--text3);font-size:16px;padding:4px"><i class="ti ti-x"></i></button>
+  </div>`).join('');
+}
+function sendBroadcast(){
+  const subject=document.getElementById('bc-subject').value.trim();
+  const message=document.getElementById('bc-message').value.trim();
+  if(!subject){showToast('กรุณาใส่หัวข้อ');return;}
+  if(!bcSelectedTo.size){showToast('กรุณาเลือกผู้รับอย่างน้อย 1 คน');return;}
+  if(!message){showToast('กรุณาใส่ข้อความ');return;}
+  const date=document.getElementById('bc-date').value;
+  const time=document.getElementById('bc-time').value;
+  const now2=ts();
+  if(!db.broadcasts)db.broadcasts=[];
+  const nextBcId=(db.broadcasts.length?Math.max(...db.broadcasts.map(b=>b.id))+1:1);
+  db.broadcasts.push({
+    id:nextBcId,
+    type:bcType,
+    from:currentUser,
+    to:Array.from(bcSelectedTo),
+    subject,message,date,time,
+    links:[...bcTempLinks],
+    readBy:[currentUser],
+    time_sent:now2,
+  });
+  addAct(currentUser,`แจ้งทีม: ${subject}`,'ทีม',null,'other');
+  // push notifications to recipients
+  Array.from(bcSelectedTo).forEach(name=>{
+    if(name!==currentUser)notifications.push({taskId:null,taskName:'📢 '+subject,comment:{author:currentUser,type:'note',text:message,mention:name,time:now2},read:false,isBroadcast:true,bcId:nextBcId});
+  });
+  saveDb();closeSheet('compose');renderBroadcast();updateBcDot();updateNotifDot();
+  showToast('ส่งแจ้งทีมเรียบร้อย ✓');
+}
+
+/* ── SHEET ── */
+function closeSheet(name){document.getElementById('sheet-'+name).classList.remove('show');}
+
+/* ── TOAST ── */
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+/* ── RENDER ALL ── */
+function renderAll(){renderTasks();updateNotifDot();updateBcDot();}
+
+/* ── INIT ── */
+buildLoginPick();
+try{
+  const saved=localStorage.getItem('gf_user');
+  if(saved&&db.members.find(m=>m.name===saved)){loginAs(saved);}
+  else{document.getElementById('login-wrap').style.display='flex';}
+}catch(e){document.getElementById('login-wrap').style.display='flex';}
+</script>
+</body>
+</html>
