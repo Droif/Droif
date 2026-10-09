@@ -682,6 +682,9 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
 const SB_URL='https://bxqvljwoanvcerzviceq.supabase.co';
 const SB_KEY='sb_publishable_SOG0XPWxOzU1Y6fG7MEKlQ_6N_yS1Cs';
 const SK='gf_mob_v2';
+// ล้างข้อมูลในเครื่องครั้งเดียว (งานเก่า + โปรไฟล์ที่ล็อกอินค้าง) เพื่อเริ่มใช้งานจริง — เพิ่มเลขเวอร์ชันเมื่อต้องการล้างอีกรอบ
+const LOCAL_RESET='2026-10-09';
+try{if(localStorage.getItem('gf_reset')!==LOCAL_RESET){['gf_mob_v1','gf_mob_v2','gf_user'].forEach(k=>localStorage.removeItem(k));localStorage.setItem('gf_reset',LOCAL_RESET);}}catch(e){}
 let db={broadcasts:[],members:[],tasks:[],activityLog:[],nextId:1,nextCid:1,nextLid:1,nextAid:1};
 
 let currentUser=null;
