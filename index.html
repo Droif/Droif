@@ -368,6 +368,11 @@ body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:r
       <div class="export-row" onclick="exportDone()"><div class="export-icon"><i class="ti ti-archive"></i></div><div><div class="export-title">งานเสร็จแล้ว</div><div class="export-sub">ประวัติพร้อมผู้ทำ</div></div><i class="ti ti-chevron-right" style="font-size:16px;color:var(--text3);margin-left:auto"></i></div>
       <div class="export-row" onclick="exportActivity()"><div class="export-icon"><i class="ti ti-report"></i></div><div><div class="export-title">Activity Log</div><div class="export-sub">ทุกการดำเนินการของทีม</div></div><i class="ti ti-chevron-right" style="font-size:16px;color:var(--text3);margin-left:auto"></i></div>
     </div>
+    <div id="lead-tools" style="margin:0 12px 12px;background:var(--surface);border-radius:var(--radius);overflow:hidden;border:0.5px solid var(--border);display:none">
+      <div style="padding:12px 14px;border-bottom:0.5px solid var(--border);font-size:13px;font-weight:600;color:var(--text2)">จัดการงาน (หัวหน้า)</div>
+      <div class="export-row" onclick="clearTasks('done')"><div class="export-icon"><i class="ti ti-archive-off"></i></div><div><div class="export-title">ลบงานที่เสร็จแล้ว</div><div class="export-sub">เก็บไว้เฉพาะงานที่ยังค้าง</div></div><i class="ti ti-chevron-right" style="font-size:16px;color:var(--text3);margin-left:auto"></i></div>
+      <div class="export-row" onclick="clearTasks('all')"><div class="export-icon" style="color:var(--red)"><i class="ti ti-trash"></i></div><div><div class="export-title" style="color:var(--red)">ล้างงานทั้งหมด</div><div class="export-sub">ลบทุกงานรวมงานค้าง · กู้คืนไม่ได้</div></div><i class="ti ti-chevron-right" style="font-size:16px;color:var(--text3);margin-left:auto"></i></div>
+    </div>
     <div style="padding:0 12px"><div style="background:var(--surface);border-radius:var(--radius);overflow:hidden;border:0.5px solid var(--border)">
       <div style="padding:12px 14px;border-bottom:0.5px solid var(--border);font-size:13px;font-weight:600;color:var(--text2)">สรุปรายคน</div>
       <div id="per-person-stat"></div>
@@ -568,6 +573,7 @@ let selectedCmtType='note';
 let pendingAction=null;
 let notifications=[];
 let detailTaskId=null;
+let editingTaskId=null;
 let detailSubPage='files';
 let bcType='meet';
 let bcTempLinks=[];
@@ -599,12 +605,14 @@ const STATUS_ICONS={
 function saveDb(){try{localStorage.setItem(SK,JSON.stringify(db));}catch(e){}}
 function loadDb(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);Object.assign(db,d);}}catch(e){}}
 loadDb();
+if(db.tasksResetV!==1){db.tasks=[];db.activityLog=(db.activityLog||[]).filter(a=>a.taskId==null);db.tasksResetV=1;saveDb();}
 
 function ts(){const d=new Date();return`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
 function getM(n){return db.members.find(m=>m.name===n)||{name:n,cls:'av-d',init:(n||'?')[0],role:'designer'};}
 function detectFT(u){return FILE_TYPES.find(f=>f.match(u))||FILE_TYPES[FILE_TYPES.length-1];}
 function addAct(actor,action,target,taskId,type){db.activityLog.unshift({id:db.nextAid++,actor,action,target,taskId,type,time:ts()});if(db.activityLog.length>200)db.activityLog=db.activityLog.slice(0,200);saveDb();}
 function initNotifs(){notifications=[];db.tasks.forEach(t=>{t.comments.forEach(c=>{if(!c.resolved&&c.mention===currentUser&&c.author!==currentUser)notifications.push({taskId:t.id,taskName:t.name,comment:c,read:false});});});}
+function isLead(){const r=(db.members.find(m=>m.name===currentUser)||{}).role;return r==='lead'||r==='boss';}
 function fbCount(t){return t.comments.filter(c=>!c.resolved).length;}
 
 function avHTML(name,size=24){const m=getM(name);return`<div class="av ${m.cls}" style="width:${size}px;height:${size}px;font-size:${Math.round(size*.42)}px">${m.init}</div>`;}
@@ -709,7 +717,7 @@ function renderTasks(){
 
 /* ── DETAIL SHEET ── */
 function openDetail(id){
-  detailTaskId=id;detailSubPage='info';
+  detailTaskId=id;detailSubPage='info';editingTaskId=null;
   const t=db.tasks.find(x=>x.id===id);if(!t)return;
   notifications.filter(n=>n.taskId===id).forEach(n=>n.read=true);
   renderDetailSheet(t);
@@ -748,7 +756,66 @@ function renderInfoTab(t){
   <div class="m-chips" id="ass-editor-${t.id}">${db.members.map(m=>{const sel=(t.assignees||[]).includes(m.name);return`<button class="m-chip ${sel?'sel':''}" onclick="toggleAss(${t.id},'${m.name}')">${avHTML(m.name,18)}<span>${m.name}</span>${sel?'<i class="ti ti-check" style="font-size:12px;color:var(--purple-dark)"></i>':''}</button>`;}).join('')}</div>
   <div class="sheet-section" style="margin-top:14px">ขั้นตอน</div>
   <div class="step-flow-row">${STEPS.map((s,i)=>`<span class="step-node ${i<t.step?'done-s':i===t.step?(t.status==='blocked'?'blocked-s':'active-s'):''}">${s}</span>${i<STEPS.length-1?'<span class="step-arr">›</span>':''}`).join('')}</div>
-  ${t.note?`<div style="background:var(--bg);border-radius:var(--radius-sm);padding:12px;font-size:13px;color:var(--text2);margin-top:8px">${t.note}</div>`:''}`;
+  ${t.note?`<div style="background:var(--bg);border-radius:var(--radius-sm);padding:12px;font-size:13px;color:var(--text2);margin-top:8px">${t.note}</div>`:''}
+  ${isLead()?renderLeadTools(t):''}`;
+}
+function renderLeadTools(t){
+  if(editingTaskId!==t.id)return`<div style="display:flex;gap:8px;margin-top:16px">
+    <button class="outline-btn" style="flex:1" onclick="startEditTask(${t.id})"><i class="ti ti-edit"></i> แก้ไขงาน</button>
+    <button class="outline-btn" style="flex:1;color:var(--red);border-color:var(--red)" onclick="deleteTask(${t.id})"><i class="ti ti-trash"></i> ลบงาน</button>
+  </div>`;
+  const v=x=>String(x||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  return`<div style="margin-top:16px;background:var(--bg);border-radius:var(--radius-sm);padding:14px">
+    <div class="sheet-section">แก้ไขงาน</div>
+    <label class="f-label">ชื่องาน</label><input class="f-input" id="e-name" value="${v(t.name)}">
+    <label class="f-label">ลูกค้า / โปรเจกต์</label><input class="f-input" id="e-client" value="${v(t.client==='-'?'':t.client)}">
+    <label class="f-label">วันกำหนดส่ง</label><input class="f-input" id="e-due" type="date" value="${v(t.due)}">
+    <label class="f-label">ความสำคัญ</label><select class="f-select" id="e-priority"><option value="normal" ${t.priority!=='high'?'selected':''}>ปกติ</option><option value="high" ${t.priority==='high'?'selected':''}>ด่วน</option></select>
+    <label class="f-label">สถานะ</label><select class="f-select" id="e-status">${Object.entries(STATUS_MAP).map(([k,l])=>`<option value="${k}" ${t.status===k?'selected':''}>${l}</option>`).join('')}</select>
+    <label class="f-label">ขั้นตอน</label><select class="f-select" id="e-step">${STEPS.map((l,i)=>`<option value="${i}" ${t.step===i?'selected':''}>${l}</option>`).join('')}</select>
+    <label class="f-label">หมายเหตุ</label><textarea class="f-textarea" id="e-note">${v(t.note)}</textarea>
+    <button class="big-btn" onclick="saveEditTask(${t.id})">บันทึก</button>
+    <button class="outline-btn" style="margin-top:8px" onclick="cancelEditTask(${t.id})">ยกเลิก</button>
+  </div>`;
+}
+function startEditTask(id){if(!isLead())return;editingTaskId=id;const t=db.tasks.find(x=>x.id===id);if(t)renderDetailSheet(t);}
+function cancelEditTask(id){editingTaskId=null;const t=db.tasks.find(x=>x.id===id);if(t)renderDetailSheet(t);}
+function saveEditTask(id){
+  if(!isLead())return;
+  const t=db.tasks.find(x=>x.id===id);if(!t)return;
+  const name=document.getElementById('e-name').value.trim();
+  if(!name){showToast('กรุณาใส่ชื่องาน');return;}
+  t.name=name;
+  t.client=document.getElementById('e-client').value.trim()||'-';
+  t.due=document.getElementById('e-due').value;
+  t.priority=document.getElementById('e-priority').value;
+  t.status=document.getElementById('e-status').value;
+  t.step=Number(document.getElementById('e-step').value);
+  t.note=document.getElementById('e-note').value;
+  t.log.push({time:ts(),user:currentUser,action:'แก้ไขข้อมูลงาน',icon:'ti-edit',color:'#7F77DD'});
+  addAct(currentUser,'แก้ไขงาน',t.name,t.id,'other');
+  editingTaskId=null;saveDb();renderDetailSheet(t);renderTasks();showToast('บันทึกการแก้ไข ✓');
+}
+function deleteTask(id){
+  if(!isLead())return;
+  const t=db.tasks.find(x=>x.id===id);if(!t)return;
+  if(!confirm(`ลบงาน "${t.name}" ถาวร?`))return;
+  db.tasks=db.tasks.filter(x=>x.id!==id);
+  notifications=notifications.filter(n=>n.taskId!==id);
+  addAct(currentUser,'ลบงาน',t.name,null,'other');
+  closeSheet('detail');saveDb();renderTasks();updateNotifDot();showToast('ลบงานแล้ว');
+}
+function clearTasks(mode){
+  if(!isLead())return;
+  const del=mode==='done'?db.tasks.filter(t=>t.status==='done'):db.tasks.slice();
+  if(!del.length){showToast('ไม่มีงานให้ลบ');return;}
+  const msg=mode==='done'?`ลบงานที่เสร็จแล้ว ${del.length} งาน ถาวร?`:`ล้างงานทั้งหมด ${del.length} งาน ถาวร?\nกู้คืนไม่ได้`;
+  if(!confirm(msg))return;
+  const ids=new Set(del.map(t=>t.id));
+  db.tasks=db.tasks.filter(t=>!ids.has(t.id));
+  notifications=notifications.filter(n=>!ids.has(n.taskId));
+  addAct(currentUser,mode==='done'?`ลบงานที่เสร็จแล้ว ${del.length} งาน`:`ล้างงานทั้งหมด ${del.length} งาน`,'ระบบ',null,'other');
+  saveDb();renderTasks();renderExport();updateNotifDot();showToast(`ลบ ${del.length} งานแล้ว`);
 }
 function toggleAss(taskId,name){
   const t=db.tasks.find(x=>x.id===taskId);if(!t)return;
@@ -1028,6 +1095,7 @@ function markAllRead(){notifications.forEach(n=>n.read=true);renderNotif();updat
 
 /* ── EXPORT ── */
 function renderExport(){
+  const lt=document.getElementById('lead-tools');if(lt)lt.style.display=isLead()?'':'none';
   const sg=document.getElementById('stat-grid');
   if(sg){const bs=s=>db.tasks.filter(t=>t.status===s).length;
     sg.innerHTML=`<div class="stat-card"><div class="stat-num">${db.tasks.length}</div><div class="stat-label">งานทั้งหมด</div></div>
