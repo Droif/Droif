@@ -554,39 +554,8 @@ body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:r
 <div class="toast" id="toast"></div>
 
 <script>
-const SK='gf_mob_v1';
-let db={broadcasts:[
-  {id:1,type:'meet',from:'บอส',to:['ปาล์ม','นัท','สาย','กาย'],subject:'ประชุมสรุปงานสัปดาห์นี้',message:'ขอนัดประชุมสรุปงานกันครับ เตรียม progress งานมาด้วย',date:'2026-06-10',time:'10:00',links:[{label:'Google Meet',url:'https://meet.google.com/abc-defg-hij',icon:'ti-brand-google',color:'#3B6D11',bg:'#EAF3DE'}],readBy:['บอส'],time_sent:'06/06 09:00'},
-  {id:2,type:'task',from:'สาย',to:['ปาล์ม'],subject:'มอบหมาย: แบนเนอร์ TrueMove รอบสอง',message:'ขอให้แก้ไขสีพื้นหลังตาม feedback ของบอส ส่งภายในวันศุกร์ครับ',date:'2026-06-12',time:'17:00',links:[{label:'Design Brief',url:'https://drive.google.com/file/brief',icon:'ti-brand-google-drive',color:'#3B6D11',bg:'#EAF3DE'}],readBy:['สาย','ปาล์ม'],time_sent:'06/06 14:00'},
-  {id:3,type:'remind',from:'สาย',to:['ปาล์ม','นัท','กาย'],subject:'⏰ เตือน: งาน Packaging ใกล้ครบกำหนด',message:'Packaging กล่องขนม SnackBrand ยังติดปัญหาอยู่ รบกวนช่วย followup ลูกค้าด้วยครับ',date:'2026-06-10',time:'09:00',links:[],readBy:['สาย'],time_sent:'07/06 08:30'},
-],members:[
-  {id:'p',name:'ปาล์ม',cls:'av-p',init:'P',role:'designer'},
-  {id:'n',name:'นัท',cls:'av-n',init:'N',role:'designer'},
-  {id:'s',name:'สาย',cls:'av-s',init:'S',role:'lead'},
-  {id:'b',name:'บอส',cls:'av-b',init:'B',role:'boss'},
-  {id:'k',name:'กาย',cls:'av-k',init:'K',role:'designer'},
-],tasks:[
-  {id:1,name:'แบนเนอร์โปรโมชั่นกรกฎา',client:'TrueMove',assignees:['ปาล์ม'],due:'2026-06-12',priority:'high',status:'review',step:2,note:'ขนาด 1200x628 px',
-   links:[{id:1,name:'Design Draft v2',url:'https://figma.com/file/ex1',addedBy:'ปาล์ม',time:'05/06 15:00'}],
-   comments:[{id:1,author:'บอส',type:'feedback',text:'ขอเปลี่ยนสีพื้นหลังเป็นโทนน้ำเงินเข้มครับ',mention:'ปาล์ม',time:'06/06 11:30',resolved:false}],
-   log:[{time:'03/06 09:00',user:'นัท',action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'},{time:'06/06 10:00',user:'ปาล์ม',action:'ส่งตรวจ',icon:'ti-send',color:'#534AB7'}]},
-  {id:2,name:'โลโก้ HealthPlus',client:'HealthPlus',assignees:['นัท','กาย'],due:'2026-06-15',priority:'normal',status:'wip',step:1,note:'',links:[],
-   comments:[{id:2,author:'บอส',type:'feedback',text:'แนวทางที่ 2 ดูดีที่สุด',mention:'นัท',time:'05/06 09:00',resolved:true}],
-   log:[{time:'04/06',user:'สาย',action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'}]},
-  {id:3,name:'Packaging กล่องขนม',client:'SnackBrand',assignees:['สาย'],due:'2026-06-10',priority:'high',status:'blocked',step:1,note:'รอ brief จากลูกค้า',links:[],
-   comments:[{id:3,author:'สาย',type:'note',text:'รอลูกค้าส่ง spec กล่อง',mention:'บอส',time:'07/06 09:00',resolved:false}],
-   log:[{time:'07/06',user:'สาย',action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'},{time:'07/06 09:00',user:'สาย',action:'ติดปัญหา',icon:'ti-alert-triangle',color:'#E24B4A'}]},
-  {id:4,name:'Social Post ฤดูร้อน',client:'FashionX',assignees:['ปาล์ม','นัท'],due:'2026-06-01',priority:'normal',status:'done',step:5,note:'',
-   links:[{id:2,name:'Final Files',url:'https://drive.google.com/drive/ex4',addedBy:'ปาล์ม',time:'01/06'}],
-   comments:[{id:4,author:'บอส',type:'approve',text:'งานผ่านแล้วครับ สวยมาก',mention:'',time:'01/06',resolved:false}],
-   log:[{time:'25/05',user:'นัท',action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'},{time:'01/06',user:'ปาล์ม',action:'ส่งมอบเสร็จ',icon:'ti-archive',color:'#5F5E5A'}]},
-],activityLog:[
-  {id:1,actor:'นัท',action:'สร้างงาน',target:'แบนเนอร์โปรโมชั่นกรกฎา',taskId:1,type:'create',time:'03/06 09:00'},
-  {id:2,actor:'บอส',action:'เพิ่ม feedback',target:'แบนเนอร์โปรโมชั่นกรกฎา',taskId:1,type:'comment',time:'06/06 11:30'},
-  {id:3,actor:'ปาล์ม',action:'ส่งตรวจ',target:'แบนเนอร์โปรโมชั่นกรกฎา',taskId:1,type:'status',time:'06/06 10:00'},
-  {id:4,actor:'สาย',action:'แจ้งติดปัญหา',target:'Packaging กล่องขนม',taskId:3,type:'blocked',time:'07/06 09:00'},
-  {id:5,actor:'ปาล์ม',action:'ส่งมอบเสร็จ',target:'Social Post ฤดูร้อน',taskId:4,type:'done',time:'01/06 10:00'},
-],nextId:10,nextCid:100,nextLid:200,nextAid:20};
+const SK='gf_mob_v2';
+let db={broadcasts:[],members:[],tasks:[],activityLog:[],nextId:1,nextCid:1,nextLid:1,nextAid:1};
 
 let currentUser=null;
 let boardFilter='all';
