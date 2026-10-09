@@ -11,6 +11,7 @@ create table if not exists public.gf_items (
 
 -- แอปยังไม่มีระบบ login จริง ทุกคนที่มีลิงก์จึงอ่าน/เขียนได้ (anon)
 alter table public.gf_items enable row level security;
+grant select, insert, update, delete on public.gf_items to anon;
 
 drop policy if exists "gf read"   on public.gf_items;
 drop policy if exists "gf insert" on public.gf_items;
