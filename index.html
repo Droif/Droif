@@ -558,7 +558,11 @@ body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:r
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
+/* ── SUPABASE CONFIG ── ใส่ค่าจาก Supabase → Project Settings → API (เว้นว่าง = เก็บในเครื่องอย่างเดียว) */
+const SB_URL='';
+const SB_KEY='';
 const SK='gf_mob_v2';
 let db={broadcasts:[],members:[],tasks:[],activityLog:[],nextId:1,nextCid:1,nextLid:1,nextAid:1};
 
@@ -602,7 +606,84 @@ const STATUS_ICONS={
   rejected:{icon:'ti-circle-x',bg:'#FCEBEB',fg:'#A32D2D',dot:'',dotBg:'',label:'ปฏิเสธ'},
 };
 
-function saveDb(){try{localStorage.setItem(SK,JSON.stringify(db));}catch(e){}}
+let _lastUid=0;
+function uid(){_lastUid=Math.max(_lastUid+1,Date.now()*1000+Math.floor(Math.random()*1000));return _lastUid;}
+function saveLocal(){try{localStorage.setItem(SK,JSON.stringify(db));}catch(e){}}
+function saveDb(){saveLocal();schedulePush();}
+
+/* ── SUPABASE SYNC ──
+   แต่ละ member / task / broadcast / activity = 1 แถวในตาราง gf_items (kind,id,data)
+   saveDb() เทียบกับสถานะล่าสุดที่ซิงค์แล้ว แล้วส่งเฉพาะแถวที่เปลี่ยน; Realtime รับการเปลี่ยนแปลงจากเครื่องอื่น */
+const SYNC_KINDS=['members','tasks','broadcasts','activityLog'];
+let sb=null,synced={},pushTimer=null,syncReady=false;
+function snapDb(){const m={};SYNC_KINDS.forEach(k=>(db[k]||[]).forEach(x=>{m[k+':'+x.id]=JSON.stringify(x);}));return m;}
+function sortKind(k){
+  if(k==='members')db.members.sort((a,b)=>String(a.id).localeCompare(String(b.id)));
+  else if(k==='broadcasts')db.broadcasts.sort((a,b)=>a.id-b.id);
+  else db[k].sort((a,b)=>b.id-a.id);
+}
+function schedulePush(){if(!sb||!syncReady)return;clearTimeout(pushTimer);pushTimer=setTimeout(pushChanges,300);}
+async function pushChanges(){
+  if(!sb||!syncReady)return;
+  const cur=snapDb(),ups=[],dels=[];
+  for(const key in cur)if(synced[key]!==cur[key]){const i=key.indexOf(':');ups.push({kind:key.slice(0,i),id:key.slice(i+1),data:JSON.parse(cur[key]),updated_at:new Date().toISOString()});}
+  for(const key in synced)if(!(key in cur))dels.push(key);
+  if(!ups.length&&!dels.length)return;
+  const prev=synced;synced=cur;
+  try{
+    if(ups.length){const{error}=await sb.from('gf_items').upsert(ups);if(error)throw error;}
+    for(const key of dels){const i=key.indexOf(':');const{error}=await sb.from('gf_items').delete().eq('kind',key.slice(0,i)).eq('id',key.slice(i+1));if(error)throw error;}
+  }catch(e){
+    console.warn('sync push failed',e);
+    ups.forEach(u=>{delete synced[u.kind+':'+u.id];});
+    dels.forEach(k=>{synced[k]=prev[k];});
+    showToast('ซิงค์ไม่สำเร็จ — จะลองใหม่อัตโนมัติ');
+    clearTimeout(pushTimer);pushTimer=setTimeout(pushChanges,5000);
+  }
+}
+function applyRemote(ev){
+  const row=ev.eventType==='DELETE'?ev.old:ev.new;if(!row||!SYNC_KINDS.includes(row.kind))return;
+  const k=row.kind,key=k+':'+row.id,arr=db[k]||(db[k]=[]);
+  const idx=arr.findIndex(x=>String(x.id)===String(row.id));
+  // มีการแก้ในเครื่องที่ยังไม่ได้ส่ง → ข้าม (ไม่ทับงานที่กำลังแก้)
+  if(idx>=0&&synced[key]!==JSON.stringify(arr[idx]))return;
+  if(ev.eventType==='DELETE'){if(idx>=0)arr.splice(idx,1);delete synced[key];}
+  else{const item=row.data;if(idx>=0)arr[idx]=item;else{arr.push(item);sortKind(k);}synced[key]=JSON.stringify(item);}
+  saveLocal();refreshUI();
+}
+function refreshUI(){
+  if(!currentUser){if(document.getElementById('login-wrap').style.display!=='none')buildLoginPick();return;}
+  if(!db.members.find(m=>m.name===currentUser))return;
+  initNotifs();
+  const vis=['board','activity','team','export','notif','kpi','timeline','broadcast'].find(p=>{const e=document.getElementById('page-'+p);return e&&e.style.display==='block';});
+  renderAll();if(vis&&vis!=='board')switchPage(vis);
+  const ds=document.getElementById('sheet-detail');
+  if(ds&&ds.classList.contains('show')&&editingTaskId===null){const t=db.tasks.find(x=>x.id===detailTaskId);if(t)renderDetailSheet(t);else closeSheet('detail');}
+}
+async function initSync(){
+  if(!SB_URL||!SB_KEY||!window.supabase)return;
+  try{
+    sb=window.supabase.createClient(SB_URL,SB_KEY);
+    const{data,error}=await sb.from('gf_items').select('kind,id,data').range(0,9999);
+    if(error)throw error;
+    if(!data.length){
+      // ฐานข้อมูลว่าง → เครื่องแรกอัปโหลดข้อมูลในเครื่องขึ้นไป
+      synced={};syncReady=true;await pushChanges();
+    }else{
+      SYNC_KINDS.forEach(k=>{db[k]=[];});
+      data.forEach(r=>{if(SYNC_KINDS.includes(r.kind))db[r.kind].push(r.data);});
+      SYNC_KINDS.forEach(sortKind);
+      synced=snapDb();syncReady=true;saveLocal();
+    }
+    sb.channel('gf_items').on('postgres_changes',{event:'*',schema:'public',table:'gf_items'},applyRemote).subscribe();
+    window.addEventListener('online',schedulePush);
+    if(!currentUser){
+      const saved=localStorage.getItem('gf_user');
+      if(saved&&db.members.find(m=>m.name===saved)){document.getElementById('login-wrap').style.display='none';loginAs(saved);}
+      else buildLoginPick();
+    }else refreshUI();
+  }catch(e){console.warn('sync init failed',e);sb=null;showToast('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ — ใช้ข้อมูลในเครื่อง');}
+}
 function loadDb(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);Object.assign(db,d);}}catch(e){}}
 loadDb();
 if(db.tasksResetV!==1){db.tasks=[];db.activityLog=(db.activityLog||[]).filter(a=>a.taskId==null);db.tasksResetV=1;saveDb();}
@@ -610,7 +691,7 @@ if(db.tasksResetV!==1){db.tasks=[];db.activityLog=(db.activityLog||[]).filter(a=
 function ts(){const d=new Date();return`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
 function getM(n){return db.members.find(m=>m.name===n)||{name:n,cls:'av-d',init:(n||'?')[0],role:'designer'};}
 function detectFT(u){return FILE_TYPES.find(f=>f.match(u))||FILE_TYPES[FILE_TYPES.length-1];}
-function addAct(actor,action,target,taskId,type){db.activityLog.unshift({id:db.nextAid++,actor,action,target,taskId,type,time:ts()});if(db.activityLog.length>200)db.activityLog=db.activityLog.slice(0,200);saveDb();}
+function addAct(actor,action,target,taskId,type){db.activityLog.unshift({id:uid(),actor,action,target,taskId,type,time:ts()});if(db.activityLog.length>200)db.activityLog=db.activityLog.slice(0,200);saveDb();}
 function initNotifs(){notifications=[];db.tasks.forEach(t=>{t.comments.forEach(c=>{if(!c.resolved&&c.mention===currentUser&&c.author!==currentUser)notifications.push({taskId:t.id,taskName:t.name,comment:c,read:false});});});}
 function isLead(){const r=(db.members.find(m=>m.name===currentUser)||{}).role;return r==='lead'||r==='boss';}
 function fbCount(t){return t.comments.filter(c=>!c.resolved).length;}
@@ -869,7 +950,7 @@ function addComment(tid){
   if(!text.trim()){showToast('กรุณาพิมพ์คอมเม้น');return;}
   const mention=(document.getElementById(`cmm-${tid}`)||{}).value||'';
   const tt=ts();
-  const c={id:db.nextCid++,author:currentUser,type:selectedCmtType,text:text.trim(),mention,time:tt,resolved:false};
+  const c={id:uid(),author:currentUser,type:selectedCmtType,text:text.trim(),mention,time:tt,resolved:false};
   t.comments.push(c);
   if(mention&&mention!==currentUser)notifications.push({taskId:t.id,taskName:t.name,comment:c,read:false});
   t.log.push({time:tt,user:currentUser,action:`คอมเม้น (${COMMENT_TYPES[selectedCmtType]})`,icon:'ti-message-2',color:'#7F77DD'});
@@ -907,7 +988,7 @@ function addLink(tid){
   if(!/^https?:\/\//i.test(url))url='https://'+url;
   const ft=detectFT(url);const tt=ts();
   if(!t.links)t.links=[];
-  t.links.push({id:db.nextLid++,name:name||ft.label+' ลิงก์',url,addedBy:currentUser,time:tt});
+  t.links.push({id:uid(),name:name||ft.label+' ลิงก์',url,addedBy:currentUser,time:tt});
   t.log.push({time:tt,user:currentUser,action:`แนบไฟล์: ${name||ft.label}`,icon:'ti-paperclip',color:'#534AB7'});
   addAct(currentUser,`แนบไฟล์ "${name||ft.label}"`,t.name,t.id,'file');
   saveDb();renderDetailSheet(t);renderTasks();showToast('แนบไฟล์เรียบร้อย ✓');
@@ -965,7 +1046,7 @@ function createTask(){
   if(!name){showToast('กรุณาใส่ชื่องาน');return;}
   if(!selectedNewMembers.size){showToast('กรุณาเลือกผู้รับผิดชอบ');return;}
   const tt=ts();
-  const task={id:db.nextId++,name,client:document.getElementById('n-client').value.trim()||'-',assignees:Array.from(selectedNewMembers),due:document.getElementById('n-due').value,priority:document.getElementById('n-priority').value,status:'new',step:0,note:document.getElementById('n-note').value,links:[],comments:[],log:[{time:tt,user:currentUser,action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'}]};
+  const task={id:uid(),name,client:document.getElementById('n-client').value.trim()||'-',assignees:Array.from(selectedNewMembers),due:document.getElementById('n-due').value,priority:document.getElementById('n-priority').value,status:'new',step:0,note:document.getElementById('n-note').value,links:[],comments:[],log:[{time:tt,user:currentUser,action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'}]};
   db.tasks.unshift(task);
   addAct(currentUser,'สร้างงาน',name,task.id,'create');
   closeSheet('new');saveDb();renderTasks();showToast('สร้างงานใหม่เรียบร้อย ✓');
@@ -1531,7 +1612,7 @@ function sendBroadcast(){
   const time=document.getElementById('bc-time').value;
   const now2=ts();
   if(!db.broadcasts)db.broadcasts=[];
-  const nextBcId=(db.broadcasts.length?Math.max(...db.broadcasts.map(b=>b.id))+1:1);
+  const nextBcId=uid();
   db.broadcasts.push({
     id:nextBcId,
     type:bcType,
@@ -1567,6 +1648,7 @@ try{
   if(saved&&db.members.find(m=>m.name===saved)){loginAs(saved);}
   else{document.getElementById('login-wrap').style.display='flex';}
 }catch(e){document.getElementById('login-wrap').style.display='flex';}
+initSync();
 </script>
 </body>
 </html>
