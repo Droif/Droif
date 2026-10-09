@@ -505,8 +505,13 @@ body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:r
     <div class="sheet-body" id="n-task-fields">
       <div id="n-recur-wrap" style="display:none">
         <label class="f-label">ทำซ้ำ</label>
-        <select class="f-select" id="n-recur"><option value="daily">ทุกวัน</option><option value="weekly">ทุกสัปดาห์</option><option value="monthly">ทุกเดือน</option></select>
-        <div style="font-size:12px;color:var(--text3);margin-top:6px">ส่งมอบเสร็จแล้ว ระบบจะสร้างรอบถัดไปให้อัตโนมัติ</div>
+        <select class="f-select" id="n-recur" onchange="fillRecurDay('n-recur','n-recur-day','n-recur-day-wrap')"><option value="daily">ทุกวัน</option><option value="weekly">ทุกสัปดาห์</option><option value="monthly">ทุกเดือน</option></select>
+        <div id="n-recur-day-wrap" style="display:none">
+          <label class="f-label" id="n-recur-day-label">วัน</label>
+          <select class="f-select" id="n-recur-day" onchange="showFirstDue()"></select>
+        </div>
+        <div id="n-first-due" style="font-size:12px;color:var(--purple-dark);margin-top:8px;font-weight:600"></div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px">ส่งมอบเสร็จแล้ว ระบบจะสร้างรอบถัดไปให้อัตโนมัติ</div>
       </div>
       <label class="f-label">ชื่องาน</label>
       <input class="f-input" id="n-name" placeholder="เช่น แบนเนอร์โปรโมชั่น">
@@ -514,8 +519,10 @@ body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:r
       <input class="f-input" id="n-client" placeholder="ชื่อลูกค้า">
       <label class="f-label">ผู้รับผิดชอบ</label>
       <div class="m-chips" id="n-members" style="margin-top:6px"></div>
-      <label class="f-label">วันกำหนดส่ง</label>
-      <input class="f-input" id="n-due" type="date">
+      <div id="n-due-wrap">
+        <label class="f-label">วันกำหนดส่ง</label>
+        <input class="f-input" id="n-due" type="date">
+      </div>
       <label class="f-label">ความสำคัญ</label>
       <select class="f-select" id="n-priority"><option value="normal">ปกติ</option><option value="high">ด่วน</option></select>
       <label class="f-label">หมายเหตุ</label>
@@ -864,7 +871,7 @@ function renderTasks(){
         <div class="card-footer">
           ${sPill(t.status)}
           ${fmtDue(t.due)}
-          ${t.recur?`<span class="recur-badge"><i class="ti ti-repeat" style="font-size:11px"></i>${RECUR_LABEL[t.recur]}</span>`:''}
+          ${t.recur?`<span class="recur-badge"><i class="ti ti-repeat" style="font-size:11px"></i>${recurLabel(t)}</span>`:''}
           ${t.rating?`<span class="rate-badge"><i class="ti ti-star-filled" style="font-size:11px"></i>${t.rating.stars}</span>`:''}
           ${fbCount(t)?`<span class="tag-badge badge-fb"><i class="ti ti-message-2" style="font-size:10px"></i>${fbCount(t)}</span>`:''}
           ${(t.links||[]).length?`<span class="tag-badge badge-file"><i class="ti ti-paperclip" style="font-size:10px"></i>${t.links.length}</span>`:''}
@@ -934,7 +941,8 @@ function renderLeadTools(t){
     <label class="f-label">ความสำคัญ</label><select class="f-select" id="e-priority"><option value="normal" ${t.priority!=='high'?'selected':''}>ปกติ</option><option value="high" ${t.priority==='high'?'selected':''}>ด่วน</option></select>
     <label class="f-label">สถานะ</label><select class="f-select" id="e-status">${Object.entries(STATUS_MAP).map(([k,l])=>`<option value="${k}" ${t.status===k?'selected':''}>${l}</option>`).join('')}</select>
     <label class="f-label">ขั้นตอน</label><select class="f-select" id="e-step">${STEPS.map((l,i)=>`<option value="${i}" ${t.step===i?'selected':''}>${l}</option>`).join('')}</select>
-    <label class="f-label">ทำซ้ำ</label><select class="f-select" id="e-recur">${[['','ไม่ทำซ้ำ'],['daily','ทุกวัน'],['weekly','ทุกสัปดาห์'],['monthly','ทุกเดือน']].map(([k,l])=>`<option value="${k}" ${(t.recur||'')===k?'selected':''}>${l}</option>`).join('')}</select>
+    <label class="f-label">ทำซ้ำ</label><select class="f-select" id="e-recur" onchange="fillRecurDay('e-recur','e-recur-day','e-recur-day-wrap')">${[['','ไม่ทำซ้ำ'],['daily','ทุกวัน'],['weekly','ทุกสัปดาห์'],['monthly','ทุกเดือน']].map(([k,l])=>`<option value="${k}" ${(t.recur||'')===k?'selected':''}>${l}</option>`).join('')}</select>
+    <div id="e-recur-day-wrap" style="display:${t.recur==='weekly'||t.recur==='monthly'?'block':'none'}"><label class="f-label" id="e-recur-day-label">${t.recur==='monthly'?'ทุกวันที่':'ทุกวัน'}</label><select class="f-select" id="e-recur-day">${recurDayOptions(t.recur,recurDayOf(t))}</select></div>
     <label class="f-label">หมายเหตุ</label><textarea class="f-textarea" id="e-note">${v(t.note)}</textarea>
     <button class="big-btn" onclick="saveEditTask(${t.id})">บันทึก</button>
     <button class="outline-btn" style="margin-top:8px" onclick="cancelEditTask(${t.id})">ยกเลิก</button>
@@ -955,6 +963,7 @@ function saveEditTask(id){
   t.step=Number(document.getElementById('e-step').value);
   t.note=document.getElementById('e-note').value;
   t.recur=document.getElementById('e-recur').value||'';
+  t.recurDay=(t.recur==='weekly'||t.recur==='monthly')?Number(document.getElementById('e-recur-day').value):null;
   if(t.status==='done')spawnNextRecurring(t);
   t.log.push({time:ts(),user:currentUser,action:'แก้ไขข้อมูลงาน',icon:'ti-edit',color:'#7F77DD'});
   addAct(currentUser,'แก้ไขงาน',t.name,t.id,'other');
@@ -1127,18 +1136,59 @@ function safeUrl(u){u=String(u||'').trim();if(!u)return'';if(!/^https?:\/\//i.te
 function esc(x){return String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 /* ── RECURRING ── */
-const RECUR_LABEL={daily:'ทุกวัน',weekly:'ทุกสัปดาห์',monthly:'ทุกเดือน'};
-function nextDue(due,recur){
-  let d=parseDay(due)||parseDay(todayStr());const today=parseDay(todayStr());const anchor=d.getDate();
-  const step=x=>{if(recur==='daily')x.setDate(x.getDate()+1);else if(recur==='weekly')x.setDate(x.getDate()+7);else{x.setDate(1);x.setMonth(x.getMonth()+1);x.setDate(Math.min(anchor,new Date(x.getFullYear(),x.getMonth()+1,0).getDate()));}};
-  step(d);let guard=0;while(d<today&&guard++<400)step(d);
-  return dateStr(d);
+const WEEKDAYS=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+function recurDayOf(t){
+  if(t.recurDay!=null&&t.recurDay!=='')return Number(t.recurDay);
+  const d=parseDay(t.due)||new Date();
+  return t.recur==='weekly'?d.getDay():d.getDate();
+}
+function recurLabel(t){
+  if(t.recur==='daily')return'ทุกวัน';
+  if(t.recur==='weekly')return'ทุกวัน'+WEEKDAYS[recurDayOf(t)];
+  if(t.recur==='monthly')return'ทุกวันที่ '+recurDayOf(t);
+  return'';
+}
+function recurDayOptions(recur,sel){
+  if(recur==='weekly')return[1,2,3,4,5,6,0].map(i=>`<option value="${i}" ${sel===i?'selected':''}>วัน${WEEKDAYS[i]}</option>`).join('');
+  if(recur==='monthly')return Array.from({length:31},(_,i)=>i+1).map(i=>`<option value="${i}" ${sel===i?'selected':''}>วันที่ ${i}${i>=29?' (ถ้าเดือนนั้นไม่มี ใช้วันสุดท้าย)':''}</option>`).join('');
+  return'';
+}
+function fillRecurDay(recurId,dayId,wrapId){
+  const rc=document.getElementById(recurId).value;
+  const wrap=document.getElementById(wrapId);
+  if(rc!=='weekly'&&rc!=='monthly'){wrap.style.display='none';if(recurId==='n-recur')showFirstDue();return;}
+  const today=new Date();
+  document.getElementById(dayId).innerHTML=recurDayOptions(rc,rc==='weekly'?today.getDay():today.getDate());
+  document.getElementById(dayId+'-label').textContent=rc==='weekly'?'ทุกวัน':'ทุกวันที่';
+  wrap.style.display='block';
+  if(recurId==='n-recur')showFirstDue();
+}
+function showFirstDue(){
+  const rc=document.getElementById('n-recur').value;
+  const day=rc==='daily'?null:Number(document.getElementById('n-recur-day').value);
+  const d=firstDue(rc,day);
+  document.getElementById('n-first-due').textContent=`รอบแรกกำหนดส่ง: ${fmtThaiDate(d)} (${whenLabel(d)})`;
+}
+function monthDay(y,m,day){return new Date(y,m,Math.min(day,new Date(y,m+1,0).getDate()));}
+// วันแรกที่ >= from ที่ตรงกับรอบ
+function matchFrom(from,recur,day){
+  const d=new Date(from.getFullYear(),from.getMonth(),from.getDate());
+  if(recur==='weekly'){while(d.getDay()!==day)d.setDate(d.getDate()+1);return d;}
+  if(recur==='monthly'){let c=monthDay(d.getFullYear(),d.getMonth(),day);if(c<d)c=monthDay(d.getFullYear(),d.getMonth()+1,day);return c;}
+  return d;
+}
+function firstDue(recur,day){return dateStr(matchFrom(parseDay(todayStr()),recur,day));}
+function nextDue(t){
+  const today=parseDay(todayStr());
+  const base=parseDay(t.due)||today;
+  const after=new Date(base.getFullYear(),base.getMonth(),base.getDate()+1);
+  return dateStr(matchFrom(after>today?after:today,t.recur,recurDayOf(t)));
 }
 function spawnNextRecurring(t){
   if(!t.recur||t.recurSpawned)return;
   t.recurSpawned=true;
-  const due=nextDue(t.due,t.recur);const tt=ts();
-  const n={id:uid(),name:t.name,client:t.client,assignees:[...(t.assignees||[])],due,priority:t.priority,status:'new',step:0,note:t.note,recur:t.recur,links:[],comments:[],log:[{time:tt,user:currentUser,action:`สร้างรอบถัดไป (${RECUR_LABEL[t.recur]})`,icon:'ti-repeat',color:'#185FA5'}]};
+  const due=nextDue(t);const tt=ts();
+  const n={id:uid(),name:t.name,client:t.client,assignees:[...(t.assignees||[])],due,priority:t.priority,status:'new',step:0,note:t.note,recur:t.recur,recurDay:t.recur==='daily'?null:recurDayOf(t),links:[],comments:[],log:[{time:tt,user:currentUser,action:`สร้างรอบถัดไป (${recurLabel(t)})`,icon:'ti-repeat',color:'#185FA5'}]};
   db.tasks.unshift(n);
   addAct(currentUser,`สร้างงานประจำรอบถัดไป (${fmtThaiDate(due)})`,n.name,n.id,'create');
 }
@@ -1209,6 +1259,8 @@ function pickNewType(tp){
   document.getElementById('n-task-fields').style.display=tp==='appt'?'none':'block';
   document.getElementById('n-appt-fields').style.display=tp==='appt'?'block':'none';
   document.getElementById('n-recur-wrap').style.display=tp==='recur'?'block':'none';
+  document.getElementById('n-due-wrap').style.display=tp==='recur'?'none':'block';
+  if(tp==='recur')fillRecurDay('n-recur','n-recur-day','n-recur-day-wrap');
   document.getElementById('new-sheet-title').textContent=tp==='appt'?'สร้างนัดหมาย':tp==='recur'?'สร้างงานประจำ':'สร้างงานใหม่';
   document.getElementById('n-create-btn').textContent=tp==='recur'?'สร้างงานประจำ':'สร้างงาน';
   if(tp==='appt'){
@@ -1308,7 +1360,7 @@ function renderHome(){
   html+=homeSec('due','ti-clock-exclamation','#FEF0E0','#D85A30','งานใกล้ถึงกำหนด',h.due.length,h.due.map(t=>{const[wb,wc]=whenColor(t.due);return`<div class="home-item" onclick="openDetail(${t.id})">
       ${sIcon(t.status,34)}
       <div style="flex:1;min-width:0"><div class="home-item-title">${t.priority==='high'?'<i class="ti ti-flame" style="color:#D85A30;font-size:13px"></i> ':''}${esc(t.name)}</div>
-      <div class="home-item-sub">${esc((t.assignees||[]).join(', '))} · ${STATUS_MAP[t.status]}${t.recur?' · 🔁 '+RECUR_LABEL[t.recur]:''}</div></div>
+      <div class="home-item-sub">${esc((t.assignees||[]).join(', '))} · ${STATUS_MAP[t.status]}${t.recur?' · 🔁 '+recurLabel(t):''}</div></div>
       <span class="home-when" style="background:${wb};color:${wc}">${whenLabel(t.due)}</span></div>`;}).join(''));
 
   html+=homeSec('review','ti-eye','var(--purple-light)','var(--purple-dark)',isLead()?'ผลงานรอตรวจ':'งานของฉันที่รอตรวจ',h.review.length,h.review.map(t=>{const wl=workLinks(t);return`<div class="home-item" onclick="openDetail(${t.id})">
@@ -1361,9 +1413,10 @@ function createTask(){
   const name=document.getElementById('n-name').value.trim();
   if(!name){showToast('กรุณาใส่ชื่องาน');return;}
   if(!selectedNewMembers.size){showToast('กรุณาเลือกผู้รับผิดชอบ');return;}
-  if(newType==='recur'&&!document.getElementById('n-due').value)document.getElementById('n-due').value=todayStr();
+  let recurDay=null;
+  if(newType==='recur'){const rc=document.getElementById('n-recur').value;recurDay=rc==='daily'?null:Number(document.getElementById('n-recur-day').value);document.getElementById('n-due').value=firstDue(rc,recurDay);}
   const tt=ts();
-  const task={id:uid(),name,client:document.getElementById('n-client').value.trim()||'-',assignees:Array.from(selectedNewMembers),due:document.getElementById('n-due').value,priority:document.getElementById('n-priority').value,status:'new',step:0,note:document.getElementById('n-note').value,recur:newType==='recur'?document.getElementById('n-recur').value:'',links:[],comments:[],log:[{time:tt,user:currentUser,action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'}]};
+  const task={id:uid(),name,client:document.getElementById('n-client').value.trim()||'-',assignees:Array.from(selectedNewMembers),due:document.getElementById('n-due').value,priority:document.getElementById('n-priority').value,status:'new',step:0,note:document.getElementById('n-note').value,recur:newType==='recur'?document.getElementById('n-recur').value:'',recurDay,links:[],comments:[],log:[{time:tt,user:currentUser,action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'}]};
   db.tasks.unshift(task);
   addAct(currentUser,'สร้างงาน',name,task.id,'create');
   closeSheet('new');saveDb();renderTasks();showToast('สร้างงานใหม่เรียบร้อย ✓');
@@ -1536,8 +1589,13 @@ function calcKPI(member){
   const onTimeRate=done?Math.round(onTime/done*100):100;
   const qualityRate=Math.max(0,100-feedbackOpen*10);
   const blockPenalty=blocked*8;
-  const score=Math.min(100,Math.round((completionRate*0.35)+(onTimeRate*0.35)+(qualityRate*0.3)-blockPenalty));
-  return{score,completionRate,onTimeRate,qualityRate,done,total,blocked,feedbackOpen,feedbackResolved,onTime};
+  const rated=all.filter(t=>t.status==='done'&&t.rating);
+  const avgStars=rated.length?rated.reduce((a,t)=>a+t.rating.stars,0)/rated.length:0;
+  const starRate=Math.round(avgStars/5*100);
+  // มีงานที่ได้ดาว → ดาวคิด 30%, ยังไม่มี → ใช้สูตรเดิม
+  const w=rated.length?{c:.25,o:.25,q:.2,s:.3}:{c:.35,o:.35,q:.3,s:0};
+  const score=Math.max(0,Math.min(100,Math.round(completionRate*w.c+onTimeRate*w.o+qualityRate*w.q+starRate*w.s-blockPenalty)));
+  return{score,completionRate,onTimeRate,qualityRate,done,total,blocked,feedbackOpen,feedbackResolved,onTime,ratedCount:rated.length,avgStars,starRate,w};
 }
 function starHTML(score){
   const stars=score>=90?5:score>=75?4:score>=60?3:score>=45?2:1;
@@ -1579,7 +1637,7 @@ function renderKPI(){
       <div style="flex:1"><div class="kpi-metric-label">อัตราเสร็จงาน</div><div class="kpi-metric-sub">งานเสร็จ ${myKPI.done} / ${myKPI.total} งาน</div></div>
       <div>
         <div class="kpi-score-sm" style="color:${gradeColor(myKPI.completionRate)}">${myKPI.completionRate}%</div>
-        <div style="font-size:10px;color:var(--text3);text-align:right">น้ำหนัก 35%</div>
+        <div style="font-size:10px;color:var(--text3);text-align:right">น้ำหนัก ${Math.round(myKPI.w.c*100)}%</div>
       </div>
     </div>
     <div class="kpi-metric-row">
@@ -1587,7 +1645,7 @@ function renderKPI(){
       <div style="flex:1"><div class="kpi-metric-label">ส่งงานทันกำหนด</div><div class="kpi-metric-sub">ทันกำหนด ${myKPI.onTime} / ${myKPI.done} งาน</div></div>
       <div>
         <div class="kpi-score-sm" style="color:${gradeColor(myKPI.onTimeRate)}">${myKPI.onTimeRate}%</div>
-        <div style="font-size:10px;color:var(--text3);text-align:right">น้ำหนัก 35%</div>
+        <div style="font-size:10px;color:var(--text3);text-align:right">น้ำหนัก ${Math.round(myKPI.w.o*100)}%</div>
       </div>
     </div>
     <div class="kpi-metric-row">
@@ -1595,7 +1653,15 @@ function renderKPI(){
       <div style="flex:1"><div class="kpi-metric-label">คุณภาพงาน</div><div class="kpi-metric-sub">feedback ค้าง ${myKPI.feedbackOpen} รายการ</div></div>
       <div>
         <div class="kpi-score-sm" style="color:${gradeColor(myKPI.qualityRate)}">${myKPI.qualityRate}%</div>
-        <div style="font-size:10px;color:var(--text3);text-align:right">น้ำหนัก 30%</div>
+        <div style="font-size:10px;color:var(--text3);text-align:right">น้ำหนัก ${Math.round(myKPI.w.q*100)}%</div>
+      </div>
+    </div>
+    <div class="kpi-metric-row">
+      <div class="kpi-metric-icon" style="background:#FEF6E7"><i class="ti ti-star-filled" style="color:#EF9F27"></i></div>
+      <div style="flex:1"><div class="kpi-metric-label">ดาวจากหัวหน้า</div><div class="kpi-metric-sub">${myKPI.ratedCount?`เฉลี่ย ${myKPI.avgStars.toFixed(1)} ดาว จาก ${myKPI.ratedCount} งาน`:'ยังไม่มีงานที่ได้ดาว · ยังไม่นำมาคิด'}</div></div>
+      <div>
+        <div class="kpi-score-sm" style="color:${myKPI.ratedCount?gradeColor(myKPI.starRate):'var(--text3)'}">${myKPI.ratedCount?myKPI.starRate+'%':'–'}</div>
+        <div style="font-size:10px;color:var(--text3);text-align:right">น้ำหนัก ${Math.round(myKPI.w.s*100)}%</div>
       </div>
     </div>
     ${myKPI.blocked?`<div class="kpi-metric-row">

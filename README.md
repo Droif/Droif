@@ -106,10 +106,14 @@ new → wip → review → approved → done
 
 ## KPI Formula
 ```
-score = (completionRate × 0.35)
-      + (onTimeRate    × 0.35)
-      + (qualityRate   × 0.30)
-      - (blocked       × 8)
+ยังไม่มีงานที่ได้ดาว:
+score = (completionRate × 0.35) + (onTimeRate × 0.35) + (qualityRate × 0.30) - (blocked × 8)
+
+มีงานที่หัวหน้าให้ดาวแล้ว:
+score = (completionRate × 0.25) + (onTimeRate × 0.25) + (qualityRate × 0.20)
+      + (starRate × 0.30) - (blocked × 8)
+
+starRate = (ดาวเฉลี่ยของงานที่เสร็จและได้ดาว ÷ 5) × 100
 
 qualityRate = max(0, 100 - openFeedback × 10)
 
