@@ -303,6 +303,41 @@ body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:r
 .recur-badge{font-size:11px;display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:20px;background:var(--blue-light);color:var(--blue);font-weight:600}
 .rate-badge{font-size:11px;display:inline-flex;align-items:center;gap:1px;padding:2px 7px;border-radius:20px;background:#FEF6E7;color:#B7791F;font-weight:700}
 
+/* ── VIEW TOGGLE ── */
+.btn-view{width:36px;height:36px;border-radius:50%;background:var(--bg);color:var(--text2);border:0.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.view-seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+
+/* ── DESKTOP MODE ── */
+html.desk body{max-width:none;display:grid;grid-template-columns:232px minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr)}
+html.desk .safe-top{grid-column:1/-1;grid-row:1}
+html.desk .topbar{grid-column:1/-1;grid-row:2;padding:12px 24px;min-height:60px}
+html.desk .logo{font-size:20px;width:184px}
+html.desk .bottom-nav{grid-column:1;grid-row:3;flex-direction:column;overflow-x:hidden;overflow-y:auto;border-top:none;border-right:0.5px solid var(--border);padding:12px 10px}
+html.desk .nav-btn{flex:0 0 auto;flex-direction:row;justify-content:flex-start;gap:12px;padding:10px 14px;min-height:44px;border-radius:10px;width:100%}
+html.desk .nav-btn:hover{background:var(--bg)}
+html.desk .nav-btn.active{background:var(--purple-light)}
+html.desk .nav-btn i{font-size:20px}
+html.desk .nav-label{font-size:14px}
+html.desk .nav-dot{top:50%;right:14px;transform:translateY(-50%)}
+html.desk .scroll-area{grid-column:2;grid-row:3;padding:8px 16px 32px}
+html.desk .page{max-width:1180px;margin:0 auto}
+html.desk #task-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;padding:0 12px}
+html.desk #task-list .task-card{margin:0}
+html.desk #task-list .empty{grid-column:1/-1}
+html.desk #home-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:12px;padding:0 12px;align-items:start}
+html.desk #home-body .home-hello,html.desk #home-body .home-sum,html.desk #home-body .empty{grid-column:1/-1;padding-left:0;padding-right:0}
+html.desk #home-body .home-sec{margin:0}
+html.desk #broadcast-feed{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:12px;padding:0 12px;align-items:start}
+html.desk #broadcast-feed .bc-card{margin:0}
+html.desk .stat-row{grid-template-columns:repeat(4,minmax(0,1fr))}
+html.desk .sheet-overlay{align-items:center;justify-content:center;padding:24px}
+html.desk .sheet{max-width:600px;border-radius:20px;max-height:88vh;padding-bottom:16px}
+html.desk .sheet-handle{display:none}
+html.desk .bc-compose-fab{bottom:28px;right:28px}
+html.desk .toast{bottom:28px}
+html.desk .login-hero,html.desk .login-body{width:100%;max-width:520px;margin-left:auto;margin-right:auto}
+html.desk .login-hero{border-radius:0 0 20px 20px}
+
 /* ── TOAST ── */
 .toast{position:fixed;bottom:calc(70px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:#26215C;color:#CECBF6;padding:11px 20px;border-radius:20px;font-size:14px;font-weight:500;z-index:999;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s}
 .toast.show{opacity:1}
@@ -350,6 +385,7 @@ body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:r
     <span id="me-name">-</span>
     <i class="ti ti-chevron-down" style="font-size:14px"></i>
   </button>
+  <button class="btn-view" id="btn-view" onclick="toggleView()" title="สลับการแสดงผล มือถือ / เดสก์ท็อป" aria-label="สลับการแสดงผล"><i class="ti ti-device-desktop"></i></button>
   <button class="btn-add" onclick="openNewTaskSheet()" aria-label="สร้างงานใหม่"><i class="ti ti-plus"></i></button>
 </div>
 
@@ -1439,6 +1475,11 @@ function openMeSheet(){
       <button class="role-chip ${m.role==='lead'?'sel':''}" id="erc-lead" onclick="editPickRole('lead')"><i class="ti ti-crown"></i>หัวหน้าทีม</button>
       <button class="role-chip ${m.role==='boss'?'sel':''}" id="erc-boss" onclick="editPickRole('boss')"><i class="ti ti-star"></i>หัวหน้า</button>
     </div>
+    <label class="f-label">การแสดงผล (เฉพาะเครื่องนี้)</label>
+    <div class="view-seg">
+      <button class="role-chip ${viewMode==='mobile'?'sel':''}" onclick="setView('mobile');openMeSheet()"><i class="ti ti-device-mobile"></i>มือถือ</button>
+      <button class="role-chip ${viewMode==='desk'?'sel':''}" onclick="setView('desk');openMeSheet()"><i class="ti ti-device-desktop"></i>เดสก์ท็อป (เต็มจอ)</button>
+    </div>
     <button class="big-btn" onclick="saveProfile()" style="margin-top:16px">บันทึก</button>
     <button class="outline-btn" style="margin-top:8px;color:var(--red)" onclick="doLogout()"><i class="ti ti-logout" style="font-size:15px"></i> ออกจากระบบ</button>
   `;
@@ -2023,6 +2064,18 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 
 /* ── RENDER ALL ── */
 function renderAll(){renderTasks();renderHome();updateNotifDot();updateBcDot();}
+
+/* ── VIEW MODE ── */
+let viewMode='mobile';
+function setView(m,persist=true){
+  viewMode=m==='desk'?'desk':'mobile';
+  document.documentElement.classList.toggle('desk',viewMode==='desk');
+  const b=document.getElementById('btn-view');
+  if(b)b.innerHTML=`<i class="ti ti-device-${viewMode==='desk'?'mobile':'desktop'}"></i>`;
+  if(persist)try{localStorage.setItem('gf_view',viewMode);}catch(e){}
+}
+function toggleView(){setView(viewMode==='desk'?'mobile':'desk');showToast(viewMode==='desk'?'แสดงผลแบบเดสก์ท็อป':'แสดงผลแบบมือถือ');}
+(function(){let v=null;try{v=localStorage.getItem('gf_view');}catch(e){}if(v)setView(v,false);else setView(window.innerWidth>=1024?'desk':'mobile',false);})();
 
 /* ── INIT ── */
 buildLoginPick();
