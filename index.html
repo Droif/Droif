@@ -303,6 +303,17 @@ body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:r
 .recur-badge{font-size:11px;display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:20px;background:var(--blue-light);color:var(--blue);font-weight:600}
 .rate-badge{font-size:11px;display:inline-flex;align-items:center;gap:1px;padding:2px 7px;border-radius:20px;background:#FEF6E7;color:#B7791F;font-weight:700}
 
+/* ── REALTIME UI ── */
+.sync-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#B4B2A9;margin-left:6px;vertical-align:middle;cursor:pointer}
+.online-stack{display:flex;align-items:center;cursor:pointer}
+.online-stack .av{border-color:#1D9E75}
+.online-stack .av+.av{margin-left:-7px}
+.viewers{display:flex;align-items:center;gap:6px;background:#E1F5EE;color:#0F6E56;border-radius:20px;padding:5px 10px 5px 8px;font-size:12px;font-weight:600;margin-bottom:10px}
+.viewers .av{border-color:#E1F5EE}
+.viewers .av+.av{margin-left:-8px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#1D9E75;animation:pulse 1.6s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
 /* ── VIEW TOGGLE ── */
 .btn-view{width:36px;height:36px;border-radius:50%;background:var(--bg);color:var(--text2);border:0.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .view-seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
@@ -380,7 +391,8 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <div class="logo"><span>Graph</span>Flow</div>
+  <div class="logo"><span>Graph</span>Flow<span class="sync-dot" id="sync-dot" onclick="showToast(this.title||'ใช้ข้อมูลในเครื่อง')"></span></div>
+  <div class="online-stack" id="online-stack" style="display:none" onclick="showToast(this.title)"></div>
   <button class="me-pill" id="me-pill" onclick="openMeSheet()">
     <span id="me-name">-</span>
     <i class="ti ti-chevron-down" style="font-size:14px"></i>
@@ -684,7 +696,7 @@ const SB_KEY='sb_publishable_SOG0XPWxOzU1Y6fG7MEKlQ_6N_yS1Cs';
 const SK='gf_mob_v2';
 // ล้างข้อมูลในเครื่องครั้งเดียว (งานเก่า + โปรไฟล์ที่ล็อกอินค้าง) เพื่อเริ่มใช้งานจริง — เพิ่มเลขเวอร์ชันเมื่อต้องการล้างอีกรอบ
 const LOCAL_RESET='2026-10-09';
-try{if(localStorage.getItem('gf_reset')!==LOCAL_RESET){['gf_mob_v1','gf_mob_v2','gf_user'].forEach(k=>localStorage.removeItem(k));localStorage.setItem('gf_reset',LOCAL_RESET);}}catch(e){}
+try{if(localStorage.getItem('gf_reset')!==LOCAL_RESET){['gf_mob_v1','gf_mob_v2','gf_user','gf_synced'].forEach(k=>localStorage.removeItem(k));localStorage.setItem('gf_reset',LOCAL_RESET);}}catch(e){}
 let db={broadcasts:[],members:[],tasks:[],activityLog:[],nextId:1,nextCid:1,nextLid:1,nextAid:1};
 
 let currentUser=null;
@@ -734,43 +746,174 @@ function saveDb(){saveLocal();schedulePush();}
 
 /* ── SUPABASE SYNC ──
    แต่ละ member / task / broadcast / activity = 1 แถวในตาราง gf_items (kind,id,data)
-   saveDb() เทียบกับสถานะล่าสุดที่ซิงค์แล้ว แล้วส่งเฉพาะแถวที่เปลี่ยน; Realtime รับการเปลี่ยนแปลงจากเครื่องอื่น */
+   • synced = ฉบับล่าสุดที่ตรงกับเซิร์ฟเวอร์ (เก็บลงเครื่องด้วย) ใช้เป็นฐานในการ merge
+   • saveDb() ส่งเฉพาะรายการที่เปลี่ยน; Realtime รับการเปลี่ยนแปลงจากเครื่องอื่น
+   • ถ้าแก้รายการเดียวกันพร้อมกัน → merge 3 ทาง (ฐาน/ของเรา/ของเซิร์ฟเวอร์) ไม่ทับกันทั้งก้อน
+   • กลับมาเปิดแอป / เน็ตกลับ / ทุก 60 วิ → ดึงข้อมูลใหม่มา reconcile กันพลาดเหตุการณ์ตอนหลุด */
 const SYNC_KINDS=['members','tasks','broadcasts','activityLog'];
-let sb=null,synced={},pushTimer=null,syncReady=false;
+const SYNCED_KEY='gf_synced';
+let sb=null,synced={},pushTimer=null,syncReady=false,pushing=false;
+let rtChannel=null,presChannel=null,rtRetry=null,lastSync=0,syncState='off';
+let online=[];// [{name,task}]
 function snapDb(){const m={};SYNC_KINDS.forEach(k=>(db[k]||[]).forEach(x=>{m[k+':'+x.id]=JSON.stringify(x);}));return m;}
+function saveSynced(){try{localStorage.setItem(SYNCED_KEY,JSON.stringify(synced));}catch(e){}}
+function loadSynced(){try{const r=localStorage.getItem(SYNCED_KEY);return r?JSON.parse(r):null;}catch(e){return null;}}
 function sortKind(k){
   if(k==='members')db.members.sort((a,b)=>String(a.id).localeCompare(String(b.id)));
   else if(k==='broadcasts')db.broadcasts.sort((a,b)=>a.id-b.id);
   else db[k].sort((a,b)=>b.id-a.id);
 }
+
+/* merge 3 ทาง: b=ฐาน, l=ของเรา, s=ของเซิร์ฟเวอร์ */
+const J=x=>JSON.stringify(x);
+const isObj=x=>x&&typeof x==='object'&&!Array.isArray(x);
+function merge3(b,l,s){
+  const jl=J(l),js=J(s),jb=J(b);
+  if(jl===js||js===jb)return l;
+  if(jl===jb)return s;
+  if(Array.isArray(l)&&Array.isArray(s))return mergeArr(Array.isArray(b)?b:[],l,s);
+  if(isObj(l)&&isObj(s)){
+    const bb=isObj(b)?b:{},out={};
+    new Set([...Object.keys(s),...Object.keys(l)]).forEach(k=>{
+      const inL=k in l,inS=k in s,inB=k in bb;
+      if(inL&&inS)out[k]=merge3(bb[k],l[k],s[k]);
+      else if(inL){if(!(inB&&J(bb[k])===J(l[k])))out[k]=l[k];}
+      else if(inS){if(!(inB&&J(bb[k])===J(s[k])))out[k]=s[k];}
+    });
+    return out;
+  }
+  return l;// ชนกันที่ค่าเดียว → ของเรา (คนบันทึกล่าสุด) ชนะ
+}
+function mergeArr(b,l,s){
+  const idOf=x=>isObj(x)&&x.id!=null?'#'+x.id:'='+J(x);
+  const mb=new Map(b.map(x=>[idOf(x),x])),ml=new Map(l.map(x=>[idOf(x),x])),ms=new Map(s.map(x=>[idOf(x),x]));
+  const out=[],seen=new Set();
+  const take=k=>{
+    if(seen.has(k))return;seen.add(k);
+    const inL=ml.has(k),inS=ms.has(k),inB=mb.has(k);
+    if(inL&&inS)out.push(merge3(mb.get(k),ml.get(k),ms.get(k)));
+    else if(inL){if(!(inB&&J(mb.get(k))===J(ml.get(k))))out.push(ml.get(k));}// เซิร์ฟเวอร์ลบ และเราไม่ได้แก้ → ลบตาม
+    else if(inS){if(!(inB&&J(mb.get(k))===J(ms.get(k))))out.push(ms.get(k));}// เราลบ และเซิร์ฟเวอร์ไม่ได้แก้ → ลบ
+  };
+  s.forEach(x=>take(idOf(x)));l.forEach(x=>take(idOf(x)));
+  return out;
+}
+
+function setSync(st){
+  syncState=st;
+  const d=document.getElementById('sync-dot');if(!d)return;
+  const c={live:['#1D9E75','ซิงค์แบบเรียลไทม์'],sync:['#EF9F27','กำลังซิงค์...'],off:['#B4B2A9','ออฟไลน์ — ใช้ข้อมูลในเครื่อง']}[st]||['#B4B2A9',''];
+  d.style.background=c[0];d.title=c[1];d.setAttribute('aria-label',c[1]);
+}
 function schedulePush(){if(!sb||!syncReady)return;clearTimeout(pushTimer);pushTimer=setTimeout(pushChanges,300);}
 async function pushChanges(){
   if(!sb||!syncReady)return;
+  if(pushing){schedulePush();return;}
   const cur=snapDb(),ups=[],dels=[];
   for(const key in cur)if(synced[key]!==cur[key]){const i=key.indexOf(':');ups.push({kind:key.slice(0,i),id:key.slice(i+1),data:JSON.parse(cur[key]),updated_at:new Date().toISOString()});}
   for(const key in synced)if(!(key in cur))dels.push(key);
   if(!ups.length&&!dels.length)return;
-  const prev=synced;synced=cur;
+  const prev={...synced};
+  ups.forEach(u=>{synced[u.kind+':'+u.id]=cur[u.kind+':'+u.id];});
+  dels.forEach(k=>{delete synced[k];});
+  pushing=true;setSync('sync');
   try{
     if(ups.length){const{error}=await sb.from('gf_items').upsert(ups);if(error)throw error;}
     for(const key of dels){const i=key.indexOf(':');const{error}=await sb.from('gf_items').delete().eq('kind',key.slice(0,i)).eq('id',key.slice(i+1));if(error)throw error;}
+    saveSynced();setSync(rtChannel&&rtChannel.state==='joined'?'live':'off');
   }catch(e){
     console.warn('sync push failed',e);
-    ups.forEach(u=>{delete synced[u.kind+':'+u.id];});
+    ups.forEach(u=>{const k=u.kind+':'+u.id;if(k in prev)synced[k]=prev[k];else delete synced[k];});
     dels.forEach(k=>{synced[k]=prev[k];});
-    showToast('ซิงค์ไม่สำเร็จ — จะลองใหม่อัตโนมัติ');
+    setSync('off');
     clearTimeout(pushTimer);pushTimer=setTimeout(pushChanges,5000);
-  }
+  }finally{pushing=false;}
 }
 function applyRemote(ev){
   const row=ev.eventType==='DELETE'?ev.old:ev.new;if(!row||!SYNC_KINDS.includes(row.kind))return;
   const k=row.kind,key=k+':'+row.id,arr=db[k]||(db[k]=[]);
   const idx=arr.findIndex(x=>String(x.id)===String(row.id));
-  // มีการแก้ในเครื่องที่ยังไม่ได้ส่ง → ข้าม (ไม่ทับงานที่กำลังแก้)
-  if(idx>=0&&synced[key]!==JSON.stringify(arr[idx]))return;
-  if(ev.eventType==='DELETE'){if(idx>=0)arr.splice(idx,1);delete synced[key];}
-  else{const item=row.data;if(idx>=0)arr[idx]=item;else{arr.push(item);sortKind(k);}synced[key]=JSON.stringify(item);}
-  saveLocal();refreshUI();
+  const localDirty=idx>=0&&synced[key]!==J(arr[idx]);
+  if(ev.eventType==='DELETE'){
+    if(idx>=0&&!localDirty)arr.splice(idx,1);// ถ้าเรากำลังแก้อยู่ เก็บไว้ แล้วจะถูกส่งกลับขึ้นไป
+    delete synced[key];
+  }else{
+    const item=row.data;
+    if(idx<0){arr.push(item);sortKind(k);}
+    else if(localDirty){arr[idx]=merge3(synced[key]?JSON.parse(synced[key]):null,arr[idx],item);schedulePush();}
+    else arr[idx]=item;
+    synced[key]=J(item);
+    if(k==='activityLog'&&ev.eventType==='INSERT'&&item.actor&&item.actor!==currentUser&&currentUser)
+      showToast(`${item.actor} ${item.action}${item.target&&item.target!=='ระบบ'&&item.target!=='ทีม'?' · '+item.target:''}`);
+  }
+  saveLocal();saveSynced();refreshUI();
+}
+/* ดึงข้อมูลทั้งหมดมาเทียบกับในเครื่อง (ใช้ตอนเปิดแอป / กลับมา / เน็ตกลับ) */
+async function resync(){
+  if(!sb)return;
+  const{data,error}=await sb.from('gf_items').select('kind,id,data').range(0,9999);
+  if(error)throw error;
+  const srv={};data.forEach(r=>{if(SYNC_KINDS.includes(r.kind))srv[r.kind+':'+r.id]=r.data;});
+  const base=synced;
+  SYNC_KINDS.forEach(k=>{
+    const local=new Map((db[k]||[]).map(x=>[k+':'+x.id,x]));const out=[];
+    Object.keys(srv).filter(key=>key.startsWith(k+':')).forEach(key=>{
+      const s=srv[key],l=local.get(key);
+      if(!l){if(!(key in base))out.push(s);return;}// ไม่มีในเครื่อง: ถ้าเคยซิงค์แล้ว = เราลบรอส่ง
+      out.push(J(l)===base[key]?s:merge3(base[key]?JSON.parse(base[key]):null,l,s));
+    });
+    local.forEach((l,key)=>{if(key in srv)return;if(key in base&&J(l)===base[key])return;out.push(l);});// เซิร์ฟเวอร์ลบไปแล้ว / ของใหม่ที่ยังไม่ส่ง
+    db[k]=out;sortKind(k);
+  });
+  synced={};Object.keys(srv).forEach(key=>{synced[key]=J(srv[key]);});
+  lastSync=Date.now();saveLocal();saveSynced();
+  if(syncReady){refreshUI();schedulePush();}
+}
+function subscribeRealtime(){
+  if(!sb)return;
+  if(rtChannel){const old=rtChannel;rtChannel=null;sb.removeChannel(old);}
+  const ch=sb.channel('gf_items_rt');rtChannel=ch;
+  ch.on('postgres_changes',{event:'*',schema:'public',table:'gf_items'},applyRemote).subscribe(st=>{
+    if(rtChannel!==ch)return;
+    if(st==='SUBSCRIBED'){setSync('live');if(Date.now()-lastSync>3000)resync().catch(()=>{});}
+    else if(st==='CHANNEL_ERROR'||st==='TIMED_OUT'||st==='CLOSED'){
+      setSync('off');clearTimeout(rtRetry);rtRetry=setTimeout(subscribeRealtime,4000);
+    }
+  });
+}
+/* ── PRESENCE: ใครออนไลน์ / ใครกำลังดูงานไหน ── */
+function startPresence(){
+  if(!sb||!currentUser)return;
+  if(presChannel){sb.removeChannel(presChannel);presChannel=null;}
+  const ch=sb.channel('gf_presence',{config:{presence:{key:currentUser}}});presChannel=ch;
+  ch.on('presence',{event:'sync'},()=>{
+    const st=ch.presenceState();
+    online=Object.keys(st).map(name=>{const metas=st[name]||[];const withTask=metas.find(m=>m.task!=null);return{name,task:withTask?withTask.task:null};});
+    renderPresence();
+  }).subscribe(s=>{if(s==='SUBSCRIBED')trackPresence();});
+}
+function trackPresence(){
+  if(!presChannel||!currentUser)return;
+  const ds=document.getElementById('sheet-detail');
+  const task=ds&&ds.classList.contains('show')?detailTaskId:null;
+  presChannel.track({task}).catch(()=>{});
+}
+function stopPresence(){if(presChannel&&sb){presChannel.untrack().catch(()=>{});sb.removeChannel(presChannel);presChannel=null;}online=[];renderPresence();}
+function viewersHTML(taskId){
+  const v=online.filter(o=>o.task===taskId&&o.name!==currentUser);
+  if(!v.length)return'';
+  return`<div class="viewers"><span class="live-dot"></span>${v.map(o=>avHTML(o.name,20)).join('')}<span>${v.map(o=>esc(o.name)).join(', ')} กำลังดูงานนี้</span></div>`;
+}
+function renderPresence(){
+  const el=document.getElementById('online-stack');
+  if(el){
+    const others=online.filter(o=>o.name!==currentUser);
+    el.innerHTML=others.slice(0,3).map(o=>avHTML(o.name,24)).join('')+(others.length>3?`<div class="av av-d" style="width:24px;height:24px;font-size:10px">+${others.length-3}</div>`:'');
+    el.title=others.length?'ออนไลน์: '+others.map(o=>o.name).join(', '):'';
+    el.style.display=others.length?'flex':'none';
+  }
+  const dv=document.getElementById('detail-viewers');
+  if(dv)dv.innerHTML=viewersHTML(detailTaskId);
 }
 function refreshUI(){
   if(!currentUser){if(document.getElementById('login-wrap').style.display!=='none')buildLoginPick();return;}
@@ -783,27 +926,39 @@ function refreshUI(){
 }
 async function initSync(){
   if(!SB_URL||!SB_KEY||!window.supabase)return;
+  setSync('sync');
   try{
     sb=window.supabase.createClient(SB_URL,SB_KEY);
-    const{data,error}=await sb.from('gf_items').select('kind,id,data').range(0,9999);
-    if(error)throw error;
-    if(!data.length){
-      // ฐานข้อมูลว่าง → เครื่องแรกอัปโหลดข้อมูลในเครื่องขึ้นไป
-      synced={};syncReady=true;await pushChanges();
-    }else{
-      SYNC_KINDS.forEach(k=>{db[k]=[];});
-      data.forEach(r=>{if(SYNC_KINDS.includes(r.kind))db[r.kind].push(r.data);});
-      SYNC_KINDS.forEach(sortKind);
-      synced=snapDb();syncReady=true;saveLocal();
+    const base=loadSynced();
+    if(base){synced=base;await resync();}
+    else{
+      const{data,error}=await sb.from('gf_items').select('kind,id,data').range(0,9999);
+      if(error)throw error;
+      if(data.length){
+        // เครื่องนี้ยังไม่เคยซิงค์ → ใช้ข้อมูลจากเซิร์ฟเวอร์ (ทิ้งข้อมูลเก่าในเครื่อง)
+        SYNC_KINDS.forEach(k=>{db[k]=[];});
+        data.forEach(r=>{if(SYNC_KINDS.includes(r.kind))db[r.kind].push(r.data);});
+        SYNC_KINDS.forEach(sortKind);
+        synced=snapDb();lastSync=Date.now();saveLocal();saveSynced();
+      }else synced={};// ฐานข้อมูลว่าง → เครื่องแรกอัปโหลดข้อมูลในเครื่องขึ้นไป
     }
-    sb.channel('gf_items').on('postgres_changes',{event:'*',schema:'public',table:'gf_items'},applyRemote).subscribe();
-    window.addEventListener('online',schedulePush);
+    syncReady=true;await pushChanges();
+    subscribeRealtime();
+    window.addEventListener('online',()=>{resync().catch(()=>{});subscribeRealtime();});
+    window.addEventListener('offline',()=>setSync('off'));
+    document.addEventListener('visibilitychange',()=>{
+      if(document.visibilityState!=='visible')return;
+      if(Date.now()-lastSync>5000)resync().catch(()=>setSync('off'));
+      if(!rtChannel||rtChannel.state!=='joined')subscribeRealtime();
+    });
+    setInterval(()=>{if(document.visibilityState==='visible'&&Date.now()-lastSync>55000)resync().catch(()=>setSync('off'));},60000);
     if(!currentUser){
       const saved=localStorage.getItem('gf_user');
       if(saved&&db.members.find(m=>m.name===saved)){document.getElementById('login-wrap').style.display='none';loginAs(saved);}
       else buildLoginPick();
-    }else refreshUI();
-  }catch(e){console.warn('sync init failed',e);sb=null;showToast('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ — ใช้ข้อมูลในเครื่อง');}
+    }else{refreshUI();startPresence();}
+  }catch(e){console.warn('sync init failed',e);setSync('off');showToast('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ — ใช้ข้อมูลในเครื่อง');
+    if(sb){clearTimeout(rtRetry);rtRetry=setTimeout(()=>{sb=null;initSync();},15000);}}
 }
 function loadDb(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);Object.assign(db,d);}}catch(e){}}
 loadDb();
@@ -850,11 +1005,11 @@ function loginAs(name){
   document.getElementById('login-wrap').style.display='none';
   document.getElementById('me-name').textContent=name;
   selectedNewMembers=new Set([name]);
-  initNotifs();switchPage('home');renderAll();
+  initNotifs();switchPage('home');renderAll();startPresence();
   addAct(name,'เข้าสู่ระบบ','ระบบ',null,'other');
   saveDb();
 }
-function doLogout(){if(!confirm('ออกจากระบบ?'))return;currentUser=null;try{localStorage.removeItem('gf_user');}catch(e){}document.getElementById('login-wrap').style.display='flex';selectedLoginMember=null;buildLoginPick();}
+function doLogout(){if(!confirm('ออกจากระบบ?'))return;stopPresence();currentUser=null;try{localStorage.removeItem('gf_user');}catch(e){}document.getElementById('login-wrap').style.display='flex';selectedLoginMember=null;buildLoginPick();}
 
 /* ── PAGE SWITCH ── */
 function switchPage(p){
@@ -927,7 +1082,7 @@ function openDetail(id){
   notifications.filter(n=>n.taskId===id).forEach(n=>n.read=true);
   renderDetailSheet(t);
   document.getElementById('sheet-detail').classList.add('show');
-  updateNotifDot();
+  updateNotifDot();trackPresence();
 }
 function renderDetailSheet(t){
   const si=STATUS_ICONS[t.status]||STATUS_ICONS.new;
@@ -939,6 +1094,7 @@ function renderDetailSheet(t){
     <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none">
       ${tabs.map(tab=>`<button style="padding:7px 14px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:0.5px solid ${detailSubPage===tab?'var(--purple-border)':'var(--border)'};background:${detailSubPage===tab?'var(--purple-light)':'var(--surface)'};color:${detailSubPage===tab?'var(--purple-dark)':'var(--text2)'};white-space:nowrap;flex-shrink:0;min-height:36px" onclick="switchDetailSub(${t.id},'${tab}')">${tabLabels[tab]}${tab==='comments'&&fbc?` <span style="background:#E24B4A;color:#fff;font-size:10px;border-radius:20px;padding:1px 5px">${fbc}</span>`:''}</button>`).join('')}
     </div>
+    <div id="detail-viewers">${viewersHTML(t.id)}</div>
     <div id="detail-sub-content">${renderDetailSub(t)}</div>
   `;
 }
@@ -2060,7 +2216,7 @@ function sendBroadcast(){
 }
 
 /* ── SHEET ── */
-function closeSheet(name){document.getElementById('sheet-'+name).classList.remove('show');}
+function closeSheet(name){document.getElementById('sheet-'+name).classList.remove('show');if(name==='detail')trackPresence();}
 
 /* ── TOAST ── */
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
