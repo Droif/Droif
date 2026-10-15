@@ -291,6 +291,21 @@ body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:r
 .home-item-sub{font-size:12px;color:var(--text3);margin-top:2px}
 .home-when{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
 .home-link{display:inline-flex;align-items:center;gap:5px;margin:6px 6px 0 0;padding:6px 10px;border-radius:20px;font-size:12px;font-weight:600;text-decoration:none;border:0.5px solid var(--border);background:var(--bg);color:var(--text2)}
+/* ── HOME TABS ── */
+.home-tabs{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:6px;padding:10px 16px 8px;overflow-x:auto;scrollbar-width:none}
+.home-tabs::-webkit-scrollbar{display:none}
+.home-tab{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:20px;font-size:13px;font-weight:600;white-space:nowrap;flex-shrink:0;border:0.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;min-height:36px}
+.home-tab.on{background:var(--purple);border-color:var(--purple);color:#fff}
+.home-tab .tab-count{font-size:11px;font-weight:700;min-width:18px;height:18px;padding:0 5px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;background:var(--bg);color:var(--text2)}
+.home-tab.on .tab-count{background:rgba(255,255,255,.25);color:#fff}
+.home-tab .tab-count.hot{background:var(--red-mid);color:#fff}
+.assignee-row{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:5px}
+.assignee-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 9px 2px 2px;border-radius:20px;background:var(--purple-light);color:var(--purple-dark);font-size:12px;font-weight:600}
+.assignee-chip.me{background:#E1F5EE;color:#0F6E56}
+.accept-btn{padding:7px 12px;border-radius:20px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
+html.desk #home-body .home-tabs{grid-column:1/-1;padding-left:0;padding-right:0}
+html.desk #home-body .home-empty{grid-column:1/-1}
+
 /* ── SEGMENT / STARS / WORK LINK ── */
 .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:14px 18px 0}
 .seg-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--bg);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer}
@@ -1893,11 +1908,13 @@ function homeData(){
   const rated=db.tasks.filter(t=>t.rating&&(mine(t)||lead)).sort((a,b)=>b.id-a.id).slice(0,10);
   const fb=notifications.filter(n=>!n.isBroadcast&&!n.read);
   const news=(db.broadcasts||[]).filter(b=>b.type!=='meet'&&b.to.includes(me)&&!(b.readBy||[]).includes(me)).slice().reverse();
-  return{appts,due,review,toRate,rated,fb,news};
+  const fresh=db.tasks.filter(t=>t.status==='new'&&(mine(t)||lead)).sort((a,b)=>b.id-a.id);
+  return{appts,due,review,toRate,rated,fb,news,fresh};
 }
 function homeUnseen(){
   if(!currentUser)return 0;const h=homeData(),me=currentUser;
   return h.appts.filter(b=>!(b.readBy||[]).includes(me)).length+h.news.length+h.fb.length
+    +h.fresh.filter(t=>(t.assignees||[]).includes(me)).length
     +h.rated.filter(t=>!(t.rating.seenBy||[]).includes(me)&&(t.assignees||[]).includes(me)).length;
 }
 function homeSec(id,icon,bg,color,title,count,body){
@@ -1905,23 +1922,78 @@ function homeSec(id,icon,bg,color,title,count,body){
   return`<div class="home-sec" id="hs-${id}"><div class="home-sec-head"><div class="home-sec-icon" style="background:${bg};color:${color}"><i class="ti ${icon}"></i></div><div class="home-sec-title">${title}</div><span class="home-sec-count" style="background:${bg};color:${color}">${count}</span></div>${body}</div>`;
 }
 function linkPills(links){return(links||[]).map(l=>`<a class="home-link" href="${esc(l.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><i class="ti ${l.icon||'ti-link'}" style="color:${l.color||'var(--text2)'}"></i>${esc(l.label)}<i class="ti ti-external-link" style="font-size:11px"></i></a>`).join('');}
+let homeTab='all';
+function setHomeTab(t){homeTab=t;renderHome();document.getElementById('scroll-area').scrollTop=0;}
+function assigneeChips(t){return`<div class="assignee-row"><span style="font-size:12px;color:var(--text3)">ผู้รับ:</span>${(t.assignees||[]).map(n=>`<span class="assignee-chip ${n===currentUser?'me':''}">${avHTML(n,20)}${esc(n)}${n===currentUser?' (คุณ)':''}</span>`).join('')||'<span style="font-size:12px;color:var(--red)">ยังไม่มีผู้รับ</span>'}</div>`;}
+function homeAccept(id){
+  const t=db.tasks.find(x=>x.id===id);if(!t||t.status!=='new')return;
+  if(!(t.assignees||[]).includes(currentUser)){showToast('งานนี้ไม่ได้มอบให้คุณ');return;}
+  const tt=ts();t.status='wip';t.step=1;
+  t.log.push({time:tt,user:currentUser,action:'รับงาน',icon:'ti-player-play',color:'#854F0B'});
+  addAct(currentUser,'รับงาน',t.name,t.id,'status');
+  saveDb();renderAll();showToast('รับงานแล้ว ✓');
+}
 function renderHome(){
   const el=document.getElementById('home-body');
   const dot=document.getElementById('home-dot');
   if(!el||!currentUser){if(dot)dot.style.display='none';return;}
-  const h=homeData(),me=currentUser;
+  const h=homeData(),me=currentUser,lead=isLead();
   if(dot)dot.style.display=homeUnseen()?'block':'none';
-  const sum=[['appts','ti-calendar-event','var(--green-light)','var(--green)','นัดหมาย',h.appts.length],
-    ['due','ti-clock-exclamation','#FEF0E0','#D85A30','ใกล้กำหนด',h.due.length],
-    ['review','ti-eye','var(--purple-light)','var(--purple-dark)','รอตรวจ',h.review.length],
-    ['rate','ti-star','#FEF6E7','#B7791F',isLead()?'รอให้ดาว':'ได้ดาว',isLead()?h.toRate.length:h.rated.length],
-    ['fb','ti-message-2','var(--blue-light)','var(--blue)','Feedback',h.fb.length],
-    ['news','ti-speakerphone','var(--gray-light)','var(--gray)','ประกาศ',h.news.length]].filter(x=>x[5]);
+  const myNew=h.fresh.filter(t=>(t.assignees||[]).includes(me)).length;
+  const unseenStars=h.rated.filter(t=>(t.assignees||[]).includes(me)&&!(t.rating.seenBy||[]).includes(me)).length;
+  const overdue=h.due.filter(t=>daysUntil(t.due)<=0).length;
+  const tabs=[
+    ['all','ti-layout-dashboard','ทั้งหมด',null,false],
+    ['new','ti-sparkles','งานใหม่',h.fresh.length,myNew>0],
+    ['review','ti-eye','รอตรวจ',h.review.length,lead&&h.review.length>0],
+    ['rate','ti-star','ประเมินดาว',lead?h.toRate.length:h.rated.length,lead?h.toRate.length>0:unseenStars>0],
+    ['due','ti-alarm','ใกล้กำหนด',h.due.length,overdue>0],
+    ['appts','ti-calendar-event','นัดหมาย',h.appts.length,h.appts.some(b=>!(b.readBy||[]).includes(me))]];
   const hr=new Date().getHours();
   let html=`<div class="home-hello"><div class="home-hello-title">${hr<12?'สวัสดีตอนเช้า':hr<17?'สวัสดีตอนบ่าย':'สวัสดีตอนเย็น'}, ${esc(me)}</div><div class="home-hello-sub">${fmtThaiDate(todayStr())} · สรุปสิ่งที่ต้องรู้วันนี้</div></div>`;
-  html+=sum.length?`<div class="home-sum">${sum.map(x=>`<button class="home-sum-chip" style="background:${x[2]};color:${x[3]}" onclick="document.getElementById('hs-${x[0]}').scrollIntoView({behavior:'smooth',block:'start'})"><i class="ti ${x[1]}"></i>${x[4]} ${x[5]}</button>`).join('')}</div>`:'';
+  html+=`<div class="home-tabs" role="tablist">${tabs.map(([id,icon,label,n,hot])=>`<button class="home-tab ${homeTab===id?'on':''}" role="tab" aria-selected="${homeTab===id}" onclick="setHomeTab('${id}')"><i class="ti ${icon}"></i>${label}${n!=null?`<span class="tab-count ${hot&&homeTab!==id?'hot':''}">${n}</span>`:''}</button>`).join('')}</div>`;
+  const show=id=>homeTab==='all'||homeTab===id;
+  let any=false;const sec=(id,...args)=>{const out=homeSec(id,...args);if(out)any=true;return out;};
 
-  html+=homeSec('appts','ti-calendar-event','var(--green-light)','var(--green)','นัดหมาย',h.appts.length,h.appts.map(b=>{
+  if(show('new'))html+=sec('new','ti-sparkles','#E6F1FB','var(--blue)',lead?'งานใหม่ในทีม (ยังไม่มีคนรับ)':'งานใหม่ที่มอบให้คุณ',h.fresh.length,h.fresh.map(t=>{
+    const creator=(t.log&&t.log[0])||{};const isMine=(t.assignees||[]).includes(me);
+    return`<div class="home-item ${isMine?'unread':''}" onclick="openDetail(${t.id})">
+      ${sIcon('new',34)}
+      <div style="flex:1;min-width:0">
+        <div class="home-item-title">${t.priority==='high'?'<i class="ti ti-flame" style="color:#D85A30;font-size:13px"></i> ':''}${esc(t.name)}${t.recur?' <span class="recur-badge"><i class="ti ti-repeat" style="font-size:10px"></i>'+recurLabel(t)+'</span>':''}</div>
+        <div class="home-item-sub">${t.client&&t.client!=='-'?esc(t.client)+' · ':''}สั่งโดย ${creator.user?(creator.user===me?'คุณ':esc(creator.user)):'-'}${creator.time?' · '+esc(creator.time):''}${t.due?' · ส่ง '+fmtThaiDate(t.due):''}</div>
+        ${assigneeChips(t)}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        ${t.due?(()=>{const[wb,wc]=whenColor(t.due);return`<span class="home-when" style="background:${wb};color:${wc}">${whenLabel(t.due)}</span>`;})():''}
+        ${isMine?`<button class="accept-btn" onclick="event.stopPropagation();homeAccept(${t.id})"><i class="ti ti-player-play"></i> รับงาน</button>`:''}
+      </div>
+    </div>`;}).join(''));
+
+  if(show('review'))html+=sec('review','ti-eye','var(--purple-light)','var(--purple-dark)',lead?'ผลงานรอตรวจ':'งานของฉันที่รอตรวจ',h.review.length,h.review.map(t=>{const wl=workLinks(t);return`<div class="home-item" onclick="openDetail(${t.id})">
+      ${sIcon('review',34)}
+      <div style="flex:1;min-width:0"><div class="home-item-title">${esc(t.name)}</div><div class="home-item-sub">${wl.length?'ส่งผลงานแล้ว '+wl.length+' ลิงก์':'ยังไม่มีลิงก์ผลงาน'}</div>
+      ${assigneeChips(t)}
+      ${mediaRow(wl.slice(-4).map(l=>l.url))}
+      ${linkPills(wl.slice(-2).map(l=>{const ft=detectFT(l.url);return{url:l.url,label:'ดูผลงาน · '+ft.label,icon:ft.icon,color:ft.color};}))}</div></div>`;}).join(''));
+
+  if(show('rate')){
+    if(lead)html+=sec('rate','ti-star','#FEF6E7','#B7791F','งานเสร็จที่รอให้ดาว',h.toRate.length,h.toRate.map(t=>`<div class="home-item" onclick="openDetail(${t.id})">
+      ${sIcon('done',34)}<div style="flex:1;min-width:0"><div class="home-item-title">${esc(t.name)}</div><div class="home-item-sub">แตะเพื่อให้ 1–5 ดาว</div>${assigneeChips(t)}</div>
+      <span class="star-row">${starsHTML(0,13)}</span></div>`).join(''));
+    html+=sec(lead?'rated':'rate','ti-award','#FEF6E7','#B7791F',lead?'ให้ดาวล่าสุด':'ดาวที่คุณได้รับ',h.rated.length,h.rated.map(t=>{const unseen=(t.assignees||[]).includes(me)&&!(t.rating.seenBy||[]).includes(me);return`<div class="home-item ${unseen?'unread':''}" onclick="markRatingSeen(${t.id});openDetail(${t.id});renderHome()">
+      <div style="flex:1;min-width:0"><div class="home-item-title">${unseen?'<span style="color:var(--red-mid)">● </span>':''}${esc(t.name)}</div><div class="home-item-sub">ประเมินโดย ${esc(t.rating.by)} · ${esc(t.rating.time)}</div>${assigneeChips(t)}</div>
+      <div style="text-align:right"><span class="star-row">${starsHTML(t.rating.stars,14)}</span><div style="font-size:11px;color:#B7791F;font-weight:700;margin-top:2px">${t.rating.stars}/5</div></div></div>`;}).join(''));
+  }
+
+  if(show('due'))html+=sec('due','ti-alarm','#FEF0E0','#D85A30','แจ้งเตือนงานใกล้ถึงกำหนด (3 วัน)',h.due.length,h.due.map(t=>{const[wb,wc]=whenColor(t.due);return`<div class="home-item" onclick="openDetail(${t.id})">
+      ${sIcon(t.status,34)}
+      <div style="flex:1;min-width:0"><div class="home-item-title">${t.priority==='high'?'<i class="ti ti-flame" style="color:#D85A30;font-size:13px"></i> ':''}${esc(t.name)}</div>
+      <div class="home-item-sub">${STATUS_MAP[t.status]} · ส่ง ${fmtThaiDate(t.due)}${t.recur?' · 🔁 '+recurLabel(t):''}${ckProgress(t).n?` · ☑ ${ckProgress(t).d}/${ckProgress(t).n}`:''}</div>
+      ${assigneeChips(t)}</div>
+      <span class="home-when" style="background:${wb};color:${wc}">${whenLabel(t.due)}</span></div>`;}).join(''));
+
+  if(show('appts'))html+=sec('appts','ti-calendar-event','var(--green-light)','var(--green)','นัดหมาย',h.appts.length,h.appts.map(b=>{
     const unread=!(b.readBy||[]).includes(me);const[wb,wc]=whenColor(b.date);
     return`<div class="home-item ${unread?'unread':''}" onclick="homeOpenAppt(${b.id})">
       <div style="flex:1;min-width:0">
@@ -1933,34 +2005,21 @@ function renderHome(){
       <span class="home-when" style="background:${wb};color:${wc}">${whenLabel(b.date)}</span>
     </div>`;}).join(''));
 
-  html+=homeSec('due','ti-clock-exclamation','#FEF0E0','#D85A30','งานใกล้ถึงกำหนด',h.due.length,h.due.map(t=>{const[wb,wc]=whenColor(t.due);return`<div class="home-item" onclick="openDetail(${t.id})">
-      ${sIcon(t.status,34)}
-      <div style="flex:1;min-width:0"><div class="home-item-title">${t.priority==='high'?'<i class="ti ti-flame" style="color:#D85A30;font-size:13px"></i> ':''}${esc(t.name)}</div>
-      <div class="home-item-sub">${esc((t.assignees||[]).join(', '))} · ${STATUS_MAP[t.status]}${t.recur?' · 🔁 '+recurLabel(t):''}</div></div>
-      <span class="home-when" style="background:${wb};color:${wc}">${whenLabel(t.due)}</span></div>`;}).join(''));
-
-  html+=homeSec('review','ti-eye','var(--purple-light)','var(--purple-dark)',isLead()?'ผลงานรอตรวจ':'งานของฉันที่รอตรวจ',h.review.length,h.review.map(t=>{const wl=workLinks(t);return`<div class="home-item" onclick="openDetail(${t.id})">
-      ${sIcon('review',34)}
-      <div style="flex:1;min-width:0"><div class="home-item-title">${esc(t.name)}</div><div class="home-item-sub">${esc((t.assignees||[]).join(', '))}${wl.length?'':' · ยังไม่มีลิงก์ผลงาน'}</div>
-      ${mediaRow(wl.slice(-4).map(l=>l.url))}
-      ${linkPills(wl.slice(-2).map(l=>{const ft=detectFT(l.url);return{url:l.url,label:'ดูผลงาน · '+ft.label,icon:ft.icon,color:ft.color};}))}</div></div>`;}).join(''));
-
-  if(isLead())html+=homeSec('rate','ti-star','#FEF6E7','#B7791F','งานเสร็จที่รอให้ดาว',h.toRate.length,h.toRate.map(t=>`<div class="home-item" onclick="openDetail(${t.id})">
-      ${sIcon('done',34)}<div style="flex:1;min-width:0"><div class="home-item-title">${esc(t.name)}</div><div class="home-item-sub">${esc((t.assignees||[]).join(', '))} · แตะเพื่อให้ 1–5 ดาว</div></div>
-      <span class="star-row">${starsHTML(0,13)}</span></div>`).join(''));
-  html+=homeSec(isLead()?'rated':'rate','ti-award','#FEF6E7','#B7791F','การประเมินดาวล่าสุด',h.rated.length,h.rated.map(t=>{const unseen=(t.assignees||[]).includes(me)&&!(t.rating.seenBy||[]).includes(me);return`<div class="home-item ${unseen?'unread':''}" onclick="markRatingSeen(${t.id});openDetail(${t.id});renderHome()">
-      <div style="flex:1;min-width:0"><div class="home-item-title">${unseen?'<span style="color:var(--red-mid)">● </span>':''}${esc(t.name)}</div><div class="home-item-sub">${esc((t.assignees||[]).join(', '))} · โดย ${esc(t.rating.by)} · ${esc(t.rating.time)}</div></div>
-      <span class="star-row">${starsHTML(t.rating.stars,14)}</span></div>`;}).join(''));
-
-  html+=homeSec('fb','ti-message-2','var(--blue-light)','var(--blue)','Feedback ถึงคุณ',h.fb.length,h.fb.map(n=>`<div class="home-item unread" onclick="openDetail(${n.taskId})">
+  if(homeTab==='all'){
+    html+=sec('fb','ti-message-2','var(--blue-light)','var(--blue)','Feedback ถึงคุณ',h.fb.length,h.fb.map(n=>`<div class="home-item unread" onclick="openDetail(${n.taskId})">
       ${avHTML(n.comment.author,30)}<div style="flex:1;min-width:0"><div class="home-item-title">${esc(n.comment.author)} · ${COMMENT_TYPES[n.comment.type]||''}</div><div class="home-item-sub">${esc(n.taskName)}: ${esc(n.comment.text)}</div></div></div>`).join(''));
-
-  html+=homeSec('news','ti-speakerphone','var(--gray-light)','var(--gray)','ประกาศใหม่',h.news.length,h.news.map(b=>{const bt=BC_TYPES[b.type]||BC_TYPES.info;return`<div class="home-item unread" onclick="markBcRead(${b.id});renderHome()">
+    html+=sec('news','ti-speakerphone','var(--gray-light)','var(--gray)','ประกาศใหม่',h.news.length,h.news.map(b=>{const bt=BC_TYPES[b.type]||BC_TYPES.info;return`<div class="home-item unread" onclick="markBcRead(${b.id});renderHome()">
       <div class="bc-type-circle" style="background:${bt.bg};width:34px;height:34px;font-size:16px">${bt.emoji}</div>
       <div style="flex:1;min-width:0"><div class="home-item-title">${esc(b.subject)}</div><div class="home-item-sub">${esc(b.from)} · ${esc(b.message)}</div>${linkPills(b.links)}</div></div>`;}).join(''));
+  }
 
-  if(!sum.length&&!h.rated.length)html+=`<div class="empty"><i class="ti ti-mood-happy"></i><p>ไม่มีอะไรค้าง เยี่ยมมาก!</p><p style="font-size:13px;margin-top:6px">กด + เพื่อสร้างงาน งานประจำ หรือนัดหมาย</p></div>`;
+  if(!any){
+    const msg={all:['ti-mood-happy','ไม่มีอะไรค้าง เยี่ยมมาก!'],new:['ti-inbox','ไม่มีงานใหม่'],review:['ti-eye-check','ไม่มีงานรอตรวจ'],rate:['ti-star',lead?'ไม่มีงานรอให้ดาว':'ยังไม่ได้รับดาว'],due:['ti-alarm-off','ไม่มีงานใกล้ถึงกำหนดใน 3 วัน'],appts:['ti-calendar-off','ไม่มีนัดหมาย']}[homeTab];
+    html+=`<div class="empty home-empty"><i class="ti ${msg[0]}"></i><p>${msg[1]}</p>${homeTab==='all'?'<p style="font-size:13px;margin-top:6px">กด + เพื่อสร้างงาน งานประจำ หรือนัดหมาย</p>':''}</div>`;
+  }
   el.innerHTML=html;
+  const on=el.querySelector('.home-tab.on'),row=el.querySelector('.home-tabs');
+  if(on&&row)row.scrollLeft=Math.max(0,on.offsetLeft-row.clientWidth/2+on.offsetWidth/2);
 }
 function homeOpenAppt(id){
   const b=(db.broadcasts||[]).find(x=>x.id===id);if(!b)return;
