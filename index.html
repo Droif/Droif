@@ -350,6 +350,26 @@ body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:r
 @media (prefers-reduced-motion:reduce){.char *,.char-fig{animation:none!important}}
 html.desk .char{width:128px}
 
+/* ── PROBATION / TRIAL ── */
+.prob-badge{display:inline-flex;align-items:center;gap:2px;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;background:#E8F6E9;color:#2E7D32;vertical-align:middle;margin-left:4px}
+.trial-badge{font-size:11px;display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:20px;background:#E8F6E9;color:#2E7D32;font-weight:700}
+.crit-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.crit-row:last-child{border-bottom:none}
+.crit-text{flex:1;font-size:13px;color:var(--text);min-width:0}
+.crit-stars{display:flex;gap:1px;flex-shrink:0}
+.crit-stars button{border:none;background:none;padding:2px;font-size:20px;line-height:1;cursor:pointer}
+.result-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.result-btn{padding:9px 4px;border-radius:10px;border:0.5px solid var(--border);background:var(--surface);font-size:12px;font-weight:700;color:var(--text2);cursor:pointer}
+.result-btn.sel.pass{background:#E8F6E9;border-color:#2E7D32;color:#2E7D32}
+.result-btn.sel.improve{background:var(--amber-light);border-color:var(--amber);color:var(--amber)}
+.result-btn.sel.fail{background:var(--red-light);border-color:var(--red);color:var(--red)}
+.prob-card{margin:12px 16px 0;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px}
+.prob-bar{height:8px;border-radius:4px;background:var(--gray-light);overflow:hidden;margin:6px 0}
+.prob-bar>div{height:100%;background:#2E7D32;border-radius:4px}
+.bc-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.bc-act{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:20px;font-size:12px;font-weight:700;border:0.5px solid var(--border);background:var(--surface);color:var(--purple-dark);cursor:pointer;text-decoration:none}
+.bc-act.line{background:#06C755;border-color:#06C755;color:#fff}
+
 /* ── HOME TABS ── */
 .home-tabs{position:sticky;top:0;z-index:5;background:var(--bg);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:10px 12px 8px}
 .home-tabs::-webkit-scrollbar{display:none}
@@ -366,7 +386,7 @@ html.desk #home-body .home-tabs{grid-column:1/-1;padding-left:0;padding-right:0;
 html.desk #home-body .home-empty{grid-column:1/-1}
 
 /* ── SEGMENT / STARS / WORK LINK ── */
-.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:14px 18px 0}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:14px 18px 0}
 .seg-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--bg);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer}
 .seg-btn i{font-size:20px}
 .seg-btn.sel{background:var(--purple-light);border-color:var(--purple-border);color:var(--purple-dark)}
@@ -580,6 +600,7 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
       <button class="chip" onclick="setFilter(this,'blocked')"><i class="ti ti-alert-triangle" style="font-size:12px"></i> ติดปัญหา</button>
       <button class="chip" onclick="setFilter(this,'review')">รอตรวจ</button>
       <button class="chip" onclick="setFilter(this,'done')">เสร็จแล้ว</button>
+      <button class="chip" onclick="setFilter(this,'trial')"><i class="ti ti-plant-2" style="font-size:12px"></i> ทดลองงาน</button>
     </div>
     <div id="task-list"></div>
   </div>
@@ -653,7 +674,8 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
     </div>
     <!-- Filter chips -->
     <div class="chip-row" id="bc-filter-chips">
-      <button class="chip on" onclick="setBcFilter(this,'all')">ทั้งหมด</button>
+      <button class="chip on" data-f="all" onclick="setBcFilter(this,'all')">ทั้งหมด</button>
+      <button class="chip" data-f="mine" onclick="setBcFilter(this,'mine')">📥 ถึงฉัน<span class="bc-unread-badge" id="bc-mine-count" style="display:none"></span></button>
       <button class="chip" onclick="setBcFilter(this,'meet')">🗓 ประชุม</button>
       <button class="chip" onclick="setBcFilter(this,'task')">📋 มอบหมาย</button>
       <button class="chip" onclick="setBcFilter(this,'remind')">⏰ เตือน</button>
@@ -709,6 +731,7 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
     <div class="seg">
       <button class="seg-btn sel" id="nt-task" onclick="pickNewType('task')"><i class="ti ti-clipboard-plus"></i>งาน</button>
       <button class="seg-btn" id="nt-recur" onclick="pickNewType('recur')"><i class="ti ti-repeat"></i>งานประจำ</button>
+      <button class="seg-btn" id="nt-trial" onclick="pickNewType('trial')"><i class="ti ti-plant-2"></i>ทดลองงาน</button>
       <button class="seg-btn" id="nt-appt" onclick="pickNewType('appt')"><i class="ti ti-calendar-event"></i>นัดหมาย</button>
     </div>
     <div class="sheet-body" id="n-task-fields">
@@ -721,6 +744,13 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
         </div>
         <div id="n-first-due" style="font-size:12px;color:var(--purple-dark);margin-top:8px;font-weight:600"></div>
         <div style="font-size:12px;color:var(--text3);margin-top:4px">ส่งมอบเสร็จแล้ว ระบบจะสร้างรอบถัดไปให้อัตโนมัติ</div>
+      </div>
+      <div id="n-trial-wrap" style="display:none;background:#F2FAF2;border:0.5px solid #CDE8CF;border-radius:var(--radius-sm);padding:12px;margin-bottom:4px">
+        <div style="font-size:12px;color:#2E7D32;font-weight:600;line-height:1.5"><i class="ti ti-plant-2"></i> งานสำหรับพนักงานทดลองงาน — พี่เลี้ยงจะประเมินตามเกณฑ์ทีละข้อ (1–5 ดาว) และสรุปผลไว้ในหน้าทีม</div>
+        <label class="f-label">พี่เลี้ยง / ผู้ประเมิน</label>
+        <select class="f-select" id="n-mentor"></select>
+        <label class="f-label">เกณฑ์ประเมิน (บรรทัดละ 1 ข้อ)</label>
+        <textarea class="f-textarea" id="n-criteria" style="min-height:96px"></textarea>
       </div>
       <label class="f-label">ชื่องาน</label>
       <input class="f-input" id="n-name" placeholder="เช่น แบนเนอร์โปรโมชั่น">
@@ -1014,7 +1044,9 @@ function applyRemote(ev){
     else if(localDirty){arr[idx]=merge3(synced[key]?JSON.parse(synced[key]):null,arr[idx],item);schedulePush();}
     else arr[idx]=item;
     synced[key]=J(item);
-    if(k==='activityLog'&&ev.eventType==='INSERT'&&item.actor&&item.actor!==currentUser&&currentUser)
+    if(k==='broadcasts'&&idx<0&&item.auto&&currentUser&&(item.to||[]).includes(currentUser)&&item.from!==currentUser){
+      showToast(`📋 ${item.from} มอบงานให้คุณ: ${item.taskName||item.subject}`);try{if(navigator.vibrate&&(!navigator.userActivation||navigator.userActivation.hasBeenActive))navigator.vibrate([120,60,120]);}catch(_){}
+    }else if(k==='activityLog'&&ev.eventType==='INSERT'&&item.actor&&item.actor!==currentUser&&currentUser)
       showToast(`${item.actor} ${item.action}${item.target&&item.target!=='ระบบ'&&item.target!=='ทีม'?' · '+item.target:''}`);
   }
   saveLocal();saveSynced();refreshUI();
@@ -1213,7 +1245,7 @@ function switchPage(p){
   if(p==='notif')renderNotif();
   if(p==='kpi')renderKPI();
   if(p==='timeline')renderTimeline();
-  if(p==='broadcast'){renderBroadcast();document.getElementById('bc-fab').classList.add('visible');}
+  if(p==='broadcast'){if(bcUnreadCount()&&bcFilter==='all'){bcFilter='mine';document.querySelectorAll('#bc-filter-chips .chip').forEach(b=>b.classList.toggle('on',b.dataset.f==='mine'));}renderBroadcast();document.getElementById('bc-fab').classList.add('visible');}
   else document.getElementById('bc-fab').classList.remove('visible');
   document.getElementById('scroll-area').scrollTop=0;
 }
@@ -1228,6 +1260,7 @@ function getFiltered(){
     if(boardFilter==='blocked')return t.status==='blocked';
     if(boardFilter==='review')return t.status==='review';
     if(boardFilter==='done')return t.status==='done';
+    if(boardFilter==='trial')return !!t.trial;
     if(boardFilter==='all')return t.status!=='done';
     return true;
   });
@@ -1253,6 +1286,7 @@ function renderTasks(){
         <div class="card-footer">
           ${sPill(t.status)}
           ${fmtDue(t.due)}
+          ${t.trial?`<span class="trial-badge"><i class="ti ti-plant-2" style="font-size:11px"></i>ทดลองงาน</span>`:''}
           ${t.recur?`<span class="recur-badge"><i class="ti ti-repeat" style="font-size:11px"></i>${recurLabel(t)}</span>`:''}
           ${(t.checklist||[]).length?`<span class="ck-badge"><i class="ti ti-checkbox" style="font-size:11px"></i>${t.checklist.filter(i=>i.done).length}/${t.checklist.length}</span>`:''}
           ${t.rating?`<span class="rate-badge"><i class="ti ti-star-filled" style="font-size:11px"></i>${t.rating.stars}</span>`:''}
@@ -1309,7 +1343,7 @@ function renderInfoTab(t){
   ${t.note?`<div style="background:var(--bg);border-radius:var(--radius-sm);padding:12px;font-size:13px;color:var(--text2);margin-top:8px;white-space:pre-wrap">${linkify(t.note)}${mediaRow(urlsIn(t.note))}</div>`:''}
   ${renderChecklistBox(t)}
   ${renderWorkBox(t)}
-  ${t.status==='done'?renderRatingBox(t):''}
+  ${t.trial?renderTrialBox(t):(t.status==='done'?renderRatingBox(t):'')}
   ${isLead()?renderLeadTools(t):''}`;
 }
 function renderLeadTools(t){
@@ -1379,7 +1413,7 @@ function toggleAss(taskId,name){
   const t=db.tasks.find(x=>x.id===taskId);if(!t)return;
   if(!t.assignees)t.assignees=[];
   if(t.assignees.includes(name)){if(t.assignees.length<=1){showToast('ต้องมีผู้รับผิดชอบอย่างน้อย 1 คน');return;}t.assignees=t.assignees.filter(a=>a!==name);}
-  else t.assignees.push(name);
+  else{t.assignees.push(name);notifyNewTask(t,[name],'มอบหมายงานเพิ่ม');}
   addAct(currentUser,'แก้ไขผู้รับผิดชอบ',t.name,t.id,'member');
   const ae=document.getElementById(`ass-editor-${taskId}`);
   if(ae)ae.innerHTML=db.members.map(m=>{const sel=t.assignees.includes(m.name);return`<button class="m-chip ${sel?'sel':''}" onclick="toggleAss(${taskId},'${m.name}')">${avHTML(m.name,18)}<span>${m.name}</span>${sel?'<i class="ti ti-check" style="font-size:12px;color:var(--purple-dark)"></i>':''}</button>`;}).join('');
@@ -1574,8 +1608,10 @@ function spawnNextRecurring(t){
   t.recurSpawned=true;
   const due=nextDue(t);const tt=ts();
   const n={id:uid(),name:t.name,client:t.client,assignees:[...(t.assignees||[])],due,priority:t.priority,status:'new',step:0,note:t.note,recur:t.recur,recurDay:t.recur==='daily'?null:recurDayOf(t),links:[],comments:[],log:[{time:tt,user:currentUser,action:`สร้างรอบถัดไป (${recurLabel(t)})`,icon:'ti-repeat',color:'#185FA5'}]};
+  if(t.trial){n.trial=true;n.mentor=t.mentor;n.criteria=(t.criteria||[]).map(c=>({id:uid(),text:c.text,score:0}));}
   db.tasks.unshift(n);
   addAct(currentUser,`สร้างงานประจำรอบถัดไป (${fmtThaiDate(due)})`,n.name,n.id,'create');
+  notifyNewTask(n,n.assignees,'งานประจำรอบใหม่');
 }
 
 /* ── MEDIA PREVIEW (Google Drive / YouTube / ไฟล์รูป-วิดีโอตรง) ──
@@ -1908,6 +1944,106 @@ function kpiStageHTML(allScores){
   return`<div class="kpi-stage"><div class="kpi-stage-title">ทีมของเรา · KPI เดือนนี้</div><div class="chars">${allScores.map(({m,k})=>charHTML(m,k.score,{click:true,sub:gradeLabel(k.score)})).join('')}</div></div>`;
 }
 
+/* ── แจ้งเตือนงานใหม่ไปยังผู้รับ (ขึ้นในแจ้งทีม + หน้าแรก + realtime toast) ── */
+function notifyNewTask(t,names,kind){
+  const to=(names||[]).filter(n=>n&&n!==currentUser);
+  if(!to.length)return[];
+  if(!db.broadcasts)db.broadcasts=[];
+  const lines=[`ผู้รับ: ${(t.assignees||[]).join(', ')}`];
+  if(t.client&&t.client!=='-')lines.push(`ลูกค้า: ${t.client}`);
+  if(t.due)lines.push(`กำหนดส่ง: ${fmtThaiDate(t.due)} (${whenLabel(t.due)})`);
+  if(t.priority==='high')lines.push('ความสำคัญ: 🔥 ด่วน');
+  if(t.recur)lines.push(`ทำซ้ำ: ${recurLabel(t)}`);
+  if(t.trial)lines.push(`พี่เลี้ยง: ${t.mentor||'-'} · เกณฑ์ ${(t.criteria||[]).length} ข้อ`);
+  if(t.note)lines.push(`หมายเหตุ: ${t.note}`);
+  db.broadcasts.push({id:uid(),type:'task',auto:true,taskId:t.id,taskName:t.name,from:currentUser,to,
+    subject:`${kind==='งานทดลองงาน'?'🌱 ':''}${kind}: ${t.name}`,message:lines.join('\n'),date:t.due||'',time:'',links:[],readBy:[currentUser],time_sent:ts()});
+  return to;
+}
+function appUrl(){return location.origin+location.pathname;}
+function shareBcToLine(id){
+  const b=(db.broadcasts||[]).find(x=>x.id===id);if(!b)return;
+  const text=`📋 ${b.subject}\n${b.message}\n\nเปิดใน GraphFlow: ${appUrl()}`;
+  window.open('https://line.me/R/share?text='+encodeURIComponent(text),'_blank');
+}
+
+/* ── ทดลองงาน: ประเมินตามเกณฑ์ ── */
+const TRIAL_CRITERIA=['ทำตามโจทย์ / brief ครบถ้วน','ส่งงานตรงเวลา','คุณภาพงานออกแบบ','การสื่อสารและการรับ feedback','ความรับผิดชอบและการเรียนรู้'];
+const TRIAL_RESULTS={pass:'ผ่าน',improve:'ควรปรับปรุง',fail:'ไม่ผ่าน'};
+function canEvaluate(t){return isLead()||t.mentor===currentUser;}
+function trialAvg(t){const sc=(t.criteria||[]).map(c=>c.score).filter(x=>x>0);return sc.length?sc.reduce((a,b)=>a+b,0)/sc.length:0;}
+function renderTrialBox(t){
+  const can=canEvaluate(t)&&['review','approved','done'].includes(t.status);
+  const ev=t.trialEval||{},avg=trialAvg(t);
+  return`<div class="work-box" style="background:#F6FBF6;border-color:#CDE8CF">
+    <div class="sheet-section" style="margin-bottom:4px;display:flex;justify-content:space-between;color:#2E7D32"><span><i class="ti ti-plant-2"></i> ประเมินทดลองงาน</span><span>${avg?avg.toFixed(1)+' / 5':''}</span></div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:4px">พี่เลี้ยง: ${esc(t.mentor||'-')}${can?'':(['review','approved','done'].includes(t.status)?' · เฉพาะพี่เลี้ยง/หัวหน้าที่ประเมินได้':' · ประเมินได้เมื่อส่งตรวจแล้ว')}</div>
+    ${(t.criteria||[]).map(c=>`<div class="crit-row"><div class="crit-text">${esc(c.text)}</div><div class="crit-stars">${[1,2,3,4,5].map(i=>can?`<button onclick="rateCriterion(${t.id},${c.id},${i})" aria-label="${i} ดาว"><i class="ti ti-star${i<=c.score?'-filled':''}" style="color:${i<=c.score?'#EF9F27':'#D3D1C7'}"></i></button>`:`<i class="ti ti-star${i<=c.score?'-filled':''}" style="font-size:16px;color:${i<=c.score?'#EF9F27':'#D3D1C7'}"></i>`).join('')}</div></div>`).join('')}
+    ${can?`<label class="f-label">ความเห็นพี่เลี้ยง</label><textarea class="f-textarea" id="tev-note-${t.id}" style="min-height:64px" placeholder="จุดเด่น / สิ่งที่ควรพัฒนา">${esc(ev.note||'')}</textarea>
+      <div class="result-seg">${Object.entries(TRIAL_RESULTS).map(([k,l])=>`<button class="result-btn ${k} ${ev.result===k?'sel':''}" onclick="saveTrialEval(${t.id},'${k}')">${l}</button>`).join('')}</div>`
+      :(ev.note||ev.result?`<div style="margin-top:8px;font-size:13px;color:var(--text2);white-space:pre-wrap">${ev.result?`<b>ผล: ${TRIAL_RESULTS[ev.result]}</b>\n`:''}${esc(ev.note||'')}</div>`:'')}
+    ${ev.by?`<div style="font-size:11px;color:var(--text3);margin-top:6px">ประเมินโดย ${esc(ev.by)} · ${esc(ev.time)}</div>`:''}
+  </div>`;
+}
+function syncTrialRating(t){
+  const avg=trialAvg(t);
+  if(t.status==='done'&&avg&&(t.criteria||[]).every(c=>c.score>0)){
+    const stars=Math.max(1,Math.min(5,Math.round(avg)));
+    if(!t.rating||t.rating.stars!==stars)t.rating={stars,by:currentUser,time:ts(),seenBy:[currentUser]};
+  }
+}
+function rateCriterion(tid,cid,score){
+  const t=db.tasks.find(x=>x.id===tid);if(!t||!canEvaluate(t))return;
+  const c=(t.criteria||[]).find(x=>x.id===cid);if(!c)return;
+  c.score=score;syncTrialRating(t);saveDb();renderDetailSheet(t);renderTasks();renderHome();
+}
+function saveTrialEval(tid,result){
+  const t=db.tasks.find(x=>x.id===tid);if(!t||!canEvaluate(t))return;
+  if((t.criteria||[]).some(c=>!c.score)){showToast('ให้ดาวให้ครบทุกเกณฑ์ก่อน');return;}
+  const note=(document.getElementById('tev-note-'+tid)||{}).value||'';
+  t.trialEval={result,note:note.trim(),by:currentUser,time:ts()};
+  syncTrialRating(t);
+  t.log.push({time:ts(),user:currentUser,action:`ประเมินทดลองงาน: ${TRIAL_RESULTS[result]} (${trialAvg(t).toFixed(1)}/5)`,icon:'ti-plant-2',color:'#2E7D32'});
+  addAct(currentUser,`ประเมินทดลองงาน: ${TRIAL_RESULTS[result]}`,t.name,t.id,'done');
+  saveDb();renderDetailSheet(t);renderAll();showToast('บันทึกผลประเมินแล้ว ✓');
+}
+/* สถานะพนักงานทดลองงาน (หัวหน้าตั้งในหน้าทีม) */
+const PROB_DAYS=119;
+function setProbation(name,on){
+  if(!isLead())return;
+  const m=db.members.find(x=>x.name===name);if(!m)return;
+  if(on){m.probation=true;m.probStart=(document.getElementById('prob-start')||{}).value||todayStr();}
+  else{if(!confirm(`ยืนยัน ${name} ผ่านการทดลองงาน?`))return;m.probation=false;m.probPassed=todayStr();}
+  addAct(currentUser,on?`ตั้ง ${name} เป็นพนักงานทดลองงาน`:`${name} ผ่านการทดลองงาน`,'ทีม',null,'member');
+  saveDb();renderAll();viewMemberDetail(name);
+}
+function probationCardHTML(m){
+  const trials=db.tasks.filter(t=>t.trial&&(t.assignees||[]).includes(m.name));
+  const done=trials.filter(t=>t.status==='done');
+  const scored=trials.filter(t=>trialAvg(t)>0);
+  const avg=scored.length?scored.reduce((a,t)=>a+trialAvg(t),0)/scored.length:0;
+  const byCrit={};trials.forEach(t=>(t.criteria||[]).forEach(c=>{if(c.score){(byCrit[c.text]=byCrit[c.text]||[]).push(c.score);}}));
+  const results=trials.filter(t=>t.trialEval&&t.trialEval.result).map(t=>t.trialEval.result);
+  const day=m.probStart?Math.min(PROB_DAYS,Math.max(0,-daysUntil(m.probStart))):0;
+  const lead=isLead();
+  if(!m.probation&&!trials.length){
+    return lead&&m.name!==currentUser?`<div class="prob-card"><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px"><i class="ti ti-plant-2" style="color:#2E7D32"></i> พนักงานทดลองงาน</div>
+      <div style="display:flex;gap:8px;align-items:center"><input class="f-input" type="date" id="prob-start" value="${todayStr()}" style="flex:1"><button class="accept-btn" style="background:#2E7D32;padding:10px 14px" onclick="setProbation('${esc(m.name)}',true)">ตั้งเป็นทดลองงาน</button></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:6px">เลือกวันเริ่มงาน ระบบนับ ${PROB_DAYS} วัน</div></div>`:'';
+  }
+  return`<div class="prob-card" style="border-color:#CDE8CF;background:#F6FBF6">
+    <div style="display:flex;align-items:center;justify-content:space-between"><div style="font-size:14px;font-weight:700;color:#2E7D32"><i class="ti ti-plant-2"></i> ${m.probation?'กำลังทดลองงาน':'ผ่านทดลองงานแล้ว'+(m.probPassed?' ('+fmtThaiDate(m.probPassed)+')':'')}</div>${avg?`<div style="font-size:13px;font-weight:800;color:#B7791F">⭐ ${avg.toFixed(1)}/5</div>`:''}</div>
+    ${m.probation&&m.probStart?`<div style="font-size:12px;color:var(--text3);margin-top:4px">เริ่ม ${fmtThaiDate(m.probStart)} · วันที่ ${day}/${PROB_DAYS} · เหลือ ${PROB_DAYS-day} วัน</div><div class="prob-bar"><div style="width:${Math.round(day/PROB_DAYS*100)}%"></div></div>`:''}
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;text-align:center">
+      <div class="stat-card" style="padding:8px"><div class="stat-num" style="font-size:20px">${trials.length}</div><div class="stat-label">งานทดลอง</div></div>
+      <div class="stat-card" style="padding:8px"><div class="stat-num" style="font-size:20px;color:var(--green)">${done.length}</div><div class="stat-label">เสร็จ</div></div>
+      <div class="stat-card" style="padding:8px"><div class="stat-num" style="font-size:20px;color:#2E7D32">${results.filter(r=>r==='pass').length}</div><div class="stat-label">ผ่านเกณฑ์</div></div>
+    </div>
+    ${Object.keys(byCrit).length?`<div style="margin-top:10px">${Object.entries(byCrit).map(([k,v])=>{const a=v.reduce((x,y)=>x+y,0)/v.length;return`<div class="crit-row"><div class="crit-text">${esc(k)}</div><div style="font-size:12px;font-weight:700;color:#B7791F;white-space:nowrap">${starsHTML(Math.round(a),12)} ${a.toFixed(1)}</div></div>`;}).join('')}</div>`:'<div style="font-size:12px;color:var(--text3);margin-top:8px">ยังไม่มีผลประเมิน — มอบงานผ่านปุ่ม + → ทดลองงาน</div>'}
+    ${lead&&m.probation?`<button class="outline-btn" style="margin-top:10px;color:#2E7D32;border-color:#2E7D32" onclick="setProbation('${esc(m.name)}',false)"><i class="ti ti-circle-check"></i> ผ่านการทดลองงาน</button>`:''}
+  </div>`;
+}
+
 /* ── WORK LINKS ── */
 function workLinks(t){return(t.links||[]).filter(l=>l.work);}
 function pushWorkLink(t,url){
@@ -1970,14 +2106,23 @@ function markRatingSeen(id){
 let newType='task';let apTo=new Set();let apLinks=[];
 function pickNewType(tp){
   newType=tp;
-  ['task','recur','appt'].forEach(x=>document.getElementById('nt-'+x).classList.toggle('sel',x===tp));
+  ['task','recur','trial','appt'].forEach(x=>document.getElementById('nt-'+x).classList.toggle('sel',x===tp));
+  document.getElementById('n-trial-wrap').style.display=tp==='trial'?'block':'none';
+  if(tp==='trial'){
+    const leads=db.members.filter(m=>!m.probation);
+    document.getElementById('n-mentor').innerHTML=leads.map(m=>`<option value="${esc(m.name)}" ${m.name===currentUser?'selected':''}>${esc(m.name)}${m.position?' · '+esc(m.position):''}</option>`).join('');
+    document.getElementById('n-criteria').value=TRIAL_CRITERIA.join('\n');
+    const probs=db.members.filter(m=>m.probation).map(m=>m.name);
+    if(probs.length)selectedNewMembers=new Set(probs.slice(0,1));
+    renderNewMemberChips();
+  }
   document.getElementById('n-task-fields').style.display=tp==='appt'?'none':'block';
   document.getElementById('n-appt-fields').style.display=tp==='appt'?'block':'none';
   document.getElementById('n-recur-wrap').style.display=tp==='recur'?'block':'none';
   document.getElementById('n-due-wrap').style.display=tp==='recur'?'none':'block';
   if(tp==='recur')fillRecurDay('n-recur','n-recur-day','n-recur-day-wrap');
-  document.getElementById('new-sheet-title').textContent=tp==='appt'?'สร้างนัดหมาย':tp==='recur'?'สร้างงานประจำ':'สร้างงานใหม่';
-  document.getElementById('n-create-btn').textContent=tp==='recur'?'สร้างงานประจำ':'สร้างงาน';
+  document.getElementById('new-sheet-title').textContent=tp==='appt'?'สร้างนัดหมาย':tp==='recur'?'สร้างงานประจำ':tp==='trial'?'มอบงานทดลองงาน':'สร้างงานใหม่';
+  document.getElementById('n-create-btn').textContent=tp==='recur'?'สร้างงานประจำ':tp==='trial'?'มอบงานทดลองงาน':'สร้างงาน';
   if(tp==='appt'){
     apTo=new Set(db.members.filter(m=>m.name!==currentUser).map(m=>m.name));apLinks=[];
     ['ap-subject','ap-message','ap-link-url','ap-time'].forEach(i=>document.getElementById(i).value='');
@@ -2031,7 +2176,7 @@ function homeData(){
   const toRate=lead?db.tasks.filter(t=>t.status==='done'&&!t.rating):[];
   const rated=db.tasks.filter(t=>t.rating&&(mine(t)||lead)).sort((a,b)=>b.id-a.id).slice(0,10);
   const fb=notifications.filter(n=>!n.isBroadcast&&!n.read);
-  const news=(db.broadcasts||[]).filter(b=>b.type!=='meet'&&b.to.includes(me)&&!(b.readBy||[]).includes(me)).slice().reverse();
+  const news=(db.broadcasts||[]).filter(b=>b.type!=='meet'&&!b.auto&&b.to.includes(me)&&!(b.readBy||[]).includes(me)).slice().reverse();
   const fresh=db.tasks.filter(t=>t.status==='new'&&(mine(t)||lead)).sort((a,b)=>b.id-a.id);
   return{appts,due,review,toRate,rated,fb,news,fresh};
 }
@@ -2048,7 +2193,7 @@ function homeSec(id,icon,bg,color,title,count,body){
 function linkPills(links){return(links||[]).map(l=>`<a class="home-link" href="${esc(l.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><i class="ti ${l.icon||'ti-link'}" style="color:${l.color||'var(--text2)'}"></i>${esc(l.label)}<i class="ti ti-external-link" style="font-size:11px"></i></a>`).join('');}
 let homeTab='all';
 function setHomeTab(t){homeTab=t;renderHome();document.getElementById('scroll-area').scrollTop=0;}
-function assigneeChips(t){return`<div class="assignee-row"><span style="font-size:12px;color:var(--text3)">ผู้รับ:</span>${(t.assignees||[]).map(n=>`<span class="assignee-chip ${n===currentUser?'me':''}">${avHTML(n,20)}${esc(n)}${n===currentUser?' (คุณ)':''}</span>`).join('')||'<span style="font-size:12px;color:var(--red)">ยังไม่มีผู้รับ</span>'}</div>`;}
+function assigneeChips(t){return`<div class="assignee-row"><span style="font-size:12px;color:var(--text3)">ผู้รับ:</span>${(t.assignees||[]).map(n=>`<span class="assignee-chip ${n===currentUser?'me':''}">${avHTML(n,20)}${esc(n)}${n===currentUser?' (คุณ)':''}${getM(n).probation?' 🌱':''}</span>`).join('')||'<span style="font-size:12px;color:var(--red)">ยังไม่มีผู้รับ</span>'}</div>`;}
 function homeAccept(id){
   const t=db.tasks.find(x=>x.id===id);if(!t||t.status!=='new')return;
   if(!(t.assignees||[]).includes(currentUser)){showToast('งานนี้ไม่ได้มอบให้คุณ');return;}
@@ -2165,7 +2310,8 @@ function openNewTaskSheet(){
 }
 function renderNewMemberChips(){
   const el=document.getElementById('n-members');if(!el)return;
-  el.innerHTML=db.members.map(m=>`<button class="m-chip ${selectedNewMembers.has(m.name)?'sel':''}" onclick="toggleNewM('${m.name}')">${avHTML(m.name,18)}<span>${m.name}</span>${selectedNewMembers.has(m.name)?'<i class="ti ti-check" style="font-size:12px;color:var(--purple-dark)"></i>':''}</button>`).join('');
+  const ms=newType==='trial'?[...db.members].sort((a,b)=>(b.probation?1:0)-(a.probation?1:0)):db.members;
+  el.innerHTML=ms.map(m=>`<button class="m-chip ${selectedNewMembers.has(m.name)?'sel':''}" onclick="toggleNewM('${m.name}')">${avHTML(m.name,18)}<span>${m.name}${m.probation?' 🌱':''}</span>${selectedNewMembers.has(m.name)?'<i class="ti ti-check" style="font-size:12px;color:var(--purple-dark)"></i>':''}</button>`).join('');
 }
 function toggleNewM(name){if(selectedNewMembers.has(name))selectedNewMembers.delete(name);else selectedNewMembers.add(name);renderNewMemberChips();}
 function createTask(){
@@ -2178,9 +2324,17 @@ function createTask(){
   const task={id:uid(),name,client:document.getElementById('n-client').value.trim()||'-',assignees:Array.from(selectedNewMembers),due:document.getElementById('n-due').value,priority:document.getElementById('n-priority').value,status:'new',step:0,note:document.getElementById('n-note').value,recur:newType==='recur'?document.getElementById('n-recur').value:'',recurDay,links:[],comments:[],log:[{time:tt,user:currentUser,action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'}]};
   const nl=safeUrl(document.getElementById('n-link').value);
   if(nl){const ft=detectFT(nl);task.links.push({id:uid(),name:(mediaInfo(nl)||{}).label||ft.label,url:nl,addedBy:currentUser,time:tt});}
+  if(newType==='trial'){
+    const crit=document.getElementById('n-criteria').value.split('\n').map(x=>x.trim()).filter(Boolean);
+    if(!crit.length){showToast('กรุณาใส่เกณฑ์ประเมินอย่างน้อย 1 ข้อ');return;}
+    task.trial=true;task.mentor=document.getElementById('n-mentor').value||currentUser;
+    task.criteria=crit.map(text=>({id:uid(),text,score:0}));
+  }
   db.tasks.unshift(task);
-  addAct(currentUser,'สร้างงาน',name,task.id,'create');
-  closeSheet('new');saveDb();renderTasks();showToast('สร้างงานใหม่เรียบร้อย ✓');
+  addAct(currentUser,task.trial?'มอบงานทดลองงาน':'สร้างงาน',name,task.id,'create');
+  const notified=notifyNewTask(task,task.assignees,task.trial?'งานทดลองงาน':'งานใหม่');
+  closeSheet('new');saveDb();renderAll();
+  showToast(notified.length?`สร้างงานแล้ว · แจ้ง ${notified.join(', ')} แล้ว ✓`:'สร้างงานใหม่เรียบร้อย ✓');
 }
 
 /* ── ME SHEET ── */
@@ -2298,7 +2452,7 @@ function renderTeam(){
     return`<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--surface);border-bottom:0.5px solid var(--border);cursor:pointer" onclick="viewMemberDetail('${m.name}')">
       ${avHTML(m.name,40)}
       <div style="flex:1">
-        <div style="font-size:15px;font-weight:600;color:var(--text)">${m.name}${m.name===currentUser?'<span style="color:var(--purple);font-size:13px"> (คุณ)</span>':''}</div>
+        <div style="font-size:15px;font-weight:600;color:var(--text)">${esc(m.name)}${m.name===currentUser?'<span style="color:var(--purple);font-size:13px"> (คุณ)</span>':''}${m.probation?'<span class="prob-badge">🌱 ทดลองงาน</span>':''}</div>
         <div style="font-size:12px;color:var(--text3)">${m.position?esc(m.position)+' · ':''}${roleLabel(m)}</div>
         ${contactHTML(m)}
         <div style="display:flex;gap:7px;margin-top:5px">
@@ -2319,9 +2473,10 @@ function viewMemberDetail(name){
     <div style="background:var(--surface);border-bottom:0.5px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px">
       <button onclick="switchPage('team')" style="width:36px;height:36px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-arrow-left" style="font-size:20px;color:var(--text)"></i></button>
       ${avHTML(name,40)}
-      <div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:700;color:var(--text)">${esc(name)}</div><div style="font-size:12px;color:var(--text3)">${m.position?esc(m.position)+' · ':''}${roleLabel(m)}</div>${contactHTML(m)}</div>
+      <div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:700;color:var(--text)">${esc(name)}${m.probation?'<span class="prob-badge">🌱 ทดลองงาน</span>':''}</div><div style="font-size:12px;color:var(--text3)">${m.position?esc(m.position)+' · ':''}${roleLabel(m)}</div>${contactHTML(m)}</div>
     </div>
     <div class="kpi-stage" style="margin:12px 16px 0"><div class="chars">${charHTML(m,calcKPI(name).score,{sub:'KPI '+calcKPI(name).score+' · '+gradeLabel(calcKPI(name).score)})}</div></div>
+    ${probationCardHTML(m)}
     <div class="member-stats">
       <div class="stat-card"><div class="stat-num" style="color:var(--amber)">${active.length}</div><div class="stat-label">งานอยู่ระหว่างทำ</div></div>
       <div class="stat-card"><div class="stat-num" style="color:var(--green)">${done.length}</div><div class="stat-label">งานเสร็จแล้ว</div></div>
@@ -2662,7 +2817,8 @@ function renderBroadcast(){
   const el=document.getElementById('broadcast-feed');if(!el)return;
   updateBcDot();
   const all=(db.broadcasts||[]).slice().reverse();
-  const filtered=bcFilter==='all'?all:all.filter(b=>b.type===bcFilter);
+  const filtered=bcFilter==='all'?all:bcFilter==='mine'?all.filter(b=>b.to.includes(currentUser)):all.filter(b=>b.type===bcFilter);
+  const mc=document.getElementById('bc-mine-count');if(mc){const n=bcUnreadCount();mc.textContent=n;mc.style.display=n?'inline':'none';}
   if(!filtered.length){
     el.innerHTML=`<div style="text-align:center;padding:48px 24px;color:var(--text3)"><div style="font-size:48px;margin-bottom:12px">📭</div><div style="font-size:15px">ยังไม่มีการแจ้ง</div><div style="font-size:13px;margin-top:6px">กด ✏️ เพื่อแจ้งทีม</div></div>`;
     return;
@@ -2703,14 +2859,18 @@ function renderBroadcast(){
             <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:${bt.bg};color:${bt.color}">${bt.label}</span>
             <span style="font-size:11px;color:var(--text3)">${b.time_sent}</span>
           </div>
-          <div class="bc-subject">${b.subject}</div>
+          <div class="bc-subject">${esc(b.subject)}</div>
           <div class="bc-meta" style="margin-top:3px">${avHTML(b.from,18)}&nbsp;<span style="font-weight:600">${b.from===currentUser?'คุณ':b.from}</span> แจ้ง</div>
         </div>
       </div>
       <div class="bc-card-body">
-        <div class="bc-message">${b.message}</div>
+        <div class="bc-message" style="white-space:pre-wrap">${linkify(b.message)}</div>
         ${dtPill}
         ${linksHTML}
+        ${b.taskId||b.from===currentUser?`<div class="bc-actions">
+          ${b.taskId&&db.tasks.find(t=>t.id===b.taskId)?`<button class="bc-act" onclick="event.stopPropagation();markBcRead(${b.id});openDetail(${b.taskId})"><i class="ti ti-external-link"></i>เปิดงาน</button>`:''}
+          <button class="bc-act line" onclick="event.stopPropagation();shareBcToLine(${b.id})"><i class="ti ti-brand-line"></i>ส่งต่อทาง LINE</button>
+        </div>`:''}
         <div style="margin-top:10px;padding-top:8px;border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between">
           <div style="display:flex;flex-wrap:wrap;gap:4px">${toList}</div>
           <div style="font-size:11px;color:var(--text3);white-space:nowrap;flex-shrink:0">อ่านแล้ว ${readCount}/${b.to.length+1}</div>
