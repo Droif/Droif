@@ -348,6 +348,13 @@ body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:r
 .mood-sad .char-fx{animation:float 3s ease-in-out infinite}
 .char-tear{position:absolute;left:50%;top:40px;margin-left:-16px;width:6px;height:9px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:#56CCF2;z-index:4;animation:tear 1.8s ease-in infinite}
 @media (prefers-reduced-motion:reduce){.char *,.char-fig{animation:none!important}}
+.char-pos{font-size:10.5px;color:var(--purple-dark);font-weight:600;max-width:104px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:-1px}
+.char-hair{position:absolute;left:50%;z-index:1;background:#3D2B1F}
+.char-hair.long{top:8px;width:68px;height:78px;margin-left:-34px;border-radius:34px 34px 16px 16px}
+.char-hair.bob{top:6px;width:66px;height:56px;margin-left:-33px;border-radius:33px 33px 18px 18px;box-shadow:0 -3px 0 0 #F2C94C inset}
+.mood-happy .char-hair{animation:headBob .7s ease-in-out infinite}
+.mood-sad .char-hair{animation:droop 4s ease-in-out infinite}
+.g-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 html.desk .char{width:128px}
 
 /* ── PROBATION / TRIAL ── */
@@ -541,8 +548,8 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
       <label class="f-label" style="margin-top:14px">บทบาท</label>
       <div class="role-chips">
         <button class="role-chip sel" id="rc-designer" onclick="pickRole('designer')"><i class="ti ti-pencil"></i>นักออกแบบ</button>
-        <button class="role-chip" id="rc-lead" onclick="pickRole('lead')"><i class="ti ti-crown"></i>หัวหน้าทีม</button>
         <button class="role-chip" id="rc-boss" onclick="pickRole('boss')"><i class="ti ti-star"></i>หัวหน้า</button>
+        <button class="role-chip" id="rc-supervisor" onclick="pickRole('supervisor')"><i class="ti ti-eye"></i>ผู้ดูแล</button>
       </div>
       <div class="err-text" id="new-err" style="margin-top:10px"></div>
       <button class="big-btn" onclick="doCreateMember()">สร้างบัญชี</button>
@@ -621,7 +628,7 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
 
   <!-- TEAM PAGE -->
   <div class="page" id="page-team">
-    <div class="sec-header"><div class="sec-title">ทีม</div></div>
+    <div class="sec-header"><div class="sec-title">ทีม</div><button class="chip" onclick="switchPage('activity')"><i class="ti ti-activity" style="font-size:13px"></i> กิจกรรมทีม</button></div>
     <div id="team-list"></div>
   </div>
 
@@ -669,13 +676,14 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
   <!-- BROADCAST PAGE -->
   <div class="page" id="page-broadcast">
     <div class="sec-header">
-      <div class="sec-title">แจ้งทีม</div>
-      <div class="sec-sub" id="bc-unread-count"></div>
+      <div class="sec-title">แจ้งเตือน <span class="sec-sub" id="bc-unread-count" style="font-weight:500"></span></div>
+      <button style="font-size:13px;color:var(--purple);border:none;background:none;cursor:pointer;padding:4px" onclick="markAllNotifs()">อ่านทั้งหมด</button>
     </div>
     <!-- Filter chips -->
     <div class="chip-row" id="bc-filter-chips">
       <button class="chip on" data-f="all" onclick="setBcFilter(this,'all')">ทั้งหมด</button>
       <button class="chip" data-f="mine" onclick="setBcFilter(this,'mine')">📥 ถึงฉัน<span class="bc-unread-badge" id="bc-mine-count" style="display:none"></span></button>
+      <button class="chip" data-f="fb" onclick="setBcFilter(this,'fb')">💬 Feedback</button>
       <button class="chip" onclick="setBcFilter(this,'meet')">🗓 ประชุม</button>
       <button class="chip" onclick="setBcFilter(this,'task')">📋 มอบหมาย</button>
       <button class="chip" onclick="setBcFilter(this,'remind')">⏰ เตือน</button>
@@ -696,16 +704,14 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
   <button class="nav-btn active" id="nav-home" onclick="switchPage('home')"><i class="ti ti-home"></i><span class="nav-label">หน้าแรก</span><span class="nav-dot" id="home-dot" style="display:none"></span></button>
+  <button class="nav-btn" id="nav-broadcast" onclick="switchPage('broadcast')"><i class="ti ti-bell"></i><span class="nav-label">แจ้งเตือน</span><span class="nav-dot" id="bc-dot" style="display:none"></span></button>
   <button class="nav-btn" id="nav-calendar" onclick="switchPage('calendar')"><i class="ti ti-calendar-month"></i><span class="nav-label">ปฏิทิน</span></button>
-  <button class="nav-btn" id="nav-checklist" onclick="switchPage('checklist')"><i class="ti ti-list-check"></i><span class="nav-label">เช็คลิสต์</span></button>
   <button class="nav-btn" id="nav-board" onclick="switchPage('board')"><i class="ti ti-layout-list"></i><span class="nav-label">งาน</span></button>
-  <button class="nav-btn" id="nav-kpi" onclick="switchPage('kpi')"><i class="ti ti-award"></i><span class="nav-label">KPI</span></button>
   <button class="nav-btn" id="nav-timeline" onclick="switchPage('timeline')"><i class="ti ti-timeline"></i><span class="nav-label">Timeline</span></button>
-  <button class="nav-btn" id="nav-activity" onclick="switchPage('activity')"><i class="ti ti-activity"></i><span class="nav-label">กิจกรรม</span></button>
   <button class="nav-btn" id="nav-team" onclick="switchPage('team')"><i class="ti ti-users"></i><span class="nav-label">ทีม</span></button>
-  <button class="nav-btn" id="nav-broadcast" onclick="switchPage('broadcast')"><i class="ti ti-speakerphone"></i><span class="nav-label">แจ้งทีม</span><span class="nav-dot" id="bc-dot" style="display:none"></span></button>
+  <button class="nav-btn" id="nav-kpi" onclick="switchPage('kpi')"><i class="ti ti-award"></i><span class="nav-label">KPI</span></button>
+  <button class="nav-btn" id="nav-checklist" onclick="switchPage('checklist')"><i class="ti ti-list-check"></i><span class="nav-label">เช็คลิสต์</span></button>
   <button class="nav-btn" id="nav-export" onclick="switchPage('export')"><i class="ti ti-download"></i><span class="nav-label">ส่งออก</span></button>
-  <button class="nav-btn" id="nav-notif" onclick="switchPage('notif')"><i class="ti ti-bell"></i><span class="nav-label">แจ้งเตือน</span><span class="nav-dot" id="notif-dot" style="display:none"></span></button>
 </div>
 
 <!-- COMPOSE FAB -->
@@ -1172,7 +1178,13 @@ function getM(n){return db.members.find(m=>m.name===n)||{name:n,cls:'av-d',init:
 function detectFT(u){return FILE_TYPES.find(f=>f.match(u))||FILE_TYPES[FILE_TYPES.length-1];}
 function addAct(actor,action,target,taskId,type){db.activityLog.unshift({id:uid(),actor,action,target,taskId,type,time:ts()});if(db.activityLog.length>200)db.activityLog=db.activityLog.slice(0,200);saveDb();}
 function initNotifs(){notifications=[];db.tasks.forEach(t=>{t.comments.forEach(c=>{if(!c.resolved&&c.mention===currentUser&&c.author!==currentUser)notifications.push({taskId:t.id,taskName:t.name,comment:c,read:false});});});}
-function isLead(){const r=(db.members.find(m=>m.name===currentUser)||{}).role;return r==='lead'||r==='boss';}
+function myRole(){return(db.members.find(m=>m.name===currentUser)||{}).role;}
+function isLead(){const r=myRole();return r==='boss'||r==='lead';}// 'lead' = บทบาทเก่า (หัวหน้าทีม) ถูกย้ายเป็น boss
+function isSup(){return myRole()==='supervisor';}// ผู้ดูแล: ดู/ติดตาม/คอมเมนต์/ตรวจ แต่ไม่สร้าง-แก้-ลบงาน
+function seesAll(){return isLead()||isSup();}
+function canReview(){return isLead()||isSup();}
+function normalizeMembers(){let ch=false;db.members.forEach(m=>{if(m.role==='lead'){m.role='boss';ch=true;}});if(ch)saveDb();}
+function updateRoleUI(){const b=document.querySelector('.btn-add');if(b)b.style.display=currentUser&&isSup()?'none':'';}
 function fbCount(t){return t.comments.filter(c=>!c.resolved).length;}
 
 function avHTML(name,size=24){const m=getM(name);const ph=m.photo&&m.id?' has-photo avp-'+m.id:'';return`<div class="av ${m.cls}${ph}" style="width:${size}px;height:${size}px;font-size:${Math.round(size*.42)}px" title="${esc(m.name)}">${esc(m.init)}</div>`;}
@@ -1181,10 +1193,12 @@ function syncAvatarStyles(){
   const css=db.members.filter(m=>m.photo&&m.id&&/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(m.photo)).map(m=>`.avp-${String(m.id).replace(/[^A-Za-z0-9_-]/g,'')}{background-image:url("${m.photo}")}`).join('\n');
   if(st.textContent!==css)st.textContent=css;
 }
-const SHIRTS=[['#7F77DD','ม่วง'],['#E24B4A','แดง'],['#EF9F27','ส้ม'],['#F2C94C','เหลือง'],['#1D9E75','เขียว'],['#56CCF2','ฟ้า'],['#378ADD','น้ำเงิน'],['#D4537E','ชมพู'],['#5F5E5A','เทา'],['#2C2C2A','ดำ']];
+const SHIRTS=[['#FFFFFF','ขาว'],['#7F77DD','ม่วง'],['#E24B4A','แดง'],['#EF9F27','ส้ม'],['#F2C94C','เหลือง'],['#1D9E75','เขียว'],['#56CCF2','ฟ้า'],['#378ADD','น้ำเงิน'],['#D4537E','ชมพู'],['#5F5E5A','เทา'],['#2C2C2A','ดำ']];
 const CLS_SHIRT={'av-p':'#7F77DD','av-n':'#1D9E75','av-s':'#EF9F27','av-b':'#E24B4A','av-k':'#378ADD','av-d':'#5F5E5A'};
 function shirtOf(m){return(m&&/^#[0-9A-Fa-f]{6}$/.test(m.shirt||''))?m.shirt:(CLS_SHIRT[m&&m.cls]||'#7F77DD');}
-function roleLabel(m){return m.role==='boss'?'หัวหน้า':m.role==='lead'?'หัวหน้าทีม':'นักออกแบบ';}
+const GENDERS=[['male','ชาย','ti-gender-male'],['female','หญิง','ti-gender-female'],['lgbt','LGBTQ+','ti-rainbow']];
+function genderOf(m){return['male','female','lgbt'].includes(m&&m.gender)?m.gender:'male';}
+function roleLabel(m){return m.role==='boss'||m.role==='lead'?'หัวหน้า':m.role==='supervisor'?'ผู้ดูแล':'นักออกแบบ';}
 function contactHTML(m){
   const tel=String(m.phone||'').replace(/[^0-9+]/g,'');
   const rawLine=String(m.lineId||'').trim();
@@ -1204,7 +1218,7 @@ function buildLoginPick(){syncAvatarStyles();
 function pickLoginMember(n){selectedLoginMember=n;buildLoginPick();}
 function showNewMember(){document.getElementById('lm-pick').style.display='none';document.getElementById('lm-new').style.display='block';}
 function showPickMember(){document.getElementById('lm-pick').style.display='block';document.getElementById('lm-new').style.display='none';}
-function pickRole(r){selectedRole=r;['designer','lead','boss'].forEach(x=>{const e=document.getElementById('rc-'+x);if(e)e.classList.toggle('sel',x===r);});}
+function pickRole(r){selectedRole=r;['designer','boss','supervisor'].forEach(x=>{const e=document.getElementById('rc-'+x);if(e)e.classList.toggle('sel',x===r);});}
 function doLogin(){if(!selectedLoginMember){document.getElementById('login-err').textContent='กรุณาเลือกสมาชิก';return;}loginAs(selectedLoginMember);}
 function doCreateMember(){
   const nick=document.getElementById('new-nick').value.trim();
@@ -1230,6 +1244,7 @@ function doLogout(){if(!confirm('ออกจากระบบ?'))return;stopPr
 
 /* ── PAGE SWITCH ── */
 function switchPage(p){
+  if(p==='notif'){p='broadcast';bcFilter='fb';document.querySelectorAll('#bc-filter-chips .chip').forEach(b=>b.classList.toggle('on',b.dataset.f==='fb'));}
   ['home','calendar','checklist','board','activity','team','export','notif','member-detail','kpi','timeline','broadcast'].forEach(x=>{
     const pe=document.getElementById('page-'+x);if(pe)pe.style.display='none';
     const ne=document.getElementById('nav-'+x);if(ne)ne.classList.remove('active');
@@ -1245,7 +1260,7 @@ function switchPage(p){
   if(p==='notif')renderNotif();
   if(p==='kpi')renderKPI();
   if(p==='timeline')renderTimeline();
-  if(p==='broadcast'){if(bcUnreadCount()&&bcFilter==='all'){bcFilter='mine';document.querySelectorAll('#bc-filter-chips .chip').forEach(b=>b.classList.toggle('on',b.dataset.f==='mine'));}renderBroadcast();document.getElementById('bc-fab').classList.add('visible');}
+  if(p==='broadcast'){if(notifTotal()&&bcFilter==='all'){bcFilter='mine';document.querySelectorAll('#bc-filter-chips .chip').forEach(b=>b.classList.toggle('on',b.dataset.f==='mine'));}renderBroadcast();document.getElementById('bc-fab').classList.add('visible');}
   else document.getElementById('bc-fab').classList.remove('visible');
   document.getElementById('scroll-area').scrollTop=0;
 }
@@ -1411,6 +1426,7 @@ function clearTasks(mode){
 }
 function toggleAss(taskId,name){
   const t=db.tasks.find(x=>x.id===taskId);if(!t)return;
+  if(!isLead()){showToast('เปลี่ยนผู้รับผิดชอบได้เฉพาะหัวหน้า');return;}
   if(!t.assignees)t.assignees=[];
   if(t.assignees.includes(name)){if(t.assignees.length<=1){showToast('ต้องมีผู้รับผิดชอบอย่างน้อย 1 คน');return;}t.assignees=t.assignees.filter(a=>a!==name);}
   else{t.assignees.push(name);notifyNewTask(t,[name],'มอบหมายงานเพิ่ม');}
@@ -1419,6 +1435,7 @@ function toggleAss(taskId,name){
   if(ae)ae.innerHTML=db.members.map(m=>{const sel=t.assignees.includes(m.name);return`<button class="m-chip ${sel?'sel':''}" onclick="toggleAss(${taskId},'${m.name}')">${avHTML(m.name,18)}<span>${m.name}</span>${sel?'<i class="ti ti-check" style="font-size:12px;color:var(--purple-dark)"></i>':''}</button>`;}).join('');
   saveDb();renderTasks();showToast('อัปเดตผู้รับผิดชอบ ✓');
 }
+function actionAllowed(t,key){return key==='approve'||key==='reject'?canReview():canEditTask(t);}
 function renderActionsTab(t){
   const actions=[];
   if(t.status==='new')actions.push({key:'start',label:'รับงาน',icon:'ti-player-play',cls:'primary'});
@@ -1427,13 +1444,15 @@ function renderActionsTab(t){
   if(t.status==='blocked')actions.push({key:'unblock',label:'แก้ปัญหาแล้ว',icon:'ti-player-play',cls:'primary'});
   if(t.status==='review'){actions.push({key:'approve',label:'อนุมัติ',icon:'ti-circle-check',cls:'success'});actions.push({key:'reject',label:'ส่งแก้ไข',icon:'ti-arrow-back',cls:'danger'});}
   if(t.status==='approved')actions.push({key:'done',label:'ส่งมอบเสร็จ',icon:'ti-archive',cls:'success'});
+  const ok=actions.filter(a=>actionAllowed(t,a.key));
   if(!actions.length)return`<div style="text-align:center;padding:24px;color:var(--text3);font-size:14px">งานเสร็จสิ้นแล้ว</div>`;
-  return`<div class="action-grid">${actions.map(a=>`<button class="action-btn ${a.cls}" onclick="doAction(${t.id},'${a.key}')"><i class="ti ${a.icon}"></i>${a.label}</button>`).join('')}</div>`;
+  if(!ok.length)return`<div style="text-align:center;padding:24px;color:var(--text3);font-size:14px">${t.status==='review'?'รอหัวหน้า/ผู้ดูแลตรวจ':'รอผู้รับผิดชอบดำเนินการ'} · ${STATUS_MAP[t.status]}</div>`;
+  return`<div class="action-grid">${ok.map(a=>`<button class="action-btn ${a.cls}" onclick="doAction(${t.id},'${a.key}')"><i class="ti ${a.icon}"></i>${a.label}</button>`).join('')}</div>`;
 }
 function renderCommentsTab(t){
   const cmts=t.comments.map(c=>`<div class="comment-item type-${c.type} ${c.resolved?'comment-resolved':''}">
     <div class="comment-head">${avHTML(c.author,22)}<span class="comment-name">${c.author}</span>
-      ${getM(c.author).role==='boss'?'<span class="pill" style="background:var(--red-light);color:var(--red);font-size:10px">หัวหน้า</span>':''}
+      ${['boss','lead'].includes(getM(c.author).role)?'<span class="pill" style="background:var(--red-light);color:var(--red);font-size:10px">หัวหน้า</span>':getM(c.author).role==='supervisor'?'<span class="pill" style="background:var(--blue-light);color:var(--blue);font-size:10px">ผู้ดูแล</span>':''}
       <span class="cmt-tag ct-${c.type}">${COMMENT_TYPES[c.type]}</span>
       <span class="comment-time">${c.time}</span>
       ${c.resolved?'<span class="resolved-tag"><i class="ti ti-check"></i>แก้แล้ว</span>':`<button class="resolve-btn" onclick="resolveComment(${t.id},${c.id})"><i class="ti ti-check"></i> แก้แล้ว</button>`}
@@ -1493,6 +1512,7 @@ function renderFilesTab(t){
 }
 function addLink(tid){
   const t=db.tasks.find(x=>x.id===tid);if(!t)return;
+  if(!canEditTask(t)){showToast('ไม่มีสิทธิ์แก้งานนี้');return;}
   const name=(document.getElementById(`ln-${tid}`)||{}).value.trim();
   let url=(document.getElementById(`lu-${tid}`)||{}).value.trim();
   if(!url){showToast('กรุณาใส่ URL');return;}
@@ -1506,6 +1526,7 @@ function addLink(tid){
 }
 function delLink(tid,lid){
   const t=db.tasks.find(x=>x.id===tid);if(!t)return;
+  if(!canEditTask(t)){showToast('ไม่มีสิทธิ์แก้งานนี้');return;}
   const l=t.links.find(x=>x.id===lid);
   addAct(currentUser,`ลบไฟล์ "${l?l.name:''}"`,t.name,t.id,'file');
   t.links=t.links.filter(x=>x.id!==lid);
@@ -1533,6 +1554,7 @@ function confirmAction(){
   const note=document.getElementById('action-note').value;const tt=ts();
   const map={start:{status:'wip',step:1,action:'รับงาน',icon:'ti-player-play',color:'#854F0B',type:'status'},submit:{status:'review',step:2,action:'ส่งตรวจ',icon:'ti-send',color:'#534AB7',type:'status'},approve:{status:'approved',step:4,action:'อนุมัติ',icon:'ti-circle-check',color:'#3B6D11',type:'status'},reject:{status:'wip',step:3,action:'ส่งแก้ไข',icon:'ti-arrow-back',color:'#993C1D',type:'status'},done:{status:'done',step:5,action:'ส่งมอบเสร็จ',icon:'ti-archive',color:'#5F5E5A',type:'done'},block:{status:'blocked',step:t.step,action:'ติดปัญหา',icon:'ti-alert-triangle',color:'#E24B4A',type:'blocked'},unblock:{status:'wip',step:t.step,action:'แก้ปัญหาแล้ว',icon:'ti-player-play',color:'#854F0B',type:'status'}};
   const m=map[action];if(!m)return;
+  if(!actionAllowed(t,action)){showToast('ไม่มีสิทธิ์ทำรายการนี้');closeSheet('action');return;}
   const wl=(action==='submit'||action==='done')?document.getElementById('action-link').value.trim():'';
   if(wl)pushWorkLink(t,wl);
   t.status=m.status;t.step=m.step;
@@ -1673,7 +1695,7 @@ function ckItemsHTML(t,compact){
   return items.map(i=>`<div class="ck-item ${i.done?'done':''}">
     <button class="ck-box ${i.done?'on':''}" onclick="event.stopPropagation();toggleCk(${t.id},${i.id})" aria-label="ทำเครื่องหมาย">${i.done?'<i class="ti ti-check"></i>':''}</button>
     <div class="ck-text">${linkify(i.text)}${i.done&&i.by?`<div style="font-size:11px;color:var(--text3);text-decoration:none">✓ ${esc(i.by)} · ${esc(i.time)}</div>`:''}</div>
-    ${compact?'':`<button class="ck-del" onclick="event.stopPropagation();delCk(${t.id},${i.id})" aria-label="ลบ"><i class="ti ti-x"></i></button>`}
+    ${compact||!isLead()?'':`<button class="ck-del" onclick="event.stopPropagation();delCk(${t.id},${i.id})" aria-label="ลบ"><i class="ti ti-x"></i></button>`}
   </div>`).join('');
 }
 function ckProgress(t){const it=t.checklist||[];const d=it.filter(i=>i.done).length;return{d,n:it.length,pct:it.length?Math.round(d/it.length*100):0};}
@@ -1695,6 +1717,7 @@ function rerenderTaskViews(t){
 }
 function addCk(tid,inputId){
   const t=db.tasks.find(x=>x.id===tid);if(!t)return;
+  if(!canEditTask(t)){showToast('ไม่มีสิทธิ์แก้เช็คลิสต์งานนี้');return;}
   const el=document.getElementById(inputId);const text=(el&&el.value||'').trim();
   if(!text){showToast('กรุณาพิมพ์รายการ');return;}
   if(!t.checklist)t.checklist=[];
@@ -1704,6 +1727,7 @@ function addCk(tid,inputId){
 }
 function toggleCk(tid,iid){
   const t=db.tasks.find(x=>x.id===tid);if(!t)return;
+  if(!canEditTask(t)){showToast('ไม่มีสิทธิ์แก้เช็คลิสต์งานนี้');return;}
   const i=(t.checklist||[]).find(x=>x.id===iid);if(!i)return;
   i.done=!i.done;if(i.done){i.by=currentUser;i.time=ts();}else{delete i.by;delete i.time;}
   const pr=ckProgress(t);
@@ -1712,6 +1736,7 @@ function toggleCk(tid,iid){
 }
 function delCk(tid,iid){
   const t=db.tasks.find(x=>x.id===tid);if(!t)return;
+  if(!isLead()){showToast('ลบรายการได้เฉพาะหัวหน้า');return;}
   t.checklist=(t.checklist||[]).filter(x=>x.id!==iid);saveDb();rerenderTaskViews(t);
 }
 
@@ -1733,7 +1758,7 @@ function tickTask(tid){
 }
 function renderChecklistPage(){
   const el=document.getElementById('ck-body');if(!el||!currentUser)return;
-  if(!ckFilter)ckFilter=isLead()?'all':'mine';
+  if(!ckFilter)ckFilter=seesAll()?'all':'mine';
   document.querySelectorAll('#ck-filter .chip').forEach(b=>b.classList.toggle('on',b.dataset.f===ckFilter));
   const list=db.tasks.filter(t=>t.status!=='done'&&(ckFilter==='all'||(t.assignees||[]).includes(currentUser)));
   const groups=[['over','เกินกำหนด','ti-alert-triangle','var(--red)'],['today','วันนี้','ti-sun','#D85A30'],['week','7 วันข้างหน้า','ti-calendar-week','var(--amber)'],['later','ภายหลัง','ti-calendar','var(--text3)'],['none','ไม่มีกำหนดส่ง','ti-calendar-off','var(--text3)']];
@@ -1787,7 +1812,7 @@ function renderCalendar(){
   const el=document.getElementById('cal-body');if(!el||!currentUser)return;
   if(!calMonth){const d=new Date();calMonth=new Date(d.getFullYear(),d.getMonth(),1);}
   if(!calSel)calSel=todayStr();
-  if(!calScope)calScope=isLead()?'all':'mine';
+  if(!calScope)calScope=seesAll()?'all':'mine';
   const{tasks,appts}=calItems();
   const y=calMonth.getFullYear(),m=calMonth.getMonth();
   const start=new Date(y,m,1-new Date(y,m,1).getDay());
@@ -1895,47 +1920,57 @@ function calMoveTo(kind,id,date){
 
 /* ── KPI CHARACTER ── */
 function moodOf(score){return score>=75?'happy':score>=60?'mid':'sad';}
-function charBodySVG(mood){
-  const P='#3D3A5C',S='var(--shirt)',K='#FCD9B8',SH='#2C2C2A';
-  const torso=`<path class="torso" d="M22 14 Q40 5 58 14 L56 52 Q40 57 24 52 Z" fill="${S}"/><path d="M34 9 L40 16 L46 9" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2" stroke-linecap="round"/>`;
-  if(mood==='happy')return`
-    <g class="leg leg-l"><path d="M33 50 L28 78" stroke="${P}" stroke-width="9" stroke-linecap="round"/><ellipse cx="26" cy="81" rx="7" ry="4" fill="${SH}"/></g>
-    <g class="leg leg-r"><path d="M47 50 L52 78" stroke="${P}" stroke-width="9" stroke-linecap="round"/><ellipse cx="54" cy="81" rx="7" ry="4" fill="${SH}"/></g>
-    ${torso}
-    <g class="arm arm-l"><path d="M24 16 L9 -1" stroke="${S}" stroke-width="8" stroke-linecap="round"/><circle cx="7" cy="-4" r="5" fill="${K}"/></g>
-    <g class="arm arm-r"><path d="M56 16 L71 -1" stroke="${S}" stroke-width="8" stroke-linecap="round"/><circle cx="73" cy="-4" r="5" fill="${K}"/></g>`;
-  if(mood==='mid')return`
-    <ellipse cx="40" cy="70" rx="33" ry="9" fill="#C9C3F5"/><ellipse cx="40" cy="67" rx="28" ry="5" fill="#D9D4FA"/>
-    <g class="leg leg-l"><path d="M34 51 L14 60 L38 65" fill="none" stroke="${P}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="41" cy="65" rx="5" ry="3.5" fill="${SH}"/></g>
-    <g class="leg leg-r"><path d="M46 51 L66 60 L42 65" fill="none" stroke="${P}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="39" cy="66" rx="5" ry="3.5" fill="${SH}"/></g>
-    ${torso}
-    <g class="arm arm-l"><path d="M24 17 L18 46" stroke="${S}" stroke-width="8" stroke-linecap="round"/><circle cx="19" cy="51" r="5" fill="${K}"/></g>
-    <g class="arm arm-r"><path d="M56 17 L62 46" stroke="${S}" stroke-width="8" stroke-linecap="round"/><circle cx="61" cy="51" r="5" fill="${K}"/></g>`;
-  return`
-    <g class="leg leg-l"><path d="M35 51 L33 78" stroke="${P}" stroke-width="9" stroke-linecap="round"/><ellipse cx="31" cy="81" rx="6" ry="3.5" fill="${SH}"/></g>
-    <g class="leg leg-r"><path d="M45 51 L47 78" stroke="${P}" stroke-width="9" stroke-linecap="round"/><ellipse cx="49" cy="81" rx="6" ry="3.5" fill="${SH}"/></g>
-    <g transform="translate(0 3)">${torso}</g>
-    <g class="arm arm-l"><path d="M25 20 L21 47" stroke="${S}" stroke-width="8" stroke-linecap="round"/><circle cx="21" cy="51" r="5" fill="${K}"/></g>
-    <g class="arm arm-r"><path d="M55 20 L59 47" stroke="${S}" stroke-width="8" stroke-linecap="round"/><circle cx="59" cy="51" r="5" fill="${K}"/></g>`;
+function charBodySVG(mood,gender){
+  const P='#3D3A5C',S='var(--shirt)',K='#FCD9B8',SH='#2C2C2A',O='rgba(40,30,80,.18)';
+  const fem=gender==='female',lg=gender==='lgbt';
+  const SK='var(--skirt)';
+  const arm=(cls,d,hx,hy,extra='')=>`<g class="arm ${cls}"><path d="${d}" stroke="${O}" stroke-width="10" stroke-linecap="round"/><path d="${d}" stroke="${S}" stroke-width="8" stroke-linecap="round"/><circle cx="${hx}" cy="${hy}" r="5" fill="${K}"/>${extra}</g>`;
+  const torso=`<path class="torso" d="M22 14 Q40 5 58 14 L56 ${fem?47:52} Q40 ${fem?51:57} 24 ${fem?47:52} Z" fill="${S}" stroke="${O}" stroke-width="1.2"/><path d="M34 9 L40 16 L46 9" fill="none" stroke="rgba(120,110,170,.45)" stroke-width="2" stroke-linecap="round"/>`
+    +(lg?`<g transform="translate(46 24)"><circle r="5.5" fill="#fff" stroke="${O}"/>${['#E24B4A','#EF9F27','#F2C94C','#1D9E75','#378ADD','#7F77DD'].map((c,i)=>`<rect x="-4" y="${-4+i*1.35}" width="8" height="1.4" fill="${c}"/>`).join('')}</g>`:'');
+  const skirtStand=`<path d="M23 45 L57 45 L64 63 Q40 68 16 63 Z" fill="${SK}" stroke="${O}" stroke-width="1.2"/><path d="M30 47 L27 63 M40 47 L40 65 M50 47 L53 63" stroke="rgba(255,255,255,.45)" stroke-width="1.5"/>`;
+  const flag=lg&&mood==='happy'?`<g transform="translate(73 -4)"><line x1="0" y1="0" x2="0" y2="-20" stroke="#8A6D3B" stroke-width="1.6"/>${['#E24B4A','#EF9F27','#F2C94C','#1D9E75','#378ADD','#7F77DD'].map((c,i)=>`<rect x="0" y="${-20+i*1.7}" width="13" height="1.8" fill="${c}"/>`).join('')}</g>`:'';
+  if(mood==='happy'){
+    const legs=fem
+      ?`<g class="leg leg-l"><path d="M33 58 L29 78" stroke="${K}" stroke-width="6" stroke-linecap="round"/><ellipse cx="27" cy="81" rx="6" ry="3.5" fill="${SH}"/></g><g class="leg leg-r"><path d="M47 58 L51 78" stroke="${K}" stroke-width="6" stroke-linecap="round"/><ellipse cx="53" cy="81" rx="6" ry="3.5" fill="${SH}"/></g>`
+      :`<g class="leg leg-l"><path d="M33 50 L28 78" stroke="${P}" stroke-width="9" stroke-linecap="round"/><ellipse cx="26" cy="81" rx="7" ry="4" fill="${lg?'#E24B4A':SH}"/></g><g class="leg leg-r"><path d="M47 50 L52 78" stroke="${P}" stroke-width="9" stroke-linecap="round"/><ellipse cx="54" cy="81" rx="7" ry="4" fill="${lg?'#378ADD':SH}"/></g>`;
+    return legs+(fem?skirtStand:'')+torso+arm('arm-l','M24 16 L9 -1',7,-4)+arm('arm-r','M56 16 L71 -1',73,-4,flag);
+  }
+  if(mood==='mid'){
+    const legs=fem
+      ?`<path d="M14 60 Q40 50 66 60 Q66 70 40 71 Q14 70 14 60 Z" fill="${SK}" stroke="${O}" stroke-width="1.2"/><path d="M24 58 L22 68 M40 54 L40 70 M56 58 L58 68" stroke="rgba(255,255,255,.45)" stroke-width="1.5"/><ellipse cx="33" cy="70" rx="5" ry="3.2" fill="${SH}"/><ellipse cx="47" cy="70" rx="5" ry="3.2" fill="${SH}"/>`
+      :`<g class="leg leg-l"><path d="M34 51 L14 60 L38 65" fill="none" stroke="${P}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="41" cy="65" rx="5" ry="3.5" fill="${lg?'#E24B4A':SH}"/></g><g class="leg leg-r"><path d="M46 51 L66 60 L42 65" fill="none" stroke="${P}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="39" cy="66" rx="5" ry="3.5" fill="${lg?'#378ADD':SH}"/></g>`;
+    return`<ellipse cx="40" cy="70" rx="33" ry="9" fill="#C9C3F5"/><ellipse cx="40" cy="67" rx="28" ry="5" fill="#D9D4FA"/>`+legs+torso+arm('arm-l','M24 17 L18 46',19,51)+arm('arm-r','M56 17 L62 46',61,51);
+  }
+  const legs=fem
+    ?`<g class="leg leg-l"><path d="M35 60 L34 78" stroke="${K}" stroke-width="6" stroke-linecap="round"/><ellipse cx="32" cy="81" rx="6" ry="3.5" fill="${SH}"/></g><g class="leg leg-r"><path d="M45 60 L46 78" stroke="${K}" stroke-width="6" stroke-linecap="round"/><ellipse cx="48" cy="81" rx="6" ry="3.5" fill="${SH}"/></g><g transform="translate(0 3)">${skirtStand}</g>`
+    :`<g class="leg leg-l"><path d="M35 51 L33 78" stroke="${P}" stroke-width="9" stroke-linecap="round"/><ellipse cx="31" cy="81" rx="6" ry="3.5" fill="${lg?'#E24B4A':SH}"/></g><g class="leg leg-r"><path d="M45 51 L47 78" stroke="${P}" stroke-width="9" stroke-linecap="round"/><ellipse cx="49" cy="81" rx="6" ry="3.5" fill="${lg?'#378ADD':SH}"/></g>`;
+  return legs+`<g transform="translate(0 3)">${torso}</g>`+arm('arm-l','M25 20 L21 47',21,51)+arm('arm-r','M55 20 L59 47',59,51);
 }
-function charFaceSVG(mood){
+function charFaceSVG(mood,gender){
   const mouth=mood==='happy'?'<path d="M19 34 Q28 44 37 34" fill="#7A2E2E"/>':mood==='mid'?'<path d="M21 37 L35 37" stroke="#5A3A2E" stroke-width="2.5" stroke-linecap="round"/>':'<path d="M20 40 Q28 33 36 40" fill="none" stroke="#5A3A2E" stroke-width="2.5" stroke-linecap="round"/>';
   const eyes=mood==='happy'?'<path d="M15 25 Q19 20 23 25 M33 25 Q37 20 41 25" fill="none" stroke="#2C2C2A" stroke-width="2.5" stroke-linecap="round"/>':'<circle cx="19" cy="25" r="2.8" fill="#2C2C2A"/><circle cx="37" cy="25" r="2.8" fill="#2C2C2A"/>';
   const brows=mood==='sad'?'<path d="M13 21 L22 17 M43 21 L34 17" stroke="#5A3A2E" stroke-width="2" stroke-linecap="round"/>':'';
   const blush=mood==='happy'?'<circle cx="12" cy="33" r="3.5" fill="#F7A9A0" opacity=".7"/><circle cx="44" cy="33" r="3.5" fill="#F7A9A0" opacity=".7"/>':'';
-  return`<svg viewBox="0 0 56 56"><rect width="56" height="56" fill="#FCE3CF"/><path d="M0 0 H56 V16 Q28 6 0 16 Z" fill="#3D3A5C"/>${brows}${eyes}${blush}${mouth}</svg>`;
+  const H='#3D2B1F';
+  const hair=gender==='female'?`<path d="M0 0 H56 V40 Q50 26 46 14 Q30 20 14 12 Q8 24 0 40 Z" fill="${H}"/><circle cx="44" cy="9" r="4" fill="#F06292"/>`
+    :gender==='lgbt'?`<path d="M0 0 H56 V30 Q52 18 46 13 Q28 4 10 13 Q4 18 0 30 Z" fill="${H}"/><path d="M8 7 Q28 -3 48 7" fill="none" stroke="url(#rb)" stroke-width="3"/>`
+    :`<path d="M0 0 H56 V16 Q28 6 0 16 Z" fill="#3D3A5C"/>`;
+  return`<svg viewBox="0 0 56 56"><defs><linearGradient id="rb" x1="0" x2="1"><stop offset="0" stop-color="#E24B4A"/><stop offset=".2" stop-color="#EF9F27"/><stop offset=".4" stop-color="#F2C94C"/><stop offset=".6" stop-color="#1D9E75"/><stop offset=".8" stop-color="#378ADD"/><stop offset="1" stop-color="#7F77DD"/></linearGradient></defs><rect width="56" height="56" fill="#FCE3CF"/>${hair}${brows}${eyes}${blush}${mouth}</svg>`;
 }
 function charHTML(m,score,opts={}){
-  const mood=moodOf(score),me=m.name===currentUser;
-  const head=m.photo&&/^data:image\//.test(m.photo)?`<img src="${m.photo}" alt="">`:charFaceSVG(mood);
+  const mood=moodOf(score),me=m.name===currentUser,g=genderOf(m);
+  const head=m.photo&&/^data:image\//.test(m.photo)?`<img src="${m.photo}" alt="">`:charFaceSVG(mood,g);
+  const sh=shirtOf(m),skirt=/^#(F06292|D4537E|E24B4A)$/i.test(sh)?'#7E57C2':'#F06292';
+  const hairBack=g==='female'?'<div class="char-hair long"></div>':g==='lgbt'?'<div class="char-hair bob"></div>':'';
   const emo=m.photo?`<div class="char-emo">${mood==='happy'?'😄':mood==='mid'?'🙂':'😢'}</div>`:'';
   const fx=mood==='happy'?'<div class="char-fx">🎉</div>':mood==='sad'?'<div class="char-fx">🌧️</div>':'';
   const tear=mood==='sad'?'<div class="char-tear"></div>':'';
   const label=mood==='happy'?'เยี่ยมมาก! 🎶':mood==='mid'?'พอใช้ ค่อยๆ ไป':'สู้ๆ นะ';
-  return`<div class="char mood-${mood} ${me?'me':''}" style="--shirt:${shirtOf(m)}${opts.click?';cursor:pointer':''}" ${opts.click?`onclick="viewMemberDetail('${esc(m.name)}')"`:''} aria-label="${esc(m.name)} KPI ${score}">
+  return`<div class="char mood-${mood} g-${g} ${me?'me':''}" style="--shirt:${sh};--skirt:${skirt}${opts.click?';cursor:pointer':''}" ${opts.click?`onclick="viewMemberDetail('${esc(m.name)}')"`:''} aria-label="${esc(m.name)} KPI ${score}">
     ${opts.noScore?'':`<div class="char-score" style="background:${gradeColor(score)}">${score}</div>`}
-    <div class="char-fig">${fx}<div class="char-head">${head}</div>${emo}${tear}<svg class="char-body" viewBox="0 0 80 88">${charBodySVG(mood)}</svg><div class="char-shadow"></div></div>
+    <div class="char-fig">${fx}${hairBack}<div class="char-head">${head}</div>${emo}${tear}<svg class="char-body" viewBox="0 0 80 88">${charBodySVG(mood,g)}</svg><div class="char-shadow"></div></div>
     <div class="char-name">${esc(m.name)}${me?' (คุณ)':''}</div>
+    ${m.position?`<div class="char-pos">${esc(m.position)}</div>`:''}
     <div class="char-mood">${opts.sub!=null?opts.sub:label}</div>
   </div>`;
 }
@@ -1970,7 +2005,7 @@ function shareBcToLine(id){
 /* ── ทดลองงาน: ประเมินตามเกณฑ์ ── */
 const TRIAL_CRITERIA=['ทำตามโจทย์ / brief ครบถ้วน','ส่งงานตรงเวลา','คุณภาพงานออกแบบ','การสื่อสารและการรับ feedback','ความรับผิดชอบและการเรียนรู้'];
 const TRIAL_RESULTS={pass:'ผ่าน',improve:'ควรปรับปรุง',fail:'ไม่ผ่าน'};
-function canEvaluate(t){return isLead()||t.mentor===currentUser;}
+function canEvaluate(t){return canReview()||t.mentor===currentUser;}
 function trialAvg(t){const sc=(t.criteria||[]).map(c=>c.score).filter(x=>x>0);return sc.length?sc.reduce((a,b)=>a+b,0)/sc.length:0;}
 function renderTrialBox(t){
   const can=canEvaluate(t)&&['review','approved','done'].includes(t.status);
@@ -2071,6 +2106,7 @@ function renderWorkBox(t){
 }
 function addWorkLink(id){
   const t=db.tasks.find(x=>x.id===id);if(!t)return;
+  if(!canEditTask(t)){showToast('ไม่มีสิทธิ์แก้งานนี้');return;}
   const v=(document.getElementById('wl-'+id)||{}).value||'';
   if(!v.trim()){showToast('กรุณาวางลิงก์');return;}
   pushWorkLink(t,v);saveDb();renderDetailSheet(t);renderTasks();showToast('แนบลิงก์ผลงานแล้ว ✓');
@@ -2079,7 +2115,7 @@ function addWorkLink(id){
 /* ── STAR RATING ── */
 function starsHTML(n,size=14){return Array.from({length:5},(_,i)=>`<i class="ti ti-star${i<n?'-filled':''}" style="font-size:${size}px;color:${i<n?'#EF9F27':'#D3D1C7'}"></i>`).join('');}
 function renderRatingBox(t){
-  const r=t.rating;const canRate=isLead();
+  const r=t.rating;const canRate=canReview();
   return`<div class="work-box">
     <div class="sheet-section" style="margin-bottom:8px"><i class="ti ti-star"></i> ประเมินผลงาน</div>
     ${canRate?`<div class="star-row">${[1,2,3,4,5].map(i=>`<button class="star-btn" onclick="rateTask(${t.id},${i})" aria-label="${i} ดาว"><i class="ti ti-star${r&&i<=r.stars?'-filled':''}" style="color:${r&&i<=r.stars?'#EF9F27':'#D3D1C7'}"></i></button>`).join('')}</div>`
@@ -2088,7 +2124,7 @@ function renderRatingBox(t){
   </div>`;
 }
 function rateTask(id,stars){
-  if(!isLead())return;
+  if(!canReview())return;
   const t=db.tasks.find(x=>x.id===id);if(!t||t.status!=='done')return;
   const tt=ts();
   t.rating={stars,by:currentUser,time:tt,seenBy:[currentUser]};
@@ -2166,7 +2202,7 @@ function createAppointment(){
 
 /* ── HOME ── */
 function homeData(){
-  const me=currentUser,lead=isLead();
+  const me=currentUser,lead=seesAll();
   const mine=t=>(t.assignees||[]).includes(me);
   const appts=(db.broadcasts||[]).filter(b=>b.type==='meet'&&(b.to.includes(me)||b.from===me)&&(!b.date||daysUntil(b.date)>=0))
     .sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
@@ -2206,7 +2242,7 @@ function renderHome(){
   const el=document.getElementById('home-body');
   const dot=document.getElementById('home-dot');
   if(!el||!currentUser){if(dot)dot.style.display='none';return;}
-  const h=homeData(),me=currentUser,lead=isLead();
+  const h=homeData(),me=currentUser,lead=seesAll();
   if(dot)dot.style.display=homeUnseen()?'block':'none';
   const myNew=h.fresh.filter(t=>(t.assignees||[]).includes(me)).length;
   const unseenStars=h.rated.filter(t=>(t.assignees||[]).includes(me)&&!(t.rating.seenBy||[]).includes(me)).length;
@@ -2297,6 +2333,7 @@ function homeOpenAppt(id){
 
 /* ── NEW TASK ── */
 function openNewTaskSheet(){
+  if(isSup()){showToast('ผู้ดูแลดูและตรวจงานได้ แต่สร้างงานไม่ได้');return;}
   pickNewType('task');
   document.getElementById('n-recur').value='daily';
   selectedNewMembers=new Set([currentUser]);
@@ -2315,6 +2352,7 @@ function renderNewMemberChips(){
 }
 function toggleNewM(name){if(selectedNewMembers.has(name))selectedNewMembers.delete(name);else selectedNewMembers.add(name);renderNewMemberChips();}
 function createTask(){
+  if(isSup()){showToast('ผู้ดูแลสร้างงานไม่ได้');return;}
   const name=document.getElementById('n-name').value.trim();
   if(!name){showToast('กรุณาใส่ชื่องาน');return;}
   if(!selectedNewMembers.size){showToast('กรุณาเลือกผู้รับผิดชอบ');return;}
@@ -2340,7 +2378,7 @@ function createTask(){
 /* ── ME SHEET ── */
 function openMeSheet(){
   const m=getM(currentUser);
-  window._editPhoto=m.photo||'';window._editShirt=shirtOf(m);window._editRole=m.role||'designer';
+  window._editPhoto=m.photo||'';window._editShirt=shirtOf(m);window._editGender=m.gender||'';window._editRole=m.role==='lead'?'boss':(m.role||'designer');
   document.getElementById('me-sheet-body').innerHTML=`
     <div style="display:flex;align-items:flex-end;justify-content:center;gap:10px;padding:0 0 10px;border-bottom:0.5px solid var(--border);margin-bottom:14px">
       <div style="text-align:center">
@@ -2352,18 +2390,20 @@ function openMeSheet(){
     <label class="f-label" style="margin-top:0">ชื่อเล่น</label>
     <input class="f-input" id="edit-nick" value="${esc(currentUser)}" maxlength="12" oninput="refreshMePreview()">
     <label class="f-label">ตำแหน่ง</label>
-    <input class="f-input" id="edit-pos" value="${esc(m.position||'')}" maxlength="40" placeholder="เช่น กราฟิกดีไซเนอร์, Art Director">
+    <input class="f-input" id="edit-pos" value="${esc(m.position||'')}" maxlength="40" placeholder="เช่น กราฟิกดีไซเนอร์, Art Director" oninput="refreshMePreview()">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
       <div><label class="f-label">เบอร์โทร</label><input class="f-input" id="edit-phone" type="tel" inputmode="tel" value="${esc(m.phone||'')}" maxlength="20" placeholder="08x-xxx-xxxx"></div>
       <div><label class="f-label">LINE ID</label><input class="f-input" id="edit-line" value="${esc(m.lineId||'')}" maxlength="40" placeholder="เช่น off.design"></div>
     </div>
+    <label class="f-label">เพศ</label>
+    <div class="g-row" id="pf-gender">${GENDERS.map(([k,l,ic])=>`<button class="role-chip ${genderOf(m)===k&&m.gender?'sel':''}" data-g="${k}" onclick="window._editGender='${k}';refreshMePreview()" style="min-height:56px"><i class="ti ${ic}"></i>${l}</button>`).join('')}</div>
     <label class="f-label">สีเสื้อตัวการ์ตูน (หน้า KPI)</label>
     <div class="swatches" id="pf-swatches"></div>
     <label class="f-label">บทบาทในระบบ</label>
     <div class="role-chips" id="edit-role-chips">
       <button class="role-chip ${m.role==='designer'?'sel':''}" id="erc-designer" onclick="editPickRole('designer')"><i class="ti ti-pencil"></i>นักออกแบบ</button>
-      <button class="role-chip ${m.role==='lead'?'sel':''}" id="erc-lead" onclick="editPickRole('lead')"><i class="ti ti-crown"></i>หัวหน้าทีม</button>
-      <button class="role-chip ${m.role==='boss'?'sel':''}" id="erc-boss" onclick="editPickRole('boss')"><i class="ti ti-star"></i>หัวหน้า</button>
+      <button class="role-chip ${m.role==='boss'||m.role==='lead'?'sel':''}" id="erc-boss" onclick="editPickRole('boss')"><i class="ti ti-star"></i>หัวหน้า</button>
+      <button class="role-chip ${m.role==='supervisor'?'sel':''}" id="erc-supervisor" onclick="editPickRole('supervisor')"><i class="ti ti-eye"></i>ผู้ดูแล</button>
     </div>
     <label class="f-label">การแสดงผล (เฉพาะเครื่องนี้)</label>
     <div class="view-seg">
@@ -2378,7 +2418,8 @@ function openMeSheet(){
 }
 function refreshMePreview(){
   const m=getM(currentUser);const nick=(document.getElementById('edit-nick')||{}).value||currentUser;
-  const tmp={...m,name:nick.trim()||currentUser,init:(nick.trim()||currentUser)[0],photo:window._editPhoto,shirt:window._editShirt};
+  const tmp={...m,name:nick.trim()||currentUser,init:(nick.trim()||currentUser)[0],photo:window._editPhoto,shirt:window._editShirt,gender:window._editGender,position:((document.getElementById('edit-pos')||{}).value||'').trim()};
+  document.querySelectorAll('#pf-gender .role-chip').forEach(b=>b.classList.toggle('sel',b.dataset.g===window._editGender));
   const av=document.getElementById('pf-av');
   if(av)av.innerHTML=tmp.photo?`<div class="av has-photo" style="background-image:url('${tmp.photo}')"></div>`:`<div class="av ${m.cls}">${esc(tmp.init)}</div>`;
   const rm=document.getElementById('pf-remove');if(rm)rm.style.visibility=tmp.photo?'visible':'hidden';
@@ -2399,7 +2440,7 @@ function pickProfilePhoto(input){
 }
 function editPickRole(r){
   window._editRole=r;
-  ['designer','lead','boss'].forEach(x=>{const e=document.getElementById('erc-'+x);if(e)e.classList.toggle('sel',x===r);});
+  ['designer','boss','supervisor'].forEach(x=>{const e=document.getElementById('erc-'+x);if(e)e.classList.toggle('sel',x===r);});
 }
 function saveProfile(){
   const nick=document.getElementById('edit-nick').value.trim();
@@ -2412,6 +2453,7 @@ function saveProfile(){
   m.phone=document.getElementById('edit-phone').value.trim();
   m.lineId=document.getElementById('edit-line').value.trim();
   m.shirt=window._editShirt||m.shirt;
+  if(window._editGender)m.gender=window._editGender;
   if(window._editPhoto)m.photo=window._editPhoto;else delete m.photo;
   if(nick!==oldName){
     db.tasks.forEach(t=>{t.assignees=(t.assignees||[]).map(a=>a===oldName?nick:a);t.log.forEach(l=>{if(l.user===oldName)l.user=nick;});t.comments.forEach(c=>{if(c.author===oldName)c.author=nick;if(c.mention===oldName)c.mention=nick;});(t.links||[]).forEach(l=>{if(l.addedBy===oldName)l.addedBy=nick;});});
@@ -2489,7 +2531,23 @@ function viewMemberDetail(name){
 }
 
 /* ── NOTIF ── */
-function updateNotifDot(){const n=notifications.filter(x=>!x.read).length;const d=document.getElementById('notif-dot');if(d)d.style.display=n?'block':'none';}
+function updateNotifDot(){updateBcDot();}
+function fbUnread(){return notifications.filter(x=>!x.read&&!x.isBroadcast).length;}
+function markAllNotifs(){
+  (db.broadcasts||[]).forEach(b=>{if(b.to.includes(currentUser)){if(!b.readBy)b.readBy=[];if(!b.readBy.includes(currentUser))b.readBy.push(currentUser);}});
+  notifications.forEach(n=>n.read=true);saveDb();renderBroadcast();renderHome();showToast('อ่านทั้งหมดแล้ว ✓');
+}
+function fbCardsHTML(){
+  const list=notifications.filter(n=>!n.isBroadcast).slice().reverse();
+  return list.map(n=>`<div class="bc-card" style="${n.read?'':'border-color:var(--blue);border-width:1.5px'}" onclick="openFbNotif(${n.taskId},${n.comment.id})">
+    ${n.read?'':'<div style="background:var(--blue-light);padding:5px 14px;display:flex;align-items:center;gap:5px"><div style="width:6px;height:6px;border-radius:50%;background:var(--blue)"></div><span style="font-size:11px;font-weight:700;color:var(--blue)">ยังไม่อ่าน</span></div>'}
+    <div class="bc-card-header">${avHTML(n.comment.author,40)}
+      <div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--blue-light);color:var(--blue)">💬 ${COMMENT_TYPES[n.comment.type]||'Feedback'}</span><span style="font-size:11px;color:var(--text3)">${esc(n.comment.time)}</span></div>
+      <div class="bc-subject">${esc(n.comment.author)} ${n.comment.type==='feedback'?'ขอแก้ไขงาน':'คอมเมนต์ถึงคุณ'}</div>
+      <div class="bc-message">${esc(n.taskName)}: ${esc(n.comment.text)}</div></div>
+    </div></div>`).join('');
+}
+function openFbNotif(taskId,cid){const n=notifications.find(x=>x.taskId===taskId&&x.comment.id===cid);if(n)n.read=true;openDetail(taskId);detailSubPage='comments';const t=db.tasks.find(x=>x.id===taskId);if(t)renderDetailSheet(t);updateBcDot();renderBroadcast();}
 function renderNotif(){
   const el=document.getElementById('notif-list');if(!el)return;
   if(!notifications.length){el.innerHTML=`<div class="empty"><i class="ti ti-bell-off"></i><p>ไม่มีการแจ้งเตือน</p></div>`;return;}
@@ -2568,18 +2626,20 @@ function gradeLabel(s){return s>=90?'ดีเยี่ยม':s>=75?'ดี':s>
 function renderKPI(){
   const el=document.getElementById('kpi-body');if(!el)return;
   const myKPI=calcKPI(currentUser);
-  const allScores=db.members.map(m=>({m,k:calcKPI(m.name)})).sort((a,b)=>b.k.score-a.k.score);
+  const allScores=db.members.filter(m=>m.role!=='supervisor').map(m=>({m,k:calcKPI(m.name)})).sort((a,b)=>b.k.score-a.k.score);
+  const showMine=!isSup();
   const myRank=allScores.findIndex(x=>x.m.name===currentUser)+1;
 
   el.innerHTML=`
   ${kpiStageHTML(allScores)}
+  ${showMine?`
   <!-- MY SCORE HERO -->
   <div class="kpi-hero">
     <div style="display:flex;align-items:flex-start;gap:12px">
       <div style="flex:1">
         <div style="font-size:13px;opacity:.8;margin-bottom:4px">คะแนน KPI ของคุณ</div>
         <div class="kpi-score">${myKPI.score}</div>
-        <div style="font-size:14px;opacity:.85;margin-top:2px">${gradeLabel(myKPI.score)} · อันดับ ${myRank}/${db.members.length}</div>
+        <div style="font-size:14px;opacity:.85;margin-top:2px">${gradeLabel(myKPI.score)} · อันดับ ${myRank}/${allScores.length}</div>
         <div class="kpi-bar-wrap" style="margin-top:14px"><div class="kpi-bar-fill" style="width:${myKPI.score}%"></div></div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:center;gap:4px;background:rgba(255,255,255,.15);border-radius:12px;padding:10px 12px">
@@ -2633,6 +2693,7 @@ function renderKPI(){
     </div>`:''}
   </div>
 
+  `:''}
   <!-- TEAM RANKING -->
   <div style="padding:12px 12px 0">
     <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">อันดับทีม</div>
@@ -2796,12 +2857,13 @@ const LINK_ICONS=[
   {match:()=>true,icon:'ti-link',bg:'#F1EFE8',color:'#5F5E5A',label:'ลิงก์'},
 ];
 function detectLinkIcon(url){return LINK_ICONS.find(l=>l.match(url))||LINK_ICONS[LINK_ICONS.length-1];}
+function notifTotal(){return bcUnreadCount()+fbUnread();}
 function bcUnreadCount(){
   if(!currentUser)return 0;
   return (db.broadcasts||[]).filter(b=>b.to.includes(currentUser)&&!(b.readBy||[]).includes(currentUser)).length;
 }
 function updateBcDot(){
-  const n=bcUnreadCount();
+  const n=bcUnreadCount()+fbUnread();
   const d=document.getElementById('bc-dot');if(d)d.style.display=n?'block':'none';
   const cnt=document.getElementById('bc-unread-count');if(cnt)cnt.textContent=n?`${n} ยังไม่อ่าน`:'';
 }
@@ -2817,13 +2879,14 @@ function renderBroadcast(){
   const el=document.getElementById('broadcast-feed');if(!el)return;
   updateBcDot();
   const all=(db.broadcasts||[]).slice().reverse();
-  const filtered=bcFilter==='all'?all:bcFilter==='mine'?all.filter(b=>b.to.includes(currentUser)):all.filter(b=>b.type===bcFilter);
-  const mc=document.getElementById('bc-mine-count');if(mc){const n=bcUnreadCount();mc.textContent=n;mc.style.display=n?'inline':'none';}
-  if(!filtered.length){
-    el.innerHTML=`<div style="text-align:center;padding:48px 24px;color:var(--text3)"><div style="font-size:48px;margin-bottom:12px">📭</div><div style="font-size:15px">ยังไม่มีการแจ้ง</div><div style="font-size:13px;margin-top:6px">กด ✏️ เพื่อแจ้งทีม</div></div>`;
+  const filtered=bcFilter==='fb'?[]:bcFilter==='all'?all:bcFilter==='mine'?all.filter(b=>b.to.includes(currentUser)):all.filter(b=>b.type===bcFilter);
+  const mc=document.getElementById('bc-mine-count');if(mc){const n=notifTotal();mc.textContent=n;mc.style.display=n?'inline':'none';}
+  const fbHTML=['all','mine','fb'].includes(bcFilter)?fbCardsHTML():'';
+  if(!filtered.length&&!fbHTML){
+    el.innerHTML=`<div style="text-align:center;padding:48px 24px;color:var(--text3)"><div style="font-size:48px;margin-bottom:12px">📭</div><div style="font-size:15px">ยังไม่มีการแจ้งเตือน</div><div style="font-size:13px;margin-top:6px">กด ✏️ เพื่อแจ้งทีม</div></div>`;
     return;
   }
-  el.innerHTML=filtered.map(b=>{
+  el.innerHTML=fbHTML+filtered.map(b=>{
     const bt=BC_TYPES[b.type]||BC_TYPES.info;
     const isUnread=b.to.includes(currentUser)&&!(b.readBy||[]).includes(currentUser);
     const isToMe=b.to.includes(currentUser)||b.from===currentUser;
@@ -2989,7 +3052,7 @@ function closeSheet(name){document.getElementById('sheet-'+name).classList.remov
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
 /* ── RENDER ALL ── */
-function renderAll(){syncAvatarStyles();renderTasks();renderHome();updateNotifDot();updateBcDot();}
+function renderAll(){normalizeMembers();syncAvatarStyles();updateRoleUI();renderTasks();renderHome();updateNotifDot();updateBcDot();}
 
 /* ── VIEW MODE ── */
 let viewMode='mobile';
