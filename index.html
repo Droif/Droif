@@ -291,10 +291,69 @@ body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:r
 .home-item-sub{font-size:12px;color:var(--text3);margin-top:2px}
 .home-when{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
 .home-link{display:inline-flex;align-items:center;gap:5px;margin:6px 6px 0 0;padding:6px 10px;border-radius:20px;font-size:12px;font-weight:600;text-decoration:none;border:0.5px solid var(--border);background:var(--bg);color:var(--text2)}
+/* ── PROFILE ── */
+.av.has-photo{background-size:cover!important;background-position:center!important;color:transparent!important}
+.pf-photo{position:relative;width:88px;height:88px;margin:0 auto 6px}
+.pf-photo .av{width:88px!important;height:88px!important;font-size:34px!important;border:3px solid var(--surface);box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.pf-cam{position:absolute;right:-2px;bottom:-2px;width:32px;height:32px;border-radius:50%;background:var(--purple);color:#fff;border:2px solid var(--surface);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer}
+.swatches{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.swatch{width:34px;height:34px;border-radius:50%;border:3px solid var(--surface);box-shadow:0 0 0 1px var(--border);cursor:pointer}
+.swatch.sel{box-shadow:0 0 0 2.5px var(--purple)}
+.contact-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.contact-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:20px;font-size:12px;font-weight:600;text-decoration:none;border:0.5px solid var(--border);background:var(--bg);color:var(--text2)}
+.contact-btn.line{background:#E8F8EC;color:#06A73A;border-color:#BDEBC9}
+.contact-btn.tel{background:var(--blue-light);color:var(--blue);border-color:#C6DDF3}
+/* ── KPI CHARACTERS ── */
+.kpi-stage{margin:12px;background:linear-gradient(180deg,#F7F6FF 0%,#EEEDFE 72%,#DCD8F8 100%);border-radius:18px;border:0.5px solid var(--border);padding:12px 6px 10px;overflow:hidden}
+.kpi-stage-title{font-size:13px;font-weight:700;color:var(--purple-dark);text-align:center;margin-bottom:4px}
+.chars{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 4px}
+.char{position:relative;width:108px;display:flex;flex-direction:column;align-items:center;padding-top:6px}
+.char-fig{position:relative;width:80px;height:134px}
+.char-shadow{position:absolute;left:50%;bottom:2px;width:54px;height:8px;margin-left:-27px;border-radius:50%;background:rgba(83,74,183,.18)}
+.char-head{position:absolute;left:50%;top:0;width:56px;height:56px;margin-left:-28px;border-radius:50%;overflow:hidden;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.15);z-index:3;background:#FCE3CF;display:flex;align-items:center;justify-content:center}
+.char-head img{width:100%;height:100%;object-fit:cover;display:block}
+.char-head svg{width:100%;height:100%}
+.char-body{position:absolute;left:0;top:46px;width:80px;height:88px;z-index:2;overflow:visible}
+.char-emo{position:absolute;left:50%;top:38px;margin-left:14px;font-size:17px;z-index:4;filter:drop-shadow(0 1px 1px rgba(0,0,0,.2))}
+.char-fx{position:absolute;left:50%;top:-14px;margin-left:-12px;font-size:20px;z-index:4}
+.char-score{position:absolute;top:8px;right:0;z-index:5;min-width:34px;padding:3px 7px;border-radius:12px 12px 12px 3px;color:#fff;font-size:14px;font-weight:800;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.char-name{font-size:12px;font-weight:700;color:var(--text);margin-top:2px;max-width:104px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.char-mood{font-size:10px;color:var(--text3);font-weight:600}
+.char.me .char-name{color:var(--purple-dark)}
+.char .arm,.char .leg,.char .torso,.char-head,.char-fig{transform-box:view-box}
+.char-head,.char-fig{transform-box:border-box}
+@keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes headBob{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+@keyframes waveL{from{transform:rotate(-14deg)}to{transform:rotate(16deg)}}
+@keyframes waveR{from{transform:rotate(14deg)}to{transform:rotate(-16deg)}}
+@keyframes kickL{0%,100%{transform:rotate(0)}50%{transform:rotate(14deg)}}
+@keyframes kickR{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(0)}}
+@keyframes breath{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.035)}}
+@keyframes nod{0%,100%{transform:rotate(0)}50%{transform:rotate(3deg)}}
+@keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@keyframes droop{0%,100%{transform:translateY(7px) rotate(12deg)}50%{transform:translateY(8px) rotate(9deg)}}
+@keyframes tear{0%{opacity:0;transform:translateY(0)}20%{opacity:1}100%{opacity:0;transform:translateY(16px)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.mood-happy .char-fig{animation:hop .7s ease-in-out infinite}
+.mood-happy .char-head{animation:headBob .7s ease-in-out infinite}
+.mood-happy .arm-l{transform-origin:24px 16px;animation:waveL .35s ease-in-out infinite alternate}
+.mood-happy .arm-r{transform-origin:56px 16px;animation:waveR .35s ease-in-out infinite alternate}
+.mood-happy .leg-l{transform-origin:33px 50px;animation:kickL .7s ease-in-out infinite}
+.mood-happy .leg-r{transform-origin:47px 50px;animation:kickR .7s ease-in-out infinite}
+.mood-happy .char-fx{animation:float 1.4s ease-in-out infinite}
+.mood-mid .torso{transform-origin:40px 52px;animation:breath 3.2s ease-in-out infinite}
+.mood-mid .char-head{animation:nod 3.2s ease-in-out infinite}
+.mood-sad .char-fig{transform-origin:50% 100%;animation:sway 4s ease-in-out infinite}
+.mood-sad .char-head{animation:droop 4s ease-in-out infinite}
+.mood-sad .char-fx{animation:float 3s ease-in-out infinite}
+.char-tear{position:absolute;left:50%;top:40px;margin-left:-16px;width:6px;height:9px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:#56CCF2;z-index:4;animation:tear 1.8s ease-in infinite}
+@media (prefers-reduced-motion:reduce){.char *,.char-fig{animation:none!important}}
+html.desk .char{width:128px}
+
 /* ── HOME TABS ── */
-.home-tabs{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:6px;padding:10px 16px 8px;overflow-x:auto;scrollbar-width:none}
+.home-tabs{position:sticky;top:0;z-index:5;background:var(--bg);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:10px 12px 8px}
 .home-tabs::-webkit-scrollbar{display:none}
-.home-tab{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:20px;font-size:13px;font-weight:600;white-space:nowrap;flex-shrink:0;border:0.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;min-height:36px}
+.home-tab{display:flex;align-items:center;justify-content:center;gap:4px;padding:7px 4px;border-radius:20px;font-size:12.5px;font-weight:600;white-space:nowrap;min-width:0;overflow:hidden;border:0.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;min-height:36px}
 .home-tab.on{background:var(--purple);border-color:var(--purple);color:#fff}
 .home-tab .tab-count{font-size:11px;font-weight:700;min-width:18px;height:18px;padding:0 5px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;background:var(--bg);color:var(--text2)}
 .home-tab.on .tab-count{background:rgba(255,255,255,.25);color:#fff}
@@ -303,7 +362,7 @@ body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:r
 .assignee-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 9px 2px 2px;border-radius:20px;background:var(--purple-light);color:var(--purple-dark);font-size:12px;font-weight:600}
 .assignee-chip.me{background:#E1F5EE;color:#0F6E56}
 .accept-btn{padding:7px 12px;border-radius:20px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
-html.desk #home-body .home-tabs{grid-column:1/-1;padding-left:0;padding-right:0}
+html.desk #home-body .home-tabs{grid-column:1/-1;padding-left:0;padding-right:0;grid-template-columns:repeat(6,minmax(0,1fr))}
 html.desk #home-body .home-empty{grid-column:1/-1}
 
 /* ── SEGMENT / STARS / WORK LINK ── */
@@ -1084,7 +1143,21 @@ function initNotifs(){notifications=[];db.tasks.forEach(t=>{t.comments.forEach(c
 function isLead(){const r=(db.members.find(m=>m.name===currentUser)||{}).role;return r==='lead'||r==='boss';}
 function fbCount(t){return t.comments.filter(c=>!c.resolved).length;}
 
-function avHTML(name,size=24){const m=getM(name);return`<div class="av ${m.cls}" style="width:${size}px;height:${size}px;font-size:${Math.round(size*.42)}px">${m.init}</div>`;}
+function avHTML(name,size=24){const m=getM(name);const ph=m.photo&&m.id?' has-photo avp-'+m.id:'';return`<div class="av ${m.cls}${ph}" style="width:${size}px;height:${size}px;font-size:${Math.round(size*.42)}px" title="${esc(m.name)}">${esc(m.init)}</div>`;}
+function syncAvatarStyles(){
+  let st=document.getElementById('av-photos');if(!st){st=document.createElement('style');st.id='av-photos';document.head.appendChild(st);}
+  const css=db.members.filter(m=>m.photo&&m.id&&/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(m.photo)).map(m=>`.avp-${String(m.id).replace(/[^A-Za-z0-9_-]/g,'')}{background-image:url("${m.photo}")}`).join('\n');
+  if(st.textContent!==css)st.textContent=css;
+}
+const SHIRTS=[['#7F77DD','ม่วง'],['#E24B4A','แดง'],['#EF9F27','ส้ม'],['#F2C94C','เหลือง'],['#1D9E75','เขียว'],['#56CCF2','ฟ้า'],['#378ADD','น้ำเงิน'],['#D4537E','ชมพู'],['#5F5E5A','เทา'],['#2C2C2A','ดำ']];
+const CLS_SHIRT={'av-p':'#7F77DD','av-n':'#1D9E75','av-s':'#EF9F27','av-b':'#E24B4A','av-k':'#378ADD','av-d':'#5F5E5A'};
+function shirtOf(m){return(m&&/^#[0-9A-Fa-f]{6}$/.test(m.shirt||''))?m.shirt:(CLS_SHIRT[m&&m.cls]||'#7F77DD');}
+function roleLabel(m){return m.role==='boss'?'หัวหน้า':m.role==='lead'?'หัวหน้าทีม':'นักออกแบบ';}
+function contactHTML(m){
+  const tel=String(m.phone||'').replace(/[^0-9+]/g,'');
+  const rawLine=String(m.lineId||'').trim();
+  return(tel||rawLine)?`<div class="contact-row">${tel?`<a class="contact-btn tel" href="tel:${esc(tel)}" onclick="event.stopPropagation()"><i class="ti ti-phone"></i>${esc(m.phone)}</a>`:''}${rawLine?`<a class="contact-btn line" href="https://line.me/ti/p/~${encodeURIComponent(rawLine.replace(/^@/,''))}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><i class="ti ti-brand-line"></i>${esc(rawLine)}</a>`:''}</div>`:'';
+}
 function avStack(as,size=24){if(!as||!as.length)return'';return`<div class="avatar-stack">${as.slice(0,3).map(n=>avHTML(n,size)).join('')}${as.length>3?`<div class="av av-d" style="width:${size}px;height:${size}px;font-size:${Math.round(size*.36)}px;background:var(--gray-light);color:var(--gray)">+${as.length-3}</div>`:''}</div>`;}
 function sIcon(status,size=44,showLabel=false){const s=STATUS_ICONS[status]||STATUS_ICONS.new;const ic=`<div class="status-icon" style="width:${size}px;height:${size}px;border-radius:50%;background:${s.bg}"><i class="ti ${s.icon}" style="color:${s.fg};font-size:${Math.round(size*.46)}px"></i>${s.dot?`<div class="si-dot" style="background:${s.dotBg}"><i class="ti ${s.dot}" style="color:#fff;font-size:8px"></i></div>`:''}</div>`;if(!showLabel)return ic;return`<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">${ic}<span style="font-size:9px;font-weight:600;color:${s.fg};white-space:nowrap">${s.label}</span></div>`;}
 function sPill(s){const m={new:'pill-new',wip:'pill-wip',blocked:'pill-blocked',review:'pill-review',approved:'pill-approved',done:'pill-done',rejected:'pill-blocked'};return`<span class="pill ${m[s]||'pill-new'}">${STATUS_MAP[s]||s}</span>`;}
@@ -1092,7 +1165,7 @@ function fmtDue(d){if(!d)return'';const diff=Math.ceil((new Date(d)-new Date())/
 function stepBar(step,status,count=6){return`<div class="step-bar">${Array.from({length:count},(_,i)=>`<div class="step-seg ${i<step?'done':i===step?(status==='blocked'?'blocked':'active'):''}"></div>`).join('')}</div>`;}
 
 /* ── LOGIN ── */
-function buildLoginPick(){
+function buildLoginPick(){syncAvatarStyles();
   const el=document.getElementById('member-pick-list');if(!el)return;
   el.innerHTML=`<div class="m-chips" style="margin-bottom:14px">${db.members.map(m=>`<button class="m-chip ${selectedLoginMember===m.name?'sel':''}" onclick="pickLoginMember('${m.name}')">${avHTML(m.name,20)}<span>${m.name}</span></button>`).join('')}</div>`;
 }
@@ -1784,6 +1857,57 @@ function calMoveTo(kind,id,date){
   showToast(date?`ย้ายไป ${fmtThaiDate(date)} ✓`:'ย้ายไปไม่มีกำหนดส่ง ✓');
 }
 
+/* ── KPI CHARACTER ── */
+function moodOf(score){return score>=75?'happy':score>=60?'mid':'sad';}
+function charBodySVG(mood){
+  const P='#3D3A5C',S='var(--shirt)',K='#FCD9B8',SH='#2C2C2A';
+  const torso=`<path class="torso" d="M22 14 Q40 5 58 14 L56 52 Q40 57 24 52 Z" fill="${S}"/><path d="M34 9 L40 16 L46 9" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2" stroke-linecap="round"/>`;
+  if(mood==='happy')return`
+    <g class="leg leg-l"><path d="M33 50 L28 78" stroke="${P}" stroke-width="9" stroke-linecap="round"/><ellipse cx="26" cy="81" rx="7" ry="4" fill="${SH}"/></g>
+    <g class="leg leg-r"><path d="M47 50 L52 78" stroke="${P}" stroke-width="9" stroke-linecap="round"/><ellipse cx="54" cy="81" rx="7" ry="4" fill="${SH}"/></g>
+    ${torso}
+    <g class="arm arm-l"><path d="M24 16 L9 -1" stroke="${S}" stroke-width="8" stroke-linecap="round"/><circle cx="7" cy="-4" r="5" fill="${K}"/></g>
+    <g class="arm arm-r"><path d="M56 16 L71 -1" stroke="${S}" stroke-width="8" stroke-linecap="round"/><circle cx="73" cy="-4" r="5" fill="${K}"/></g>`;
+  if(mood==='mid')return`
+    <ellipse cx="40" cy="70" rx="33" ry="9" fill="#C9C3F5"/><ellipse cx="40" cy="67" rx="28" ry="5" fill="#D9D4FA"/>
+    <g class="leg leg-l"><path d="M34 51 L14 60 L38 65" fill="none" stroke="${P}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="41" cy="65" rx="5" ry="3.5" fill="${SH}"/></g>
+    <g class="leg leg-r"><path d="M46 51 L66 60 L42 65" fill="none" stroke="${P}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="39" cy="66" rx="5" ry="3.5" fill="${SH}"/></g>
+    ${torso}
+    <g class="arm arm-l"><path d="M24 17 L18 46" stroke="${S}" stroke-width="8" stroke-linecap="round"/><circle cx="19" cy="51" r="5" fill="${K}"/></g>
+    <g class="arm arm-r"><path d="M56 17 L62 46" stroke="${S}" stroke-width="8" stroke-linecap="round"/><circle cx="61" cy="51" r="5" fill="${K}"/></g>`;
+  return`
+    <g class="leg leg-l"><path d="M35 51 L33 78" stroke="${P}" stroke-width="9" stroke-linecap="round"/><ellipse cx="31" cy="81" rx="6" ry="3.5" fill="${SH}"/></g>
+    <g class="leg leg-r"><path d="M45 51 L47 78" stroke="${P}" stroke-width="9" stroke-linecap="round"/><ellipse cx="49" cy="81" rx="6" ry="3.5" fill="${SH}"/></g>
+    <g transform="translate(0 3)">${torso}</g>
+    <g class="arm arm-l"><path d="M25 20 L21 47" stroke="${S}" stroke-width="8" stroke-linecap="round"/><circle cx="21" cy="51" r="5" fill="${K}"/></g>
+    <g class="arm arm-r"><path d="M55 20 L59 47" stroke="${S}" stroke-width="8" stroke-linecap="round"/><circle cx="59" cy="51" r="5" fill="${K}"/></g>`;
+}
+function charFaceSVG(mood){
+  const mouth=mood==='happy'?'<path d="M19 34 Q28 44 37 34" fill="#7A2E2E"/>':mood==='mid'?'<path d="M21 37 L35 37" stroke="#5A3A2E" stroke-width="2.5" stroke-linecap="round"/>':'<path d="M20 40 Q28 33 36 40" fill="none" stroke="#5A3A2E" stroke-width="2.5" stroke-linecap="round"/>';
+  const eyes=mood==='happy'?'<path d="M15 25 Q19 20 23 25 M33 25 Q37 20 41 25" fill="none" stroke="#2C2C2A" stroke-width="2.5" stroke-linecap="round"/>':'<circle cx="19" cy="25" r="2.8" fill="#2C2C2A"/><circle cx="37" cy="25" r="2.8" fill="#2C2C2A"/>';
+  const brows=mood==='sad'?'<path d="M13 21 L22 17 M43 21 L34 17" stroke="#5A3A2E" stroke-width="2" stroke-linecap="round"/>':'';
+  const blush=mood==='happy'?'<circle cx="12" cy="33" r="3.5" fill="#F7A9A0" opacity=".7"/><circle cx="44" cy="33" r="3.5" fill="#F7A9A0" opacity=".7"/>':'';
+  return`<svg viewBox="0 0 56 56"><rect width="56" height="56" fill="#FCE3CF"/><path d="M0 0 H56 V16 Q28 6 0 16 Z" fill="#3D3A5C"/>${brows}${eyes}${blush}${mouth}</svg>`;
+}
+function charHTML(m,score,opts={}){
+  const mood=moodOf(score),me=m.name===currentUser;
+  const head=m.photo&&/^data:image\//.test(m.photo)?`<img src="${m.photo}" alt="">`:charFaceSVG(mood);
+  const emo=m.photo?`<div class="char-emo">${mood==='happy'?'😄':mood==='mid'?'🙂':'😢'}</div>`:'';
+  const fx=mood==='happy'?'<div class="char-fx">🎉</div>':mood==='sad'?'<div class="char-fx">🌧️</div>':'';
+  const tear=mood==='sad'?'<div class="char-tear"></div>':'';
+  const label=mood==='happy'?'เยี่ยมมาก! 🎶':mood==='mid'?'พอใช้ ค่อยๆ ไป':'สู้ๆ นะ';
+  return`<div class="char mood-${mood} ${me?'me':''}" style="--shirt:${shirtOf(m)}${opts.click?';cursor:pointer':''}" ${opts.click?`onclick="viewMemberDetail('${esc(m.name)}')"`:''} aria-label="${esc(m.name)} KPI ${score}">
+    ${opts.noScore?'':`<div class="char-score" style="background:${gradeColor(score)}">${score}</div>`}
+    <div class="char-fig">${fx}<div class="char-head">${head}</div>${emo}${tear}<svg class="char-body" viewBox="0 0 80 88">${charBodySVG(mood)}</svg><div class="char-shadow"></div></div>
+    <div class="char-name">${esc(m.name)}${me?' (คุณ)':''}</div>
+    <div class="char-mood">${opts.sub!=null?opts.sub:label}</div>
+  </div>`;
+}
+function kpiStageHTML(allScores){
+  if(!allScores.length)return'';
+  return`<div class="kpi-stage"><div class="kpi-stage-title">ทีมของเรา · KPI เดือนนี้</div><div class="chars">${allScores.map(({m,k})=>charHTML(m,k.score,{click:true,sub:gradeLabel(k.score)})).join('')}</div></div>`;
+}
+
 /* ── WORK LINKS ── */
 function workLinks(t){return(t.links||[]).filter(l=>l.work);}
 function pushWorkLink(t,url){
@@ -2018,8 +2142,6 @@ function renderHome(){
     html+=`<div class="empty home-empty"><i class="ti ${msg[0]}"></i><p>${msg[1]}</p>${homeTab==='all'?'<p style="font-size:13px;margin-top:6px">กด + เพื่อสร้างงาน งานประจำ หรือนัดหมาย</p>':''}</div>`;
   }
   el.innerHTML=html;
-  const on=el.querySelector('.home-tab.on'),row=el.querySelector('.home-tabs');
-  if(on&&row)row.scrollLeft=Math.max(0,on.offsetLeft-row.clientWidth/2+on.offsetWidth/2);
 }
 function homeOpenAppt(id){
   const b=(db.broadcasts||[]).find(x=>x.id===id);if(!b)return;
@@ -2064,15 +2186,26 @@ function createTask(){
 /* ── ME SHEET ── */
 function openMeSheet(){
   const m=getM(currentUser);
+  window._editPhoto=m.photo||'';window._editShirt=shirtOf(m);window._editRole=m.role||'designer';
   document.getElementById('me-sheet-body').innerHTML=`
-    <div style="display:flex;align-items:center;gap:12px;padding:4px 0 16px;border-bottom:0.5px solid var(--border);margin-bottom:16px">
-      ${avHTML(currentUser,44)}
-      <div><div style="font-size:16px;font-weight:700;color:var(--text)">${currentUser}</div>
-      <div style="font-size:13px;color:var(--text3)">${m.role==='boss'?'หัวหน้า':m.role==='lead'?'หัวหน้าทีม':'นักออกแบบ'}</div></div>
+    <div style="display:flex;align-items:flex-end;justify-content:center;gap:10px;padding:0 0 10px;border-bottom:0.5px solid var(--border);margin-bottom:14px">
+      <div style="text-align:center">
+        <div class="pf-photo"><div id="pf-av"></div><label class="pf-cam" aria-label="อัปโหลดรูปโปรไฟล์"><i class="ti ti-camera"></i><input type="file" accept="image/*" style="display:none" onchange="pickProfilePhoto(this)"></label></div>
+        <button class="link-text" style="margin:2px 0 0;font-size:12px;border:none;background:none" id="pf-remove" onclick="window._editPhoto='';refreshMePreview()">ลบรูป</button>
+      </div>
+      <div id="me-char"></div>
     </div>
-    <label class="f-label" style="margin-top:0">เปลี่ยนชื่อเล่น</label>
-    <input class="f-input" id="edit-nick" value="${currentUser}" maxlength="12">
-    <label class="f-label">บทบาท</label>
+    <label class="f-label" style="margin-top:0">ชื่อเล่น</label>
+    <input class="f-input" id="edit-nick" value="${esc(currentUser)}" maxlength="12" oninput="refreshMePreview()">
+    <label class="f-label">ตำแหน่ง</label>
+    <input class="f-input" id="edit-pos" value="${esc(m.position||'')}" maxlength="40" placeholder="เช่น กราฟิกดีไซเนอร์, Art Director">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div><label class="f-label">เบอร์โทร</label><input class="f-input" id="edit-phone" type="tel" inputmode="tel" value="${esc(m.phone||'')}" maxlength="20" placeholder="08x-xxx-xxxx"></div>
+      <div><label class="f-label">LINE ID</label><input class="f-input" id="edit-line" value="${esc(m.lineId||'')}" maxlength="40" placeholder="เช่น off.design"></div>
+    </div>
+    <label class="f-label">สีเสื้อตัวการ์ตูน (หน้า KPI)</label>
+    <div class="swatches" id="pf-swatches"></div>
+    <label class="f-label">บทบาทในระบบ</label>
     <div class="role-chips" id="edit-role-chips">
       <button class="role-chip ${m.role==='designer'?'sel':''}" id="erc-designer" onclick="editPickRole('designer')"><i class="ti ti-pencil"></i>นักออกแบบ</button>
       <button class="role-chip ${m.role==='lead'?'sel':''}" id="erc-lead" onclick="editPickRole('lead')"><i class="ti ti-crown"></i>หัวหน้าทีม</button>
@@ -2086,9 +2219,29 @@ function openMeSheet(){
     <button class="big-btn" onclick="saveProfile()" style="margin-top:16px">บันทึก</button>
     <button class="outline-btn" style="margin-top:8px;color:var(--red)" onclick="doLogout()"><i class="ti ti-logout" style="font-size:15px"></i> ออกจากระบบ</button>
   `;
-  let editRole2=m.role||'designer';
-  window._editRole=editRole2;
+  refreshMePreview();
   document.getElementById('sheet-me').classList.add('show');
+}
+function refreshMePreview(){
+  const m=getM(currentUser);const nick=(document.getElementById('edit-nick')||{}).value||currentUser;
+  const tmp={...m,name:nick.trim()||currentUser,init:(nick.trim()||currentUser)[0],photo:window._editPhoto,shirt:window._editShirt};
+  const av=document.getElementById('pf-av');
+  if(av)av.innerHTML=tmp.photo?`<div class="av has-photo" style="background-image:url('${tmp.photo}')"></div>`:`<div class="av ${m.cls}">${esc(tmp.init)}</div>`;
+  const rm=document.getElementById('pf-remove');if(rm)rm.style.visibility=tmp.photo?'visible':'hidden';
+  const ch=document.getElementById('me-char');if(ch)ch.innerHTML=charHTML(tmp,calcKPI(currentUser).score,{sub:'ตัวอย่าง'});
+  const sw=document.getElementById('pf-swatches');
+  if(sw)sw.innerHTML=SHIRTS.map(([c,n])=>`<button class="swatch ${c===window._editShirt?'sel':''}" style="background:${c}" title="${n}" aria-label="เสื้อสี${n}" onclick="window._editShirt='${c}';refreshMePreview()"></button>`).join('');
+}
+function pickProfilePhoto(input){
+  const f=input.files&&input.files[0];if(!f)return;
+  if(!/^image\//.test(f.type)){showToast('กรุณาเลือกไฟล์รูป');return;}
+  const rd=new FileReader();
+  rd.onload=()=>{const img=new Image();img.onload=()=>{
+    const S=160,c=document.createElement('canvas');c.width=S;c.height=S;const x=c.getContext('2d');
+    const side=Math.min(img.width,img.height);x.drawImage(img,(img.width-side)/2,(img.height-side)/2,side,side,0,0,S,S);
+    window._editPhoto=c.toDataURL('image/jpeg',0.82);refreshMePreview();showToast('อัปโหลดรูปแล้ว — กดบันทึก');
+  };img.onerror=()=>showToast('เปิดไฟล์รูปนี้ไม่ได้');img.src=rd.result;};
+  rd.readAsDataURL(f);input.value='';
 }
 function editPickRole(r){
   window._editRole=r;
@@ -2101,9 +2254,16 @@ function saveProfile(){
   const oldName=m.name;
   if(nick!==oldName&&db.members.find(x=>x.name===nick)){showToast('ชื่อนี้มีอยู่แล้ว');return;}
   m.name=nick;m.init=nick[0].toUpperCase();m.role=window._editRole||m.role;
+  m.position=document.getElementById('edit-pos').value.trim();
+  m.phone=document.getElementById('edit-phone').value.trim();
+  m.lineId=document.getElementById('edit-line').value.trim();
+  m.shirt=window._editShirt||m.shirt;
+  if(window._editPhoto)m.photo=window._editPhoto;else delete m.photo;
   if(nick!==oldName){
     db.tasks.forEach(t=>{t.assignees=(t.assignees||[]).map(a=>a===oldName?nick:a);t.log.forEach(l=>{if(l.user===oldName)l.user=nick;});t.comments.forEach(c=>{if(c.author===oldName)c.author=nick;if(c.mention===oldName)c.mention=nick;});(t.links||[]).forEach(l=>{if(l.addedBy===oldName)l.addedBy=nick;});});
     db.activityLog.forEach(a=>{if(a.actor===oldName)a.actor=nick;});
+    db.tasks.forEach(t=>{if(t.rating){if(t.rating.by===oldName)t.rating.by=nick;t.rating.seenBy=(t.rating.seenBy||[]).map(x=>x===oldName?nick:x);}(t.checklist||[]).forEach(i=>{if(i.by===oldName)i.by=nick;});});
+    (db.broadcasts||[]).forEach(b=>{if(b.from===oldName)b.from=nick;b.to=(b.to||[]).map(x=>x===oldName?nick:x);b.readBy=(b.readBy||[]).map(x=>x===oldName?nick:x);});
     notifications.forEach(n=>{if(n.comment.author===oldName)n.comment.author=nick;if(n.comment.mention===oldName)n.comment.mention=nick;});
     currentUser=nick;
     try{localStorage.setItem('gf_user',nick);}catch(e){}
@@ -2139,7 +2299,8 @@ function renderTeam(){
       ${avHTML(m.name,40)}
       <div style="flex:1">
         <div style="font-size:15px;font-weight:600;color:var(--text)">${m.name}${m.name===currentUser?'<span style="color:var(--purple);font-size:13px"> (คุณ)</span>':''}</div>
-        <div style="font-size:12px;color:var(--text3)">${m.role==='boss'?'หัวหน้า':m.role==='lead'?'หัวหน้าทีม':'นักออกแบบ'}</div>
+        <div style="font-size:12px;color:var(--text3)">${m.position?esc(m.position)+' · ':''}${roleLabel(m)}</div>
+        ${contactHTML(m)}
         <div style="display:flex;gap:7px;margin-top:5px">
           ${active?`<span style="font-size:11px;background:var(--amber-light);color:var(--amber);padding:2px 8px;border-radius:20px;font-weight:500">${active} งาน</span>`:''}
           <span style="font-size:11px;background:var(--green-light);color:var(--green);padding:2px 8px;border-radius:20px;font-weight:500">${done} เสร็จ</span>
@@ -2158,8 +2319,9 @@ function viewMemberDetail(name){
     <div style="background:var(--surface);border-bottom:0.5px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px">
       <button onclick="switchPage('team')" style="width:36px;height:36px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-arrow-left" style="font-size:20px;color:var(--text)"></i></button>
       ${avHTML(name,40)}
-      <div><div style="font-size:16px;font-weight:700;color:var(--text)">${name}</div><div style="font-size:12px;color:var(--text3)">${m.role==='boss'?'หัวหน้า':m.role==='lead'?'หัวหน้าทีม':'นักออกแบบ'}</div></div>
+      <div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:700;color:var(--text)">${esc(name)}</div><div style="font-size:12px;color:var(--text3)">${m.position?esc(m.position)+' · ':''}${roleLabel(m)}</div>${contactHTML(m)}</div>
     </div>
+    <div class="kpi-stage" style="margin:12px 16px 0"><div class="chars">${charHTML(m,calcKPI(name).score,{sub:'KPI '+calcKPI(name).score+' · '+gradeLabel(calcKPI(name).score)})}</div></div>
     <div class="member-stats">
       <div class="stat-card"><div class="stat-num" style="color:var(--amber)">${active.length}</div><div class="stat-label">งานอยู่ระหว่างทำ</div></div>
       <div class="stat-card"><div class="stat-num" style="color:var(--green)">${done.length}</div><div class="stat-label">งานเสร็จแล้ว</div></div>
@@ -2255,6 +2417,7 @@ function renderKPI(){
   const myRank=allScores.findIndex(x=>x.m.name===currentUser)+1;
 
   el.innerHTML=`
+  ${kpiStageHTML(allScores)}
   <!-- MY SCORE HERO -->
   <div class="kpi-hero">
     <div style="display:flex;align-items:flex-start;gap:12px">
@@ -2666,7 +2829,7 @@ function closeSheet(name){document.getElementById('sheet-'+name).classList.remov
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
 /* ── RENDER ALL ── */
-function renderAll(){renderTasks();renderHome();updateNotifDot();updateBcDot();}
+function renderAll(){syncAvatarStyles();renderTasks();renderHome();updateNotifDot();updateBcDot();}
 
 /* ── VIEW MODE ── */
 let viewMode='mobile';
