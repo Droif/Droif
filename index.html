@@ -303,6 +303,53 @@ body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:r
 .recur-badge{font-size:11px;display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:20px;background:var(--blue-light);color:var(--blue);font-weight:600}
 .rate-badge{font-size:11px;display:inline-flex;align-items:center;gap:1px;padding:2px 7px;border-radius:20px;background:#FEF6E7;color:#B7791F;font-weight:700}
 
+/* ── CALENDAR ── */
+.cal-head{display:flex;align-items:center;gap:6px;padding:14px 16px 8px}
+.cal-title{font-size:18px;font-weight:700;color:var(--text);flex:1}
+.cal-nav{width:36px;height:36px;border-radius:50%;border:0.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center}
+.cal-today{padding:0 12px;height:36px;border-radius:18px;border:0.5px solid var(--border);background:var(--surface);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;padding:0 8px}
+.cal-wd{font-size:11px;font-weight:700;color:var(--text3);text-align:center;padding:4px 0}
+.cal-cell{background:var(--surface);border:0.5px solid var(--border);border-radius:8px;min-height:72px;padding:3px;display:flex;flex-direction:column;gap:2px;cursor:pointer;overflow:hidden}
+.cal-cell.out{opacity:.45}
+.cal-cell.today .cal-num{background:var(--purple);color:#fff}
+.cal-cell.sel{border-color:var(--purple);box-shadow:0 0 0 1.5px var(--purple) inset}
+.cal-cell.drop{background:var(--purple-light);border-color:var(--purple)}
+.cal-num{font-size:11px;font-weight:700;color:var(--text2);width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.cal-chip{font-size:10px;line-height:1.25;font-weight:600;padding:2px 4px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:2.5px solid;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.cal-more{font-size:10px;color:var(--text3);font-weight:600;padding-left:3px}
+.cal-ghost{position:fixed;z-index:400;pointer-events:none;font-size:12px;font-weight:700;padding:6px 10px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.25);border-left:3px solid;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transform:translate(-50%,-120%)}
+.cal-day-list{padding:12px 12px 0}
+.cal-day-title{font-size:14px;font-weight:700;color:var(--text);margin:4px 4px 8px}
+.cal-item{display:flex;align-items:center;gap:10px;background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:6px;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.cal-tray{margin:12px;padding:10px;border:1.5px dashed var(--border);border-radius:12px;background:var(--surface)}
+.cal-tray.drop{border-color:var(--purple);background:var(--purple-light)}
+.cal-tray .cal-chip{display:inline-block;margin:3px;font-size:12px;padding:5px 8px;max-width:100%}
+html.desk .cal-cell{min-height:118px;padding:5px}
+html.desk .cal-chip{font-size:12px;padding:3px 6px}
+html.desk .cal-num{font-size:13px;width:24px;height:24px}
+/* ── CHECKLIST ── */
+.ck-prog{height:6px;border-radius:3px;background:var(--gray-light);overflow:hidden;margin:6px 0 10px}
+.ck-prog>div{height:100%;background:var(--teal,#1D9E75);border-radius:3px;transition:width .2s}
+.ck-item{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:0.5px solid var(--border)}
+.ck-item:last-child{border-bottom:none}
+.ck-box{width:24px;height:24px;border-radius:7px;border:1.5px solid var(--purple-border,#AFA9EC);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:#fff;font-size:15px}
+.ck-box.on{background:#1D9E75;border-color:#1D9E75}
+.ck-text{flex:1;font-size:14px;color:var(--text);min-width:0;word-break:break-word}
+.ck-item.done .ck-text{color:var(--text3);text-decoration:line-through}
+.ck-del{border:none;background:none;color:var(--text3);cursor:pointer;font-size:16px;padding:4px}
+.ck-add{display:flex;gap:8px;margin-top:8px}
+.ck-group{font-size:12px;font-weight:700;color:var(--text3);margin:16px 16px 6px;display:flex;align-items:center;gap:6px}
+.ck-task{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);margin:0 12px 8px;overflow:hidden}
+.ck-task-head{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}
+.ck-task-body{padding:0 14px 12px 50px}
+.ck-big{width:28px;height:28px;border-radius:50%}
+.ck-badge{font-size:11px;display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:20px;background:#E1F5EE;color:#0F6E56;font-weight:600}
+.inline-link{color:var(--purple-dark);word-break:break-all}
+html.desk #ck-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:0 12px;padding:0 12px}
+html.desk #ck-body .ck-task{margin:0 0 8px}
+html.desk #ck-body .ck-group{grid-column:1/-1;margin-left:4px}
+
 /* ── MEDIA PREVIEW ── */
 .media{position:relative;border-radius:10px;overflow:hidden;background:#1a1a2e;cursor:pointer;margin:6px 0 8px;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center}
 .media img{width:100%;height:100%;object-fit:cover;display:block}
@@ -431,6 +478,23 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
     <div style="height:24px"></div>
   </div>
 
+  <!-- CALENDAR PAGE -->
+  <div class="page" id="page-calendar">
+    <div id="cal-body"></div>
+    <div style="height:24px"></div>
+  </div>
+
+  <!-- CHECKLIST PAGE -->
+  <div class="page" id="page-checklist">
+    <div class="sec-header"><div class="sec-title">เช็คลิสต์งานค้าง</div><div class="sec-sub" id="ck-count"></div></div>
+    <div class="chip-row" id="ck-filter">
+      <button class="chip" data-f="mine" onclick="setCkFilter('mine')">งานของฉัน</button>
+      <button class="chip" data-f="all" onclick="setCkFilter('all')">ทั้งทีม</button>
+    </div>
+    <div id="ck-body"></div>
+    <div style="height:24px"></div>
+  </div>
+
   <!-- BOARD PAGE -->
   <div class="page" id="page-board">
     <div style="padding:14px 16px 4px">
@@ -536,6 +600,8 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
   <button class="nav-btn active" id="nav-home" onclick="switchPage('home')"><i class="ti ti-home"></i><span class="nav-label">หน้าแรก</span><span class="nav-dot" id="home-dot" style="display:none"></span></button>
+  <button class="nav-btn" id="nav-calendar" onclick="switchPage('calendar')"><i class="ti ti-calendar-month"></i><span class="nav-label">ปฏิทิน</span></button>
+  <button class="nav-btn" id="nav-checklist" onclick="switchPage('checklist')"><i class="ti ti-list-check"></i><span class="nav-label">เช็คลิสต์</span></button>
   <button class="nav-btn" id="nav-board" onclick="switchPage('board')"><i class="ti ti-layout-list"></i><span class="nav-label">งาน</span></button>
   <button class="nav-btn" id="nav-kpi" onclick="switchPage('kpi')"><i class="ti ti-award"></i><span class="nav-label">KPI</span></button>
   <button class="nav-btn" id="nav-timeline" onclick="switchPage('timeline')"><i class="ti ti-timeline"></i><span class="nav-label">Timeline</span></button>
@@ -596,6 +662,8 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
       <select class="f-select" id="n-priority"><option value="normal">ปกติ</option><option value="high">ด่วน</option></select>
       <label class="f-label">หมายเหตุ</label>
       <textarea class="f-textarea" id="n-note" placeholder="รายละเอียดเพิ่มเติม"></textarea>
+      <label class="f-label">ลิงก์อ้างอิง (ไม่บังคับ) — Google Drive / YouTube / รูป</label>
+      <input class="f-input" id="n-link" placeholder="วางลิงก์ แล้วจะเห็นรูป/วิดีโอในงาน">
       <button class="big-btn" onclick="createTask()" id="n-create-btn">สร้างงาน</button>
       <button class="outline-btn" style="margin-top:8px" onclick="closeSheet('new')">ยกเลิก</button>
     </div>
@@ -948,8 +1016,8 @@ function refreshUI(){
   if(!currentUser){if(document.getElementById('login-wrap').style.display!=='none')buildLoginPick();return;}
   if(!db.members.find(m=>m.name===currentUser))return;
   initNotifs();
-  const vis=['home','board','activity','team','export','notif','kpi','timeline','broadcast'].find(p=>{const e=document.getElementById('page-'+p);return e&&e.style.display==='block';});
-  renderAll();if(vis&&vis!=='board'&&vis!=='home')switchPage(vis);
+  const vis=['home','calendar','checklist','board','activity','team','export','notif','kpi','timeline','broadcast'].find(p=>{const e=document.getElementById('page-'+p);return e&&e.style.display==='block';});
+  renderAll();if(vis&&vis!=='board'&&vis!=='home'&&!calDrag)switchPage(vis);
   const ds=document.getElementById('sheet-detail');
   if(ds&&ds.classList.contains('show')&&editingTaskId===null){const t=db.tasks.find(x=>x.id===detailTaskId);if(t)renderDetailSheet(t);else closeSheet('detail');}
 }
@@ -1029,7 +1097,7 @@ function doCreateMember(){
   saveDb();loginAs(nick);
 }
 function loginAs(name){
-  currentUser=name;
+  currentUser=name;ckFilter=null;calScope=null;
   try{localStorage.setItem('gf_user',name);}catch(e){}
   document.getElementById('login-wrap').style.display='none';
   document.getElementById('me-name').textContent=name;
@@ -1042,13 +1110,15 @@ function doLogout(){if(!confirm('ออกจากระบบ?'))return;stopPr
 
 /* ── PAGE SWITCH ── */
 function switchPage(p){
-  ['home','board','activity','team','export','notif','member-detail','kpi','timeline','broadcast'].forEach(x=>{
+  ['home','calendar','checklist','board','activity','team','export','notif','member-detail','kpi','timeline','broadcast'].forEach(x=>{
     const pe=document.getElementById('page-'+x);if(pe)pe.style.display='none';
     const ne=document.getElementById('nav-'+x);if(ne)ne.classList.remove('active');
   });
   const pe=document.getElementById('page-'+p);if(pe)pe.style.display='block';
   const ne=document.getElementById('nav-'+p);if(ne)ne.classList.add('active');
   if(p==='home')renderHome();
+  if(p==='calendar')renderCalendar();
+  if(p==='checklist')renderChecklistPage();
   if(p==='activity')renderActivity();
   if(p==='team')renderTeam();
   if(p==='export')renderExport();
@@ -1096,6 +1166,7 @@ function renderTasks(){
           ${sPill(t.status)}
           ${fmtDue(t.due)}
           ${t.recur?`<span class="recur-badge"><i class="ti ti-repeat" style="font-size:11px"></i>${recurLabel(t)}</span>`:''}
+          ${(t.checklist||[]).length?`<span class="ck-badge"><i class="ti ti-checkbox" style="font-size:11px"></i>${t.checklist.filter(i=>i.done).length}/${t.checklist.length}</span>`:''}
           ${t.rating?`<span class="rate-badge"><i class="ti ti-star-filled" style="font-size:11px"></i>${t.rating.stars}</span>`:''}
           ${fbCount(t)?`<span class="tag-badge badge-fb"><i class="ti ti-message-2" style="font-size:10px"></i>${fbCount(t)}</span>`:''}
           ${(t.links||[]).length?`<span class="tag-badge badge-file"><i class="ti ti-paperclip" style="font-size:10px"></i>${t.links.length}</span>`:''}
@@ -1147,7 +1218,8 @@ function renderInfoTab(t){
   <div class="m-chips" id="ass-editor-${t.id}">${db.members.map(m=>{const sel=(t.assignees||[]).includes(m.name);return`<button class="m-chip ${sel?'sel':''}" onclick="toggleAss(${t.id},'${m.name}')">${avHTML(m.name,18)}<span>${m.name}</span>${sel?'<i class="ti ti-check" style="font-size:12px;color:var(--purple-dark)"></i>':''}</button>`;}).join('')}</div>
   <div class="sheet-section" style="margin-top:14px">ขั้นตอน</div>
   <div class="step-flow-row">${STEPS.map((s,i)=>`<span class="step-node ${i<t.step?'done-s':i===t.step?(t.status==='blocked'?'blocked-s':'active-s'):''}">${s}</span>${i<STEPS.length-1?'<span class="step-arr">›</span>':''}`).join('')}</div>
-  ${t.note?`<div style="background:var(--bg);border-radius:var(--radius-sm);padding:12px;font-size:13px;color:var(--text2);margin-top:8px">${t.note}</div>`:''}
+  ${t.note?`<div style="background:var(--bg);border-radius:var(--radius-sm);padding:12px;font-size:13px;color:var(--text2);margin-top:8px;white-space:pre-wrap">${linkify(t.note)}${mediaRow(urlsIn(t.note))}</div>`:''}
+  ${renderChecklistBox(t)}
   ${renderWorkBox(t)}
   ${t.status==='done'?renderRatingBox(t):''}
   ${isLead()?renderLeadTools(t):''}`;
@@ -1244,7 +1316,7 @@ function renderCommentsTab(t){
       <span class="comment-time">${c.time}</span>
       ${c.resolved?'<span class="resolved-tag"><i class="ti ti-check"></i>แก้แล้ว</span>':`<button class="resolve-btn" onclick="resolveComment(${t.id},${c.id})"><i class="ti ti-check"></i> แก้แล้ว</button>`}
     </div>
-    <div class="comment-text">${c.mention&&c.mention!==c.author?`<span style="color:var(--purple-dark);font-weight:600">@${c.mention}</span> `:''}${c.text}</div>
+    <div class="comment-text">${c.mention&&c.mention!==c.author?`<span style="color:var(--purple-dark);font-weight:600">@${c.mention}</span> `:''}${linkify(c.text)}${mediaRow(urlsIn(c.text))}</div>
   </div>`).join('');
   const input=`<div style="margin-top:14px">
     <div class="type-chip-row">${Object.entries(COMMENT_TYPES).map(([k,v])=>`<button class="type-chip ${selectedCmtType===k?'tc-sel-'+k:''}" id="tc-${t.id}-${k}" onclick="selCmtType(${t.id},'${k}')">${v}</button>`).join('')}</div>
@@ -1430,7 +1502,7 @@ function mediaInfo(url){
     if(id)return{kind:'drive',id,thumb:`https://drive.google.com/thumbnail?id=${id}&sz=w1000`,embed:`https://drive.google.com/file/d/${id}/preview`,label:'Google Drive'};
     return null;
   }
-  if((m=url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/)))
+  if((m=url.match(/(?:youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/|v\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/)))
     return{kind:'youtube',id:m[1],thumb:`https://i.ytimg.com/vi/${m[1]}/hqdefault.jpg`,embed:`https://www.youtube.com/embed/${m[1]}?autoplay=1&playsinline=1`,label:'YouTube',play:true};
   const path=url.split(/[?#]/)[0].toLowerCase();
   if(/\.(jpe?g|png|gif|webp|avif|svg)$/.test(path))return{kind:'image',thumb:url,label:'รูปภาพ'};
@@ -1466,6 +1538,236 @@ function openLightbox(url){
 }
 function closeLightbox(){document.getElementById('lightbox').classList.remove('show');document.getElementById('lb-body').innerHTML='';}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox();});
+
+function urlsIn(text){return(String(text||'').match(/https?:\/\/[^\s<>"']+/g)||[]).map(u=>u.replace(/[),.!?]+$/,''));}
+function linkify(text){return esc(text).replace(/https?:\/\/[^\s<>"']+/g,u=>{const clean=u.replace(/[),.!?]+$/,'');return`<a class="inline-link" href="${clean}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${clean}</a>${u.slice(clean.length)}`;});}
+
+/* ── CHECKLIST (รายการย่อยในงาน) ── */
+function canEditTask(t){return isLead()||(t.assignees||[]).includes(currentUser);}
+function ckItemsHTML(t,compact){
+  const items=t.checklist||[];
+  return items.map(i=>`<div class="ck-item ${i.done?'done':''}">
+    <button class="ck-box ${i.done?'on':''}" onclick="event.stopPropagation();toggleCk(${t.id},${i.id})" aria-label="ทำเครื่องหมาย">${i.done?'<i class="ti ti-check"></i>':''}</button>
+    <div class="ck-text">${linkify(i.text)}${i.done&&i.by?`<div style="font-size:11px;color:var(--text3);text-decoration:none">✓ ${esc(i.by)} · ${esc(i.time)}</div>`:''}</div>
+    ${compact?'':`<button class="ck-del" onclick="event.stopPropagation();delCk(${t.id},${i.id})" aria-label="ลบ"><i class="ti ti-x"></i></button>`}
+  </div>`).join('');
+}
+function ckProgress(t){const it=t.checklist||[];const d=it.filter(i=>i.done).length;return{d,n:it.length,pct:it.length?Math.round(d/it.length*100):0};}
+function renderChecklistBox(t){
+  const pr=ckProgress(t);
+  return`<div class="work-box">
+    <div class="sheet-section" style="margin-bottom:2px;display:flex;justify-content:space-between"><span><i class="ti ti-list-check"></i> เช็คลิสต์</span>${pr.n?`<span style="color:var(--text3)">${pr.d}/${pr.n}</span>`:''}</div>
+    ${pr.n?`<div class="ck-prog"><div style="width:${pr.pct}%"></div></div>`:''}
+    <div id="ck-items-${t.id}">${ckItemsHTML(t)}</div>
+    <div class="ck-add"><input class="f-input" id="ck-in-${t.id}" placeholder="เพิ่มรายการ เช่น ทำ mockup, ส่งลูกค้าดู" style="flex:1" onkeydown="if(event.key==='Enter')addCk(${t.id},'ck-in-${t.id}')">
+    <button style="padding:10px 14px;border-radius:var(--radius-sm);border:none;background:var(--purple);color:#fff;font-size:16px;cursor:pointer;flex-shrink:0" onclick="addCk(${t.id},'ck-in-${t.id}')"><i class="ti ti-plus"></i></button></div>
+  </div>`;
+}
+function rerenderTaskViews(t){
+  const ds=document.getElementById('sheet-detail');
+  if(ds&&ds.classList.contains('show')&&detailTaskId===t.id)renderDetailSheet(t);
+  renderTasks();renderHome();
+  const ck=document.getElementById('page-checklist');if(ck&&ck.style.display==='block')renderChecklistPage();
+}
+function addCk(tid,inputId){
+  const t=db.tasks.find(x=>x.id===tid);if(!t)return;
+  const el=document.getElementById(inputId);const text=(el&&el.value||'').trim();
+  if(!text){showToast('กรุณาพิมพ์รายการ');return;}
+  if(!t.checklist)t.checklist=[];
+  t.checklist.push({id:uid(),text,done:false});
+  saveDb();rerenderTaskViews(t);
+  const again=document.getElementById(inputId);if(again)again.focus();
+}
+function toggleCk(tid,iid){
+  const t=db.tasks.find(x=>x.id===tid);if(!t)return;
+  const i=(t.checklist||[]).find(x=>x.id===iid);if(!i)return;
+  i.done=!i.done;if(i.done){i.by=currentUser;i.time=ts();}else{delete i.by;delete i.time;}
+  const pr=ckProgress(t);
+  if(i.done&&pr.d===pr.n){addAct(currentUser,`เช็คลิสต์ครบ ${pr.n} รายการ`,t.name,t.id,'status');showToast('เช็คลิสต์ครบแล้ว 🎉');}
+  saveDb();rerenderTaskViews(t);
+}
+function delCk(tid,iid){
+  const t=db.tasks.find(x=>x.id===tid);if(!t)return;
+  t.checklist=(t.checklist||[]).filter(x=>x.id!==iid);saveDb();rerenderTaskViews(t);
+}
+
+/* ── CHECKLIST PAGE (งานค้างทั้งหมด) ── */
+let ckFilter=null,ckOpen=new Set();
+function setCkFilter(f){ckFilter=f;renderChecklistPage();}
+function ckAdvanceLabel(t){return isLead()?'ส่งมอบเสร็จ':'ส่งตรวจ';}
+function tickTask(tid){
+  const t=db.tasks.find(x=>x.id===tid);if(!t)return;
+  if(!canEditTask(t)){showToast('ไม่มีสิทธิ์แก้งานนี้');return;}
+  if(!isLead()&&t.status==='review'){showToast('งานนี้รอหัวหน้าตรวจอยู่');return;}
+  const pr=ckProgress(t);
+  const warn=pr.n&&pr.d<pr.n?`\n(เช็คลิสต์ยังไม่ครบ ${pr.d}/${pr.n})`:'';
+  if(!confirm(`${ckAdvanceLabel(t)}: "${t.name}"?${warn}`))return;
+  const tt=ts();
+  if(isLead()){t.status='done';t.step=5;t.log.push({time:tt,user:currentUser,action:'ส่งมอบเสร็จ (จากเช็คลิสต์)',icon:'ti-archive',color:'#5F5E5A'});addAct(currentUser,'ส่งมอบเสร็จ',t.name,t.id,'done');spawnNextRecurring(t);}
+  else{t.status='review';t.step=2;t.log.push({time:tt,user:currentUser,action:'ส่งตรวจ (จากเช็คลิสต์)',icon:'ti-send',color:'#534AB7'});addAct(currentUser,'ส่งตรวจ',t.name,t.id,'status');}
+  saveDb();renderAll();renderChecklistPage();showToast(isLead()?'ส่งมอบเสร็จ ✓':'ส่งตรวจแล้ว ✓');
+}
+function renderChecklistPage(){
+  const el=document.getElementById('ck-body');if(!el||!currentUser)return;
+  if(!ckFilter)ckFilter=isLead()?'all':'mine';
+  document.querySelectorAll('#ck-filter .chip').forEach(b=>b.classList.toggle('on',b.dataset.f===ckFilter));
+  const list=db.tasks.filter(t=>t.status!=='done'&&(ckFilter==='all'||(t.assignees||[]).includes(currentUser)));
+  const groups=[['over','เกินกำหนด','ti-alert-triangle','var(--red)'],['today','วันนี้','ti-sun','#D85A30'],['week','7 วันข้างหน้า','ti-calendar-week','var(--amber)'],['later','ภายหลัง','ti-calendar','var(--text3)'],['none','ไม่มีกำหนดส่ง','ti-calendar-off','var(--text3)']];
+  const gOf=t=>{const n=daysUntil(t.due);return n===null?'none':n<0?'over':n===0?'today':n<=7?'week':'later';};
+  document.getElementById('ck-count').textContent=`${list.length} งานค้าง`;
+  if(!list.length){el.innerHTML=`<div class="empty" style="grid-column:1/-1"><i class="ti ti-checks"></i><p>ไม่มีงานค้าง เยี่ยมมาก!</p></div>`;return;}
+  el.innerHTML=groups.map(([g,label,icon,color])=>{
+    const ts_=list.filter(t=>gOf(t)===g).sort((a,b)=>(a.due||'').localeCompare(b.due||''));
+    if(!ts_.length)return'';
+    return`<div class="ck-group" style="color:${color}"><i class="ti ${icon}"></i>${label} · ${ts_.length}</div>`+ts_.map(t=>{
+      const pr=ckProgress(t),open=ckOpen.has(t.id),inReview=t.status==='review';
+      return`<div class="ck-task">
+        <div class="ck-task-head" onclick="ckToggleOpen(${t.id})">
+          <button class="ck-box ck-big ${inReview?'on':''}" style="${inReview?'background:var(--purple);border-color:var(--purple)':''}" onclick="event.stopPropagation();tickTask(${t.id})" title="${inReview?'รอตรวจ':ckAdvanceLabel(t)}" aria-label="${ckAdvanceLabel(t)}">${inReview?'<i class="ti ti-eye"></i>':''}</button>
+          <div style="flex:1;min-width:0">
+            <div class="home-item-title">${t.priority==='high'?'<i class="ti ti-flame" style="color:#D85A30;font-size:13px"></i> ':''}${esc(t.name)}</div>
+            <div class="home-item-sub">${esc((t.assignees||[]).join(', '))} · ${STATUS_MAP[t.status]}${t.due?' · '+fmtThaiDate(t.due):''}${pr.n?` · ☑ ${pr.d}/${pr.n}`:''}</div>
+            ${pr.n?`<div class="ck-prog" style="margin:6px 0 0"><div style="width:${pr.pct}%"></div></div>`:''}
+          </div>
+          ${t.due?(()=>{const[wb,wc]=whenColor(t.due);return`<span class="home-when" style="background:${wb};color:${wc}">${whenLabel(t.due)}</span>`;})():''}
+          <i class="ti ti-chevron-${open?'up':'down'}" style="color:var(--text3)"></i>
+        </div>
+        ${open?`<div class="ck-task-body">${ckItemsHTML(t,true)||'<div style="font-size:13px;color:var(--text3);padding:4px 0">ยังไม่มีรายการย่อย</div>'}
+          <div class="ck-add"><input class="f-input" id="ckp-in-${t.id}" placeholder="เพิ่มรายการ..." style="flex:1;padding:9px 12px" onkeydown="if(event.key==='Enter')addCk(${t.id},'ckp-in-${t.id}')">
+          <button style="padding:8px 12px;border-radius:var(--radius-sm);border:none;background:var(--purple);color:#fff;cursor:pointer" onclick="addCk(${t.id},'ckp-in-${t.id}')"><i class="ti ti-plus"></i></button>
+          <button style="padding:8px 12px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;white-space:nowrap" onclick="openDetail(${t.id})">เปิดงาน</button></div>
+        </div>`:''}
+      </div>`;}).join('');
+  }).join('');
+}
+function ckToggleOpen(id){if(ckOpen.has(id))ckOpen.delete(id);else ckOpen.add(id);renderChecklistPage();}
+
+/* ── CALENDAR (ลากการ์ดเพื่อเลื่อนวัน) ── */
+const TH_MONTHS=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+let calMonth=null,calSel=null,calScope=null,calDrag=null;
+function calItems(){
+  const mine=t=>(t.assignees||[]).includes(currentUser);
+  const tasks=db.tasks.filter(t=>calScope==='all'||mine(t));
+  const appts=(db.broadcasts||[]).filter(b=>b.type==='meet'&&b.date&&(calScope==='all'||b.to.includes(currentUser)||b.from===currentUser));
+  return{tasks,appts};
+}
+function chipStyle(kind,x){
+  if(kind==='appt')return'background:var(--green-light);color:var(--green);border-color:var(--green)';
+  const si=STATUS_ICONS[x.status]||STATUS_ICONS.new;return`background:${si.bg};color:${si.fg};border-color:${si.fg}${x.status==='done'?';opacity:.6;text-decoration:line-through':''}`;
+}
+function chipHTML(kind,x,big){
+  const label=kind==='appt'?(x.time?x.time+' ':'')+'🗓 '+x.subject:(x.priority==='high'?'🔥':'')+(x.recur?'🔁':'')+x.name;
+  return`<div class="cal-chip" style="${chipStyle(kind,x)}" data-kind="${kind}" data-id="${x.id}" onpointerdown="calDown(event)">${esc(label)}</div>`;
+}
+function renderCalendar(){
+  const el=document.getElementById('cal-body');if(!el||!currentUser)return;
+  if(!calMonth){const d=new Date();calMonth=new Date(d.getFullYear(),d.getMonth(),1);}
+  if(!calSel)calSel=todayStr();
+  if(!calScope)calScope=isLead()?'all':'mine';
+  const{tasks,appts}=calItems();
+  const y=calMonth.getFullYear(),m=calMonth.getMonth();
+  const start=new Date(y,m,1-new Date(y,m,1).getDay());
+  const maxChips=document.documentElement.classList.contains('desk')?4:2;
+  let cells='';
+  for(let i=0;i<42;i++){
+    const d=new Date(start.getFullYear(),start.getMonth(),start.getDate()+i),ds=dateStr(d);
+    const its=[...appts.filter(b=>b.date===ds).sort((a,b)=>(a.time||'').localeCompare(b.time||'')).map(b=>['appt',b]),...tasks.filter(t=>t.due===ds).sort((a,b)=>(a.status==='done')-(b.status==='done')).map(t=>['task',t])];
+    cells+=`<div class="cal-cell ${d.getMonth()!==m?'out':''} ${ds===todayStr()?'today':''} ${ds===calSel?'sel':''}" data-date="${ds}" onclick="calPick('${ds}')">
+      <div class="cal-num">${d.getDate()}</div>${its.slice(0,maxChips).map(([k,x])=>chipHTML(k,x)).join('')}${its.length>maxChips?`<div class="cal-more">+${its.length-maxChips}</div>`:''}</div>`;
+    if(i===34&&new Date(start.getFullYear(),start.getMonth(),start.getDate()+35).getMonth()!==m)break;
+  }
+  const dayTasks=tasks.filter(t=>t.due===calSel),dayAppts=appts.filter(b=>b.date===calSel);
+  const unsched=tasks.filter(t=>!t.due&&t.status!=='done');
+  el.innerHTML=`<div class="cal-head">
+      <div class="cal-title">${TH_MONTHS[m]} ${y+543}</div>
+      <button class="cal-today" onclick="calGo(0)">วันนี้</button>
+      <button class="cal-nav" onclick="calGo(-1)" aria-label="เดือนก่อน"><i class="ti ti-chevron-left"></i></button>
+      <button class="cal-nav" onclick="calGo(1)" aria-label="เดือนถัดไป"><i class="ti ti-chevron-right"></i></button>
+    </div>
+    <div class="chip-row" style="padding-bottom:8px">
+      <button class="chip ${calScope==='mine'?'on':''}" onclick="calScope='mine';renderCalendar()">งานของฉัน</button>
+      <button class="chip ${calScope==='all'?'on':''}" onclick="calScope='all';renderCalendar()">ทั้งทีม</button>
+      <span style="font-size:12px;color:var(--text3);align-self:center;white-space:nowrap">ลากการ์ดไปวันอื่นเพื่อเลื่อนกำหนด</span>
+    </div>
+    <div class="cal-grid">${['อา','จ','อ','พ','พฤ','ศ','ส'].map(w=>`<div class="cal-wd">${w}</div>`).join('')}${cells}</div>
+    <div class="cal-day-list">
+      <div class="cal-day-title">${fmtThaiDate(calSel)} ${calSel===todayStr()?'(วันนี้)':''} · ${dayTasks.length+dayAppts.length} รายการ</div>
+      ${dayAppts.map(b=>`<div class="cal-item" data-kind="appt" data-id="${b.id}" onpointerdown="calDown(event)" style="border-left:3px solid var(--green)">
+          <i class="ti ti-calendar-event" style="color:var(--green);font-size:20px"></i>
+          <div style="flex:1;min-width:0"><div class="home-item-title">${esc(b.subject)}</div><div class="home-item-sub">${b.time?esc(b.time)+' น. · ':''}${b.to.length} คน · โดย ${esc(b.from)}</div>${linkPills(b.links)}</div></div>`).join('')}
+      ${dayTasks.map(t=>`<div class="cal-item" data-kind="task" data-id="${t.id}" onpointerdown="calDown(event)">
+          ${sIcon(t.status,32)}
+          <div style="flex:1;min-width:0"><div class="home-item-title">${esc(t.name)}</div><div class="home-item-sub">${esc((t.assignees||[]).join(', '))} · ${STATUS_MAP[t.status]}${ckProgress(t).n?` · ☑ ${ckProgress(t).d}/${ckProgress(t).n}`:''}</div></div>
+          <i class="ti ti-grip-vertical" style="color:var(--text3)"></i></div>`).join('')||(dayAppts.length?'':'<div style="font-size:13px;color:var(--text3);padding:4px 4px 8px">ไม่มีงานวันนี้ — กด + เพื่อสร้าง</div>')}
+    </div>
+    <div class="cal-tray" data-date="">
+      <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:4px"><i class="ti ti-calendar-off"></i> ยังไม่มีกำหนดส่ง · ลากลงปฏิทินเพื่อกำหนดวัน</div>
+      ${unsched.map(t=>chipHTML('task',t,true)).join('')||'<span style="font-size:12px;color:var(--text3)">—</span>'}
+    </div>`;
+}
+function calGo(n){if(n===0){const d=new Date();calMonth=new Date(d.getFullYear(),d.getMonth(),1);calSel=todayStr();}else calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()+n,1);renderCalendar();}
+function calPick(ds){if(calDrag&&calDrag.moved)return;calSel=ds;renderCalendar();}
+function calFind(kind,id){return kind==='appt'?(db.broadcasts||[]).find(b=>String(b.id)===String(id)):db.tasks.find(t=>String(t.id)===String(id));}
+function calCanMove(kind,x){return kind==='appt'?(x.from===currentUser||isLead()):canEditTask(x);}
+function calDown(e){
+  if(e.button!==undefined&&e.button!==0)return;
+  const el=e.currentTarget;e.stopPropagation();
+  calDrag={el,kind:el.dataset.kind,id:el.dataset.id,x0:e.clientX,y0:e.clientY,moved:false,ghost:null,over:null,pid:e.pointerId};
+  try{el.setPointerCapture(e.pointerId);}catch(_){}
+  el.addEventListener('pointermove',calMove);el.addEventListener('pointerup',calUp);el.addEventListener('pointercancel',calCancel);
+}
+function calTarget(x,y){const t=document.elementFromPoint(x,y);return t&&t.closest('[data-date]');}
+function calMove(e){
+  const d=calDrag;if(!d)return;
+  if(!d.moved){
+    if(Math.hypot(e.clientX-d.x0,e.clientY-d.y0)<6)return;
+    const item=calFind(d.kind,d.id);
+    if(!item||!calCanMove(d.kind,item)){showToast('ไม่มีสิทธิ์เลื่อนรายการนี้');calCancel();return;}
+    d.moved=true;
+    const g=document.createElement('div');g.className='cal-ghost';g.setAttribute('style',chipStyle(d.kind,item));
+    g.textContent=d.kind==='appt'?'🗓 '+item.subject:item.name;document.body.appendChild(g);d.ghost=g;
+  }
+  e.preventDefault();
+  d.ghost.style.left=e.clientX+'px';d.ghost.style.top=e.clientY+'px';
+  const tgt=calTarget(e.clientX,e.clientY);
+  if(d.over!==tgt){if(d.over)d.over.classList.remove('drop');d.over=tgt;if(tgt)tgt.classList.add('drop');}
+  const sa=document.getElementById('scroll-area'),r=sa.getBoundingClientRect();
+  if(e.clientY<r.top+40)sa.scrollTop-=12;else if(e.clientY>r.bottom-40)sa.scrollTop+=12;
+}
+function calEnd(){
+  const d=calDrag;if(!d)return null;
+  d.el.removeEventListener('pointermove',calMove);d.el.removeEventListener('pointerup',calUp);d.el.removeEventListener('pointercancel',calCancel);
+  if(d.ghost)d.ghost.remove();if(d.over)d.over.classList.remove('drop');
+  setTimeout(()=>{if(calDrag===d)calDrag=null;},0);
+  return d;
+}
+function calCancel(){calEnd();}
+function calUp(e){
+  const d=calEnd();if(!d)return;
+  if(!d.moved){// แตะ = เปิดรายละเอียด
+    if(d.kind==='task')openDetail(Number(d.id)||d.id);else{homeOpenAppt(Number(d.id)||d.id);calPick((calFind('appt',d.id)||{}).date||calSel);}
+    return;
+  }
+  const tgt=calTarget(e.clientX,e.clientY);if(!tgt)return;
+  calMoveTo(d.kind,d.id,tgt.dataset.date);
+}
+function calMoveTo(kind,id,date){
+  const x=calFind(kind,id);if(!x||!calCanMove(kind,x))return;
+  const tt=ts();
+  if(kind==='appt'){
+    if(!date){showToast('นัดหมายต้องมีวันที่');return;}
+    if(x.date===date)return;x.date=date;
+    addAct(currentUser,`เลื่อนนัดเป็น ${fmtThaiDate(date)}`,x.subject,null,'other');
+  }else{
+    if((x.due||'')===date)return;
+    x.due=date;
+    x.log.push({time:tt,user:currentUser,action:date?`เลื่อนกำหนดส่งเป็น ${fmtThaiDate(date)}`:'ยกเลิกกำหนดส่ง',icon:'ti-calendar-event',color:'#185FA5'});
+    addAct(currentUser,date?`เลื่อนกำหนดส่งเป็น ${fmtThaiDate(date)}`:'ยกเลิกกำหนดส่ง',x.name,x.id,'status');
+  }
+  if(date)calSel=date;
+  saveDb();renderCalendar();renderTasks();renderHome();
+  showToast(date?`ย้ายไป ${fmtThaiDate(date)} ✓`:'ย้ายไปไม่มีกำหนดส่ง ✓');
+}
 
 /* ── WORK LINKS ── */
 function workLinks(t){return(t.links||[]).filter(l=>l.work);}
@@ -1677,6 +1979,7 @@ function openNewTaskSheet(){
   document.getElementById('n-client').value='';
   document.getElementById('n-due').value='';
   document.getElementById('n-note').value='';
+  document.getElementById('n-link').value='';
   document.getElementById('sheet-new').classList.add('show');
 }
 function renderNewMemberChips(){
@@ -1692,6 +1995,8 @@ function createTask(){
   if(newType==='recur'){const rc=document.getElementById('n-recur').value;recurDay=rc==='daily'?null:Number(document.getElementById('n-recur-day').value);document.getElementById('n-due').value=firstDue(rc,recurDay);}
   const tt=ts();
   const task={id:uid(),name,client:document.getElementById('n-client').value.trim()||'-',assignees:Array.from(selectedNewMembers),due:document.getElementById('n-due').value,priority:document.getElementById('n-priority').value,status:'new',step:0,note:document.getElementById('n-note').value,recur:newType==='recur'?document.getElementById('n-recur').value:'',recurDay,links:[],comments:[],log:[{time:tt,user:currentUser,action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'}]};
+  const nl=safeUrl(document.getElementById('n-link').value);
+  if(nl){const ft=detectFT(nl);task.links.push({id:uid(),name:(mediaInfo(nl)||{}).label||ft.label,url:nl,addedBy:currentUser,time:tt});}
   db.tasks.unshift(task);
   addAct(currentUser,'สร้างงาน',name,task.id,'create');
   closeSheet('new');saveDb();renderTasks();showToast('สร้างงานใหม่เรียบร้อย ✓');
