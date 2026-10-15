@@ -303,6 +303,27 @@ body{display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:r
 .recur-badge{font-size:11px;display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:20px;background:var(--blue-light);color:var(--blue);font-weight:600}
 .rate-badge{font-size:11px;display:inline-flex;align-items:center;gap:1px;padding:2px 7px;border-radius:20px;background:#FEF6E7;color:#B7791F;font-weight:700}
 
+/* ── MEDIA PREVIEW ── */
+.media{position:relative;border-radius:10px;overflow:hidden;background:#1a1a2e;cursor:pointer;margin:6px 0 8px;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center}
+.media img{width:100%;height:100%;object-fit:cover;display:block}
+.media video{width:100%;height:100%;object-fit:contain;background:#000}
+.media-badge{position:absolute;left:8px;bottom:8px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;font-weight:600;padding:5px 10px;border-radius:20px}
+.media-play{position:absolute;width:52px;height:52px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;pointer-events:none}
+.media-fail{flex-direction:column;gap:6px;padding:16px;text-align:center;color:#CECBF6;font-size:12px;line-height:1.5;background:#26215C}
+.media-fail i{font-size:28px}
+.media-sm{aspect-ratio:auto;width:52px;height:52px;margin:0;flex-shrink:0;border-radius:10px}
+.media-sm .media-play{width:24px;height:24px;font-size:13px}
+.media-row{display:flex;gap:6px;margin-top:6px;overflow-x:auto;scrollbar-width:none}
+.media-row .media{width:120px;height:76px;aspect-ratio:auto;margin:0;flex-shrink:0}
+.lightbox{display:none;position:fixed;inset:0;background:rgba(10,10,20,.94);z-index:300;flex-direction:column}
+.lightbox.show{display:flex}
+.lb-bar{display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 10px;color:#fff}
+.lb-title{flex:1;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-btn{display:flex;align-items:center;gap:5px;padding:8px 12px;border-radius:20px;border:none;background:rgba(255,255,255,.14);color:#fff;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none}
+.lb-body{flex:1;display:flex;align-items:center;justify-content:center;padding:0 8px calc(12px + env(safe-area-inset-bottom,0px));min-height:0}
+.lb-body iframe{width:100%;height:100%;border:0;border-radius:10px;background:#000}
+.lb-body img,.lb-body video{max-width:100%;max-height:100%;border-radius:10px}
+
 /* ── REALTIME UI ── */
 .sync-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#B4B2A9;margin-left:6px;vertical-align:middle;cursor:pointer}
 .online-stack{display:flex;align-items:center;cursor:pointer}
@@ -686,6 +707,14 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
 </div>
 
 
+<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
+  <div class="lb-bar">
+    <div class="lb-title" id="lb-title"></div>
+    <a class="lb-btn" id="lb-open" target="_blank" rel="noopener"><i class="ti ti-external-link"></i>เปิดต้นฉบับ</a>
+    <button class="lb-btn" onclick="closeLightbox()" aria-label="ปิด"><i class="ti ti-x"></i></button>
+  </div>
+  <div class="lb-body" id="lb-body"></div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -1059,6 +1088,7 @@ function renderTasks(){
             <div class="card-title">${t.priority==='high'?'<i class="ti ti-flame" style="color:#D85A30;font-size:13px"></i> ':''} ${t.name}</div>
             <div class="card-sub">${t.client} · ${STEPS[t.step]||''}</div>
           </div>
+          ${(()=>{const ml=(t.links||[]).filter(l=>mediaInfo(l.url)).slice(-1)[0];return ml?mediaHTML(ml.url,'sm'):'';})()}
           ${avStack(t.assignees||[])}
         </div>
         ${stepBar(t.step,t.status)}
@@ -1257,7 +1287,7 @@ function renderFilesTab(t){
     <div style="flex:1;min-width:0"><div class="file-name">${l.name}</div><div class="file-meta">${ft.label} · ${l.addedBy}</div></div>
     <a class="file-open" href="${l.url}" target="_blank" onclick="event.stopPropagation()"><i class="ti ti-external-link" style="font-size:13px"></i>เปิด</a>
     <button class="file-del" onclick="delLink(${t.id},${l.id});event.stopPropagation()"><i class="ti ti-trash"></i></button>
-  </div>`;}).join('')||`<div style="text-align:center;padding:20px;color:var(--text3);font-size:14px"><i class="ti ti-paperclip" style="font-size:32px;display:block;margin-bottom:8px"></i>ยังไม่มีไฟล์แนบ</div>`;
+  </div>${mediaHTML(l.url)}`;}).join('')||`<div style="text-align:center;padding:20px;color:var(--text3);font-size:14px"><i class="ti ti-paperclip" style="font-size:32px;display:block;margin-bottom:8px"></i>ยังไม่มีไฟล์แนบ</div>`;
   return`<div id="ll-${t.id}">${fHtml}</div>
   <div style="margin-top:14px;background:var(--bg);border-radius:var(--radius-sm);padding:14px">
     <input class="f-input" id="ln-${t.id}" placeholder="ชื่อไฟล์" style="margin-bottom:8px">
@@ -1388,6 +1418,55 @@ function spawnNextRecurring(t){
   addAct(currentUser,`สร้างงานประจำรอบถัดไป (${fmtThaiDate(due)})`,n.name,n.id,'create');
 }
 
+/* ── MEDIA PREVIEW (Google Drive / YouTube / ไฟล์รูป-วิดีโอตรง) ──
+   Drive: ไฟล์ต้องตั้งแชร์ "ทุกคนที่มีลิงก์" ถึงจะแสดงรูป/เล่นวิดีโอได้ */
+function mediaInfo(url){
+  url=String(url||'');let m;
+  const did=x=>x&&/^[A-Za-z0-9_-]{10,}$/.test(x)?x:null;
+  if(/^(https?:\/\/)?(drive|docs)\.google\.com\//i.test(url)){
+    if((m=url.match(/\/folders\/([A-Za-z0-9_-]{10,})/)))return{kind:'folder',id:m[1],embed:`https://drive.google.com/embeddedfolderview?id=${m[1]}#grid`,label:'โฟลเดอร์ Drive'};
+    if((m=url.match(/docs\.google\.com\/(document|spreadsheets|presentation)\/d\/([A-Za-z0-9_-]{10,})/))){const lb={document:'Google Docs',spreadsheets:'Google Sheets',presentation:'Google Slides'}[m[1]];return{kind:'doc',id:m[2],thumb:`https://drive.google.com/thumbnail?id=${m[2]}&sz=w1000`,embed:`https://docs.google.com/${m[1]}/d/${m[2]}/preview`,label:lb};}
+    const id=did((url.match(/\/d\/([A-Za-z0-9_-]{10,})/)||[])[1])||did((url.match(/[?&]id=([A-Za-z0-9_-]{10,})/)||[])[1]);
+    if(id)return{kind:'drive',id,thumb:`https://drive.google.com/thumbnail?id=${id}&sz=w1000`,embed:`https://drive.google.com/file/d/${id}/preview`,label:'Google Drive'};
+    return null;
+  }
+  if((m=url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/)))
+    return{kind:'youtube',id:m[1],thumb:`https://i.ytimg.com/vi/${m[1]}/hqdefault.jpg`,embed:`https://www.youtube.com/embed/${m[1]}?autoplay=1&playsinline=1`,label:'YouTube',play:true};
+  const path=url.split(/[?#]/)[0].toLowerCase();
+  if(/\.(jpe?g|png|gif|webp|avif|svg)$/.test(path))return{kind:'image',thumb:url,label:'รูปภาพ'};
+  if(/\.(mp4|webm|mov|m4v)$/.test(path))return{kind:'video',src:url,label:'วิดีโอ',play:true};
+  return null;
+}
+function mediaFail(img){
+  const box=img.closest('.media');if(!box)return;
+  box.classList.add('media-fail');
+  box.innerHTML=box.classList.contains('media-sm')?'<i class="ti ti-lock"></i>':'<i class="ti ti-lock"></i><div>ดูตัวอย่างไม่ได้<br>ตั้งแชร์ไฟล์ใน Drive เป็น <b>"ทุกคนที่มีลิงก์"</b><br>หรือแตะเพื่อลองเปิด</div>';
+}
+function mediaHTML(url,size){
+  const mi=mediaInfo(url);if(!mi)return'';
+  const u=esc(url),cls='media'+(size==='sm'?' media-sm':'');
+  const tap=`onclick="event.stopPropagation();openLightbox(this.dataset.url)" data-url="${u}"`;
+  if(mi.kind==='video'&&size!=='sm'&&size!=='row')return`<div class="${cls}"><video src="${u}" controls playsinline preload="metadata"></video></div>`;
+  if(mi.kind==='folder')return`<div class="${cls}" ${tap} style="background:var(--green-light)"><i class="ti ti-folder" style="font-size:${size==='sm'?22:40}px;color:var(--green)"></i>${size==='sm'?'':`<div class="media-badge"><i class="ti ti-brand-google-drive"></i>${mi.label} · แตะเพื่อดู</div>`}</div>`;
+  const img=mi.thumb?`<img src="${esc(mi.thumb)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="mediaFail(this)">`:'<i class="ti ti-movie" style="font-size:32px;color:#CECBF6"></i>';
+  const play=(mi.play||mi.kind==='drive')?`<div class="media-play"><i class="ti ti-${mi.play?'player-play-filled':'arrows-maximize'}"></i></div>`:'';
+  const badge=size==='sm'||size==='row'?'':`<div class="media-badge"><i class="ti ${mi.kind==='youtube'?'ti-brand-youtube':mi.kind==='image'||mi.kind==='video'?'ti-photo':'ti-brand-google-drive'}"></i>${mi.label} · แตะเพื่อดูเต็มจอ</div>`;
+  return`<div class="${cls}" ${tap}>${img}${play}${badge}</div>`;
+}
+function mediaRow(urls){const h=urls.filter(u=>mediaInfo(u)).map(u=>mediaHTML(u,'row')).join('');return h?`<div class="media-row">${h}</div>`:'';}
+function openLightbox(url){
+  const mi=mediaInfo(url);if(!mi)return;
+  const body=document.getElementById('lb-body');
+  document.getElementById('lb-title').textContent=mi.label;
+  const op=document.getElementById('lb-open');op.href=url;
+  if(mi.kind==='image')body.innerHTML=`<img src="${esc(url)}" alt="" referrerpolicy="no-referrer">`;
+  else if(mi.kind==='video')body.innerHTML=`<video src="${esc(url)}" controls autoplay playsinline></video>`;
+  else body.innerHTML=`<iframe src="${esc(mi.embed)}" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+  document.getElementById('lightbox').classList.add('show');
+}
+function closeLightbox(){document.getElementById('lightbox').classList.remove('show');document.getElementById('lb-body').innerHTML='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox();});
+
 /* ── WORK LINKS ── */
 function workLinks(t){return(t.links||[]).filter(l=>l.work);}
 function pushWorkLink(t,url){
@@ -1406,7 +1485,7 @@ function renderWorkBox(t){
     ${ls.map(l=>{const ft=detectFT(l.url);return`<a class="work-link" href="${esc(l.url)}" target="_blank" rel="noopener">
       <div class="file-icon" style="background:${ft.bg};width:30px;height:30px"><i class="ti ${ft.icon}" style="color:${ft.color}"></i></div>
       <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--text)">${esc(ft.label)} · ${esc(l.addedBy)}</div><div style="font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(l.url)}</div></div>
-      <i class="ti ti-external-link" style="color:var(--text3)"></i></a>`;}).join('')||'<div style="font-size:13px;color:var(--text3);margin-bottom:8px">ยังไม่มีลิงก์ผลงาน</div>'}
+      <i class="ti ti-external-link" style="color:var(--text3)"></i></a>${mediaHTML(l.url)}`;}).join('')||'<div style="font-size:13px;color:var(--text3);margin-bottom:8px">ยังไม่มีลิงก์ผลงาน</div>'}
     <div style="display:flex;gap:8px">
       <input class="f-input" id="wl-${t.id}" placeholder="วางลิงก์ผลงาน..." style="flex:1">
       <button style="padding:10px 14px;border-radius:var(--radius-sm);border:none;background:var(--purple);color:#fff;font-size:16px;cursor:pointer;flex-shrink:0" onclick="addWorkLink(${t.id})"><i class="ti ti-plus"></i></button>
@@ -1547,7 +1626,7 @@ function renderHome(){
         <div class="home-item-title">${unread?'<span style="color:var(--red-mid)">● </span>':''}${esc(b.subject)}</div>
         <div class="home-item-sub"><i class="ti ti-calendar"></i> ${fmtThaiDate(b.date)}${b.time?' · '+esc(b.time)+' น.':''} · โดย ${b.from===me?'คุณ':esc(b.from)} · ${b.to.length} คน</div>
         ${b.message?`<div class="home-item-sub" style="color:var(--text2)">${esc(b.message)}</div>`:''}
-        ${linkPills(b.links)}
+        ${linkPills(b.links)}${mediaRow((b.links||[]).map(l=>l.url))}
       </div>
       <span class="home-when" style="background:${wb};color:${wc}">${whenLabel(b.date)}</span>
     </div>`;}).join(''));
@@ -1561,6 +1640,7 @@ function renderHome(){
   html+=homeSec('review','ti-eye','var(--purple-light)','var(--purple-dark)',isLead()?'ผลงานรอตรวจ':'งานของฉันที่รอตรวจ',h.review.length,h.review.map(t=>{const wl=workLinks(t);return`<div class="home-item" onclick="openDetail(${t.id})">
       ${sIcon('review',34)}
       <div style="flex:1;min-width:0"><div class="home-item-title">${esc(t.name)}</div><div class="home-item-sub">${esc((t.assignees||[]).join(', '))}${wl.length?'':' · ยังไม่มีลิงก์ผลงาน'}</div>
+      ${mediaRow(wl.slice(-4).map(l=>l.url))}
       ${linkPills(wl.slice(-2).map(l=>{const ft=detectFT(l.url);return{url:l.url,label:'ดูผลงาน · '+ft.label,icon:ft.icon,color:ft.color};}))}</div></div>`;}).join(''));
 
   if(isLead())html+=homeSec('rate','ti-star','#FEF6E7','#B7791F','งานเสร็จที่รอให้ดาว',h.toRate.length,h.toRate.map(t=>`<div class="home-item" onclick="openDetail(${t.id})">
@@ -2082,7 +2162,7 @@ function renderBroadcast(){
           <div style="font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.url}</div>
         </div>
         <i class="ti ti-external-link" style="font-size:14px;color:var(--text3);flex-shrink:0"></i>
-      </a>`).join('');
+      </a>${mediaHTML(l.url)}`).join('');
 
     const toList=b.to.slice(0,3).map(n=>`<div class="bc-to-chip" style="background:${getM(n).cls.replace('av-','').length>0?'var(--purple-light)':'var(--bg)'};color:var(--purple-dark)">${avHTML(n,16)}<span>${n}</span></div>`).join('')
       +(b.to.length>3?`<div class="bc-to-chip" style="background:var(--bg);color:var(--text3)">+${b.to.length-3} คน</div>`:'');
