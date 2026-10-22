@@ -536,21 +536,26 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
   </div>
   <div class="login-body">
     <div id="lm-pick">
-      <p style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:12px">เลือกสมาชิก</p>
-      <div id="member-pick-list"></div>
-      <a class="link-text" onclick="showNewMember()">+ สร้างบัญชีใหม่</a>
-      <div class="err-text" id="login-err"></div>
-      <button class="big-btn" onclick="doLogin()">เข้าสู่ระบบ</button>
+      <label class="f-label" style="margin-top:0">ชื่อผู้ใช้</label>
+      <input class="f-input" id="li-user" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="username" onkeydown="if(event.key==='Enter')document.getElementById('li-pass').focus()">
+      <label class="f-label">รหัสผ่าน</label>
+      <div style="position:relative">
+        <input class="f-input" id="li-pass" type="password" autocomplete="current-password" placeholder="••••••" style="padding-right:46px" onkeydown="if(event.key==='Enter')doLogin()">
+        <button type="button" onclick="const i=document.getElementById('li-pass');i.type=i.type==='password'?'text':'password';this.firstChild.className='ti ti-'+(i.type==='password'?'eye':'eye-off')" aria-label="แสดงรหัสผ่าน" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);border:none;background:none;color:var(--text3);font-size:18px;padding:8px;cursor:pointer"><i class="ti ti-eye"></i></button>
+      </div>
+      <div class="err-text" id="login-err" style="margin-top:10px"></div>
+      <button class="big-btn" id="li-btn" onclick="doLogin()" style="margin-top:6px">เข้าสู่ระบบ</button>
+      <div id="li-first" style="display:none"><a class="link-text" onclick="showNewMember()">+ สร้างบัญชีแรก (หัวหน้า)</a></div>
+      <div id="li-help" style="font-size:12px;color:var(--text3);text-align:center;margin-top:16px">ยังไม่มีบัญชี หรือลืมรหัสผ่าน? ติดต่อหัวหน้าเพื่อสร้าง/รีเซ็ตให้</div>
     </div>
     <div id="lm-new" style="display:none">
+      <p style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px">สร้างบัญชีแรก (หัวหน้า)</p>
       <label class="f-label">ชื่อเล่น</label>
       <input class="f-input" id="new-nick" placeholder="เช่น โบ, มิ้น, ปาล์ม" maxlength="12">
-      <label class="f-label" style="margin-top:14px">บทบาท</label>
-      <div class="role-chips">
-        <button class="role-chip sel" id="rc-designer" onclick="pickRole('designer')"><i class="ti ti-pencil"></i>นักออกแบบ</button>
-        <button class="role-chip" id="rc-boss" onclick="pickRole('boss')"><i class="ti ti-star"></i>หัวหน้า</button>
-        <button class="role-chip" id="rc-supervisor" onclick="pickRole('supervisor')"><i class="ti ti-eye"></i>ผู้ดูแล</button>
-      </div>
+      <label class="f-label">ชื่อผู้ใช้ (a-z, 0-9)</label>
+      <input class="f-input" id="new-user" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="20" placeholder="เช่น boss">
+      <label class="f-label">รหัสผ่าน (อย่างน้อย 4 ตัว)</label>
+      <input class="f-input" id="new-pass" type="password" autocomplete="new-password">
       <div class="err-text" id="new-err" style="margin-top:10px"></div>
       <button class="big-btn" onclick="doCreateMember()">สร้างบัญชี</button>
       <button class="outline-btn" style="margin-top:8px" onclick="showPickMember()">← กลับ</button>
@@ -628,7 +633,7 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
 
   <!-- TEAM PAGE -->
   <div class="page" id="page-team">
-    <div class="sec-header"><div class="sec-title">ทีม</div><button class="chip" onclick="switchPage('activity')"><i class="ti ti-activity" style="font-size:13px"></i> กิจกรรมทีม</button></div>
+    <div class="sec-header"><div class="sec-title">ทีม</div><div style="display:flex;gap:6px"><button class="chip" id="add-member-btn" onclick="openAddMember()" style="display:none;background:var(--purple);color:#fff;border-color:var(--purple)"><i class="ti ti-user-plus" style="font-size:13px"></i> เพิ่มสมาชิก</button><button class="chip" onclick="switchPage('activity')"><i class="ti ti-activity" style="font-size:13px"></i> กิจกรรม</button></div></div>
     <div id="team-list"></div>
   </div>
 
@@ -885,6 +890,27 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
 </div>
 
 
+<div class="sheet-overlay" id="sheet-member" onclick="closeSheet('member')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">เพิ่มสมาชิก</div>
+    <div class="sheet-body">
+      <label class="f-label" style="margin-top:0">ชื่อเล่น</label>
+      <input class="f-input" id="am-nick" maxlength="12" placeholder="ชื่อที่แสดงในแอป">
+      <label class="f-label">ตำแหน่ง (ไม่บังคับ)</label>
+      <input class="f-input" id="am-pos" maxlength="40" placeholder="เช่น Graphic Designer">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><label class="f-label">ชื่อผู้ใช้</label><input class="f-input" id="am-user" autocapitalize="none" spellcheck="false" maxlength="20" autocomplete="off"></div>
+        <div><label class="f-label">รหัสผ่าน</label><input class="f-input" id="am-pass" autocomplete="new-password"></div>
+      </div>
+      <label class="f-label">บทบาท</label>
+      <div class="role-chips" id="am-roles"></div>
+      <div class="err-text" id="am-err" style="margin-top:10px"></div>
+      <button class="big-btn" onclick="addMemberByLead()">เพิ่มสมาชิก</button>
+      <button class="outline-btn" style="margin-top:8px" onclick="closeSheet('member')">ยกเลิก</button>
+    </div>
+  </div>
+</div>
 <div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
   <div class="lb-bar">
     <div class="lb-title" id="lb-title"></div>
@@ -1211,24 +1237,120 @@ function fmtDue(d){if(!d)return'';const diff=Math.ceil((new Date(d)-new Date())/
 function stepBar(step,status,count=6){return`<div class="step-bar">${Array.from({length:count},(_,i)=>`<div class="step-seg ${i<step?'done':i===step?(status==='blocked'?'blocked':'active'):''}"></div>`).join('')}</div>`;}
 
 /* ── LOGIN ── */
-function buildLoginPick(){syncAvatarStyles();
-  const el=document.getElementById('member-pick-list');if(!el)return;
-  el.innerHTML=`<div class="m-chips" style="margin-bottom:14px">${db.members.map(m=>`<button class="m-chip ${selectedLoginMember===m.name?'sel':''}" onclick="pickLoginMember('${m.name}')">${avHTML(m.name,20)}<span>${m.name}</span></button>`).join('')}</div>`;
+/* ── AUTH: ชื่อผู้ใช้ + รหัสผ่าน (PBKDF2-SHA256, เก็บเฉพาะ salt+hash) ──
+   หมายเหตุ: ตรวจรหัสในเบราว์เซอร์ — กันคนทั่วไปเข้าใช้ แต่ไม่ใช่ระบบความปลอดภัยระดับเซิร์ฟเวอร์ */
+const PW_ITER=100000;
+const ROLE_OPTS=[['designer','นักออกแบบ','ti-pencil'],['boss','หัวหน้า','ti-star'],['supervisor','ผู้ดูแล','ti-eye']];
+function hexOf(u8){return Array.from(u8,b=>b.toString(16).padStart(2,'0')).join('');}
+function bytesOf(hex){return new Uint8Array((hex.match(/../g)||[]).map(h=>parseInt(h,16)));}
+async function pwHash(password,saltHex,iter){
+  const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveBits']);
+  const bits=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:bytesOf(saltHex),iterations:iter},key,256);
+  return hexOf(new Uint8Array(bits));
 }
-function pickLoginMember(n){selectedLoginMember=n;buildLoginPick();}
-function showNewMember(){document.getElementById('lm-pick').style.display='none';document.getElementById('lm-new').style.display='block';}
+async function makePw(password){const salt=hexOf(crypto.getRandomValues(new Uint8Array(16)));return{salt,iter:PW_ITER,hash:await pwHash(password,salt,PW_ITER)};}
+async function checkPw(m,password){if(!m||!m.pw||!m.pw.salt)return false;return(await pwHash(password,m.pw.salt,m.pw.iter||PW_ITER))===m.pw.hash;}
+function normUser(u){return String(u||'').trim().toLowerCase();}
+function validUser(u){return/^[a-z0-9._-]{3,20}$/.test(u);}
+function findByUser(u){u=normUser(u);return db.members.find(m=>normUser(m.username)===u);}
+function userTaken(u,exceptName){const m=findByUser(u);return m&&m.name!==exceptName;}
+let loginFails=0,loginLockUntil=0;
+function buildLoginPick(){syncAvatarStyles();
+  const first=document.getElementById('li-first');if(first)first.style.display=db.members.length?'none':'block';
+  const help=document.getElementById('li-help');if(help)help.style.display=db.members.length?'block':'none';
+}
+function showNewMember(){if(db.members.length){showToast('มีบัญชีในระบบแล้ว — ให้หัวหน้าเพิ่มสมาชิกให้');return;}document.getElementById('lm-pick').style.display='none';document.getElementById('lm-new').style.display='block';}
 function showPickMember(){document.getElementById('lm-pick').style.display='block';document.getElementById('lm-new').style.display='none';}
-function pickRole(r){selectedRole=r;['designer','boss','supervisor'].forEach(x=>{const e=document.getElementById('rc-'+x);if(e)e.classList.toggle('sel',x===r);});}
-function doLogin(){if(!selectedLoginMember){document.getElementById('login-err').textContent='กรุณาเลือกสมาชิก';return;}loginAs(selectedLoginMember);}
-function doCreateMember(){
-  const nick=document.getElementById('new-nick').value.trim();
+async function doLogin(){
+  const err=document.getElementById('login-err'),btn=document.getElementById('li-btn');
+  if(Date.now()<loginLockUntil){err.textContent=`ลองใหม่อีกครั้งใน ${Math.ceil((loginLockUntil-Date.now())/1000)} วินาที`;return;}
+  const u=normUser(document.getElementById('li-user').value),pw=document.getElementById('li-pass').value;
+  if(!u||!pw){err.textContent='กรุณาใส่ชื่อผู้ใช้และรหัสผ่าน';return;}
+  btn.disabled=true;btn.textContent='กำลังตรวจสอบ...';err.textContent='';
+  try{
+    const m=findByUser(u);
+    if(await checkPw(m,pw)){loginFails=0;document.getElementById('li-pass').value='';loginAs(m.name);return;}
+    loginFails++;if(loginFails>=5){loginLockUntil=Date.now()+30000;loginFails=0;}
+    err.textContent='ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
+  }catch(e){err.textContent='เบราว์เซอร์นี้ไม่รองรับการเข้ารหัส — ลองเปิดด้วย Chrome/Safari';}
+  finally{btn.disabled=false;btn.textContent='เข้าสู่ระบบ';}
+}
+async function doCreateMember(){
   const err=document.getElementById('new-err');
+  if(db.members.length){err.textContent='มีบัญชีในระบบแล้ว';return;}
+  const nick=document.getElementById('new-nick').value.trim(),u=normUser(document.getElementById('new-user').value),pw=document.getElementById('new-pass').value;
   if(!nick){err.textContent='กรุณาใส่ชื่อเล่น';return;}
-  if(db.members.find(m=>m.name===nick)){err.textContent='ชื่อนี้มีอยู่แล้ว';return;}
-  const classes=['av-p','av-n','av-s','av-b','av-k','av-d'];
-  db.members.push({id:'u'+Date.now(),name:nick,cls:classes[db.members.length%classes.length],init:nick[0].toUpperCase(),role:selectedRole});
+  if(!validUser(u)){err.textContent='ชื่อผู้ใช้ 3–20 ตัว ใช้ a-z 0-9 . _ - เท่านั้น';return;}
+  if(pw.length<4){err.textContent='รหัสผ่านอย่างน้อย 4 ตัว';return;}
+  db.members.push({id:'u'+Date.now(),name:nick,cls:'av-p',init:nick[0].toUpperCase(),role:'boss',username:u,pw:await makePw(pw)});
   addAct(nick,'สร้างบัญชีใหม่','ระบบ',null,'member');
   saveDb();loginAs(nick);
+}
+/* หัวหน้าเพิ่มสมาชิก */
+let amRole='designer';
+function openAddMember(){
+  if(!isLead()){showToast('เพิ่มสมาชิกได้เฉพาะหัวหน้า');return;}
+  ['am-nick','am-pos','am-user','am-pass'].forEach(i=>document.getElementById(i).value='');document.getElementById('am-err').textContent='';
+  amRole='designer';renderAmRoles();document.getElementById('sheet-member').classList.add('show');
+}
+function renderAmRoles(){document.getElementById('am-roles').innerHTML=ROLE_OPTS.map(([k,l,ic])=>`<button class="role-chip ${amRole===k?'sel':''}" onclick="amRole='${k}';renderAmRoles()"><i class="ti ${ic}"></i>${l}</button>`).join('');}
+async function addMemberByLead(){
+  if(!isLead())return;
+  const err=document.getElementById('am-err');
+  const nick=document.getElementById('am-nick').value.trim(),u=normUser(document.getElementById('am-user').value),pw=document.getElementById('am-pass').value;
+  if(!nick){err.textContent='กรุณาใส่ชื่อเล่น';return;}
+  if(db.members.find(m=>m.name===nick)){err.textContent='ชื่อเล่นนี้มีแล้ว';return;}
+  if(!validUser(u)){err.textContent='ชื่อผู้ใช้ 3–20 ตัว ใช้ a-z 0-9 . _ - เท่านั้น';return;}
+  if(userTaken(u)){err.textContent='ชื่อผู้ใช้นี้มีคนใช้แล้ว';return;}
+  if(pw.length<4){err.textContent='รหัสผ่านอย่างน้อย 4 ตัว';return;}
+  const classes=['av-p','av-n','av-s','av-b','av-k','av-d'];
+  db.members.push({id:'u'+Date.now(),name:nick,cls:classes[db.members.length%classes.length],init:nick[0].toUpperCase(),role:amRole,username:u,position:document.getElementById('am-pos').value.trim(),pw:await makePw(pw)});
+  addAct(currentUser,`เพิ่มสมาชิก ${nick}`,'ทีม',null,'member');
+  saveDb();closeSheet('member');renderAll();renderTeam();showToast(`เพิ่ม ${nick} แล้ว · ชื่อผู้ใช้ ${u}`);
+}
+/* หัวหน้าจัดการบัญชีคนอื่น */
+async function resetMemberPw(name){
+  if(!isLead())return;
+  const m=db.members.find(x=>x.name===name);if(!m)return;
+  const u=normUser((document.getElementById('mm-user')||{}).value||m.username||''),pw=(document.getElementById('mm-pass')||{}).value||'';
+  if(!validUser(u)){showToast('ชื่อผู้ใช้ 3–20 ตัว ใช้ a-z 0-9 . _ -');return;}
+  if(userTaken(u,name)){showToast('ชื่อผู้ใช้นี้มีคนใช้แล้ว');return;}
+  if(pw&&pw.length<4){showToast('รหัสผ่านอย่างน้อย 4 ตัว');return;}
+  if(!pw&&!m.pw){showToast('กรุณาตั้งรหัสผ่าน');return;}
+  m.username=u;if(pw)m.pw=await makePw(pw);
+  addAct(currentUser,pw?`รีเซ็ตรหัสผ่านให้ ${name}`:`แก้ชื่อผู้ใช้ของ ${name}`,'ทีม',null,'member');
+  saveDb();showToast(pw?'ตั้งรหัสผ่านใหม่แล้ว ✓':'บันทึกแล้ว ✓');viewMemberDetail(name);
+}
+function setMemberRole(name,role){
+  if(!isLead())return;
+  const m=db.members.find(x=>x.name===name);if(!m||m.role===role)return;
+  if(m.name===currentUser&&role!=='boss'&&!db.members.some(x=>x.name!==currentUser&&(x.role==='boss'||x.role==='lead'))){showToast('ต้องมีหัวหน้าอย่างน้อย 1 คน');return;}
+  m.role=role;addAct(currentUser,`เปลี่ยนบทบาท ${name} เป็น${roleLabel(m)}`,'ทีม',null,'member');
+  saveDb();renderAll();viewMemberDetail(name);
+}
+function accountCardHTML(m){
+  if(!isLead())return'';
+  return`<div class="prob-card"><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px"><i class="ti ti-key"></i> จัดการบัญชี (หัวหน้า)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div><label class="f-label" style="margin-top:0">ชื่อผู้ใช้</label><input class="f-input" id="mm-user" value="${esc(m.username||'')}" autocapitalize="none" spellcheck="false" maxlength="20" autocomplete="off"></div>
+      <div><label class="f-label" style="margin-top:0">รหัสผ่านใหม่</label><input class="f-input" id="mm-pass" placeholder="${m.pw?'เว้นว่าง = ไม่เปลี่ยน':'ยังไม่มีรหัส'}" autocomplete="new-password"></div>
+    </div>
+    <button class="outline-btn" style="margin-top:8px" onclick="resetMemberPw('${esc(m.name)}')"><i class="ti ti-device-floppy"></i> บันทึกบัญชี</button>
+    <label class="f-label">บทบาท</label>
+    <div class="role-chips">${ROLE_OPTS.map(([k,l,ic])=>`<button class="role-chip ${(m.role==='lead'?'boss':m.role)===k?'sel':''}" onclick="setMemberRole('${esc(m.name)}','${k}')"><i class="ti ${ic}"></i>${l}</button>`).join('')}</div>
+  </div>`;
+}
+/* เปลี่ยนรหัสของตัวเอง */
+async function saveMyPassword(){
+  const m=db.members.find(x=>x.name===currentUser);if(!m)return;
+  const u=normUser(document.getElementById('my-user').value),cur=(document.getElementById('my-cur')||{}).value||'',nw=document.getElementById('my-new').value;
+  if(!validUser(u)){showToast('ชื่อผู้ใช้ 3–20 ตัว ใช้ a-z 0-9 . _ -');return;}
+  if(userTaken(u,m.name)){showToast('ชื่อผู้ใช้นี้มีคนใช้แล้ว');return;}
+  if(m.pw&&!(await checkPw(m,cur))){showToast('รหัสผ่านปัจจุบันไม่ถูกต้อง');return;}
+  if(nw.length<4){showToast('รหัสผ่านใหม่อย่างน้อย 4 ตัว');return;}
+  m.username=u;m.pw=await makePw(nw);
+  addAct(currentUser,'เปลี่ยนรหัสผ่าน','ระบบ',null,'member');
+  saveDb();showToast('บันทึกชื่อผู้ใช้และรหัสผ่านแล้ว ✓');openMeSheet();renderHome();
 }
 function loginAs(name){
   currentUser=name;ckFilter=null;calScope=null;
@@ -1240,7 +1362,7 @@ function loginAs(name){
   addAct(name,'เข้าสู่ระบบ','ระบบ',null,'other');
   saveDb();
 }
-function doLogout(){if(!confirm('ออกจากระบบ?'))return;stopPresence();currentUser=null;try{localStorage.removeItem('gf_user');}catch(e){}document.getElementById('login-wrap').style.display='flex';selectedLoginMember=null;buildLoginPick();}
+function doLogout(){if(!confirm('ออกจากระบบ?'))return;stopPresence();currentUser=null;try{localStorage.removeItem('gf_user');}catch(e){}closeSheet('me');document.getElementById('login-wrap').style.display='flex';showPickMember();buildLoginPick();}
 
 /* ── PAGE SWITCH ── */
 function switchPage(p){
@@ -2256,6 +2378,7 @@ function renderHome(){
     ['appts','ti-calendar-event','นัดหมาย',h.appts.length,h.appts.some(b=>!(b.readBy||[]).includes(me))]];
   const hr=new Date().getHours();
   let html=`<div class="home-hello"><div class="home-hello-title">${hr<12?'สวัสดีตอนเช้า':hr<17?'สวัสดีตอนบ่าย':'สวัสดีตอนเย็น'}, ${esc(me)}</div><div class="home-hello-sub">${fmtThaiDate(todayStr())} · สรุปสิ่งที่ต้องรู้วันนี้</div></div>`;
+  if(!(getM(me).pw))html+=`<div class="home-sec" style="border-color:var(--red);background:var(--red-light);cursor:pointer" onclick="openMeSheet()"><div class="home-item"><i class="ti ti-lock-exclamation" style="font-size:22px;color:var(--red)"></i><div style="flex:1"><div class="home-item-title" style="color:var(--red)">ยังไม่ได้ตั้งชื่อผู้ใช้และรหัสผ่าน</div><div class="home-item-sub">แตะเพื่อตั้งค่า ไม่งั้นจะเข้าใช้ไม่ได้หลังออกจากระบบ</div></div><i class="ti ti-chevron-right" style="color:var(--red)"></i></div></div>`;
   html+=`<div class="home-tabs" role="tablist">${tabs.map(([id,icon,label,n,hot])=>`<button class="home-tab ${homeTab===id?'on':''}" role="tab" aria-selected="${homeTab===id}" onclick="setHomeTab('${id}')"><i class="ti ${icon}"></i>${label}${n!=null?`<span class="tab-count ${hot&&homeTab!==id?'hot':''}">${n}</span>`:''}</button>`).join('')}</div>`;
   const show=id=>homeTab==='all'||homeTab===id;
   let any=false;const sec=(id,...args)=>{const out=homeSec(id,...args);if(out)any=true;return out;};
@@ -2399,8 +2522,19 @@ function openMeSheet(){
     <div class="g-row" id="pf-gender">${GENDERS.map(([k,l,ic])=>`<button class="role-chip ${genderOf(m)===k&&m.gender?'sel':''}" data-g="${k}" onclick="window._editGender='${k}';refreshMePreview()" style="min-height:56px"><i class="ti ${ic}"></i>${l}</button>`).join('')}</div>
     <label class="f-label">สีเสื้อตัวการ์ตูน (หน้า KPI)</label>
     <div class="swatches" id="pf-swatches"></div>
-    <label class="f-label">บทบาทในระบบ</label>
-    <div class="role-chips" id="edit-role-chips">
+    <div class="work-box" style="margin-top:16px">
+      <div class="sheet-section" style="margin-bottom:6px"><i class="ti ti-key"></i> บัญชีเข้าสู่ระบบ</div>
+      ${m.pw?'':'<div style="font-size:12px;color:var(--red);margin-bottom:6px">ยังไม่ได้ตั้งรหัสผ่าน — ตั้งไว้เพื่อเข้าใช้ครั้งต่อไป</div>'}
+      <label class="f-label" style="margin-top:0">ชื่อผู้ใช้</label>
+      <input class="f-input" id="my-user" value="${esc(m.username||'')}" autocapitalize="none" spellcheck="false" maxlength="20" autocomplete="username">
+      ${m.pw?'<label class="f-label">รหัสผ่านปัจจุบัน</label><input class="f-input" id="my-cur" type="password" autocomplete="current-password">':''}
+      <label class="f-label">รหัสผ่านใหม่</label>
+      <input class="f-input" id="my-new" type="password" autocomplete="new-password">
+      <button class="outline-btn" style="margin-top:8px" onclick="saveMyPassword()"><i class="ti ti-lock"></i> ${m.pw?'เปลี่ยนรหัสผ่าน':'ตั้งรหัสผ่าน'}</button>
+    </div>
+    ${isLead()?'':`<label class="f-label">บทบาทในระบบ</label><div style="font-size:14px;color:var(--text2);padding:4px 2px">${roleLabel(m)} <span style="font-size:12px;color:var(--text3)">(หัวหน้าเป็นผู้กำหนด)</span></div>`}
+    <label class="f-label" style="${isLead()?'':'display:none'}">บทบาทในระบบ</label>
+    <div class="role-chips" id="edit-role-chips" style="${isLead()?'':'display:none'}">
       <button class="role-chip ${m.role==='designer'?'sel':''}" id="erc-designer" onclick="editPickRole('designer')"><i class="ti ti-pencil"></i>นักออกแบบ</button>
       <button class="role-chip ${m.role==='boss'||m.role==='lead'?'sel':''}" id="erc-boss" onclick="editPickRole('boss')"><i class="ti ti-star"></i>หัวหน้า</button>
       <button class="role-chip ${m.role==='supervisor'?'sel':''}" id="erc-supervisor" onclick="editPickRole('supervisor')"><i class="ti ti-eye"></i>ผู้ดูแล</button>
@@ -2448,7 +2582,7 @@ function saveProfile(){
   const m=db.members.find(x=>x.name===currentUser);if(!m)return;
   const oldName=m.name;
   if(nick!==oldName&&db.members.find(x=>x.name===nick)){showToast('ชื่อนี้มีอยู่แล้ว');return;}
-  m.name=nick;m.init=nick[0].toUpperCase();m.role=window._editRole||m.role;
+  m.name=nick;m.init=nick[0].toUpperCase();if(isLead())m.role=window._editRole||m.role;
   m.position=document.getElementById('edit-pos').value.trim();
   m.phone=document.getElementById('edit-phone').value.trim();
   m.lineId=document.getElementById('edit-line').value.trim();
@@ -2488,6 +2622,7 @@ function renderActivity(){
 /* ── TEAM ── */
 function renderTeam(){
   const el=document.getElementById('team-list');if(!el)return;
+  const ab=document.getElementById('add-member-btn');if(ab)ab.style.display=isLead()?'':'none';
   el.innerHTML=db.members.map(m=>{
     const active=db.tasks.filter(t=>t.assignees&&t.assignees.includes(m.name)&&t.status!=='done').length;
     const done=db.tasks.filter(t=>t.assignees&&t.assignees.includes(m.name)&&t.status==='done').length;
@@ -2495,7 +2630,7 @@ function renderTeam(){
       ${avHTML(m.name,40)}
       <div style="flex:1">
         <div style="font-size:15px;font-weight:600;color:var(--text)">${esc(m.name)}${m.name===currentUser?'<span style="color:var(--purple);font-size:13px"> (คุณ)</span>':''}${m.probation?'<span class="prob-badge">🌱 ทดลองงาน</span>':''}</div>
-        <div style="font-size:12px;color:var(--text3)">${m.position?esc(m.position)+' · ':''}${roleLabel(m)}</div>
+        <div style="font-size:12px;color:var(--text3)">${m.position?esc(m.position)+' · ':''}${roleLabel(m)}${isLead()?(m.username?' · @'+esc(m.username):' · <span style="color:var(--red)">ยังไม่มีบัญชี</span>'):''}</div>
         ${contactHTML(m)}
         <div style="display:flex;gap:7px;margin-top:5px">
           ${active?`<span style="font-size:11px;background:var(--amber-light);color:var(--amber);padding:2px 8px;border-radius:20px;font-weight:500">${active} งาน</span>`:''}
@@ -2518,6 +2653,7 @@ function viewMemberDetail(name){
       <div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:700;color:var(--text)">${esc(name)}${m.probation?'<span class="prob-badge">🌱 ทดลองงาน</span>':''}</div><div style="font-size:12px;color:var(--text3)">${m.position?esc(m.position)+' · ':''}${roleLabel(m)}</div>${contactHTML(m)}</div>
     </div>
     <div class="kpi-stage" style="margin:12px 16px 0"><div class="chars">${charHTML(m,calcKPI(name).score,{sub:'KPI '+calcKPI(name).score+' · '+gradeLabel(calcKPI(name).score)})}</div></div>
+    ${accountCardHTML(m)}
     ${probationCardHTML(m)}
     <div class="member-stats">
       <div class="stat-card"><div class="stat-num" style="color:var(--amber)">${active.length}</div><div class="stat-label">งานอยู่ระหว่างทำ</div></div>
