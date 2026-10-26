@@ -8,6 +8,7 @@
 <meta name="theme-color" content="#F3EFFF">
 <title>GraphFlow — จัดการงานกราฟิก</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<script>/* ตั้งธีมก่อนแสดงผล กันหน้าจอกระพริบ */(function(){try{var t=localStorage.getItem('gf_theme')||'light';var d=t==='dark'||(t==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&display=swap">
 <style>
@@ -673,6 +674,59 @@ html.desk .login-hero{border-radius:0 0 28px 28px}
 html.desk .kpi-stage.rain{padding-bottom:50px}
 html.desk .frog{width:52px}
 @media (prefers-reduced-motion:reduce){.rain-drops,.rain-cloud,.frog,.puddle::after,.umbrella{animation:none!important}}
+
+/* ═════════ DARK THEME ═════════ */
+html.dark{color-scheme:dark;
+  --purple:#9D8FF5;--purple-light:#2D2748;--purple-dark:#CFC6FF;--purple-border:#4A4280;
+  --teal-light:#173A30;--teal:#4FD1A5;--teal-dark:#86E5C6;
+  --amber-light:#3A2E17;--amber:#F2C46D;
+  --blue-light:#17304A;--blue:#94C6FF;
+  --green-light:#1E3520;--green:#A3DB92;
+  --red-light:#3E1E24;--red:#FF9DAB;--red-mid:#FF6B7A;
+  --gray-light:#2A2838;--gray:#C2BDDB;--gray-dark:#ECEAF7;
+  --bg:#14121F;--surface:#1E1B2E;--border:rgba(190,180,255,.14);
+  --text:#EEEBFF;--text2:#BDB7DD;--text3:#8C87AE;
+  --p-pink:#4A2A3A;--p-peach:#4A3326;--p-butter:#4A4224;--p-mint:#1F3D33;--p-sky:#1F3450;--p-lilac:#382F63;
+  --card-shadow:0 1px 0 rgba(0,0,0,.35),0 8px 20px rgba(0,0,0,.35)}
+html.dark,html.dark body,html.dark .login-wrap{background:radial-gradient(circle at 1px 1px,rgba(157,143,245,.13) 1px,transparent 1.6px) 0 0/18px 18px,var(--bg)}
+html.dark .safe-top,html.dark .topbar{background:rgba(30,27,46,.94)}
+html.dark .bottom-nav{background:rgba(30,27,46,.96);border-top-color:#2E2A45}
+html.dark .task-card,html.dark .home-sec,html.dark .bc-card,html.dark .stat-card,html.dark .kpi-card,html.dark .kpi-member-card,html.dark .prob-card,html.dark .ck-task,html.dark .cal-item,html.dark .cal-cell,html.dark .work-box{border-color:#2E2A45}
+html.dark .chip,html.dark .seg-btn,html.dark .btn-view,html.dark .role-chip,html.dark .outline-btn,html.dark .bc-act,html.dark .result-btn{background:var(--surface);border-color:#34305A;color:var(--text2)}
+html.dark .chip.on,html.dark .seg-btn.sel,html.dark .role-chip.sel{background:var(--p-lilac);border-color:var(--purple-border);color:var(--purple-dark)}
+html.dark .f-input,html.dark .f-select,html.dark .f-textarea{background:#181527;border-color:#34305A;color:var(--text)}
+html.dark .f-input::placeholder,html.dark .f-textarea::placeholder{color:#6F6A92}
+html.dark .home-tab,html.dark #bc-filter-chips .chip{color:var(--text)}
+html.dark .home-tab .tab-count{background:rgba(0,0,0,.28);color:var(--text)}
+html.dark #bc-filter-chips .chip:nth-child(7){background:#2A2838}
+html.dark .home-item.unread{background:rgba(157,143,245,.10)}
+html.dark .home-item:active{background:rgba(255,255,255,.04)}
+html.dark .home-hello{background:linear-gradient(135deg,#382F63,#4A2A3A 60%,#4A3326);border-color:rgba(255,255,255,.06)}
+html.dark .home-hello::before{background:rgba(255,255,255,.06)}
+html.dark .kpi-hero{background:linear-gradient(135deg,#382F63 0%,#4A2A3A 55%,#4A3326 100%)}
+html.dark .kpi-hero::after{background:rgba(255,255,255,.05)}
+html.dark .kpi-bar-wrap{background:rgba(255,255,255,.12)}
+html.dark .kpi-stage{background:linear-gradient(180deg,#221E36 0%,#26213D 65%,#2E2750 100%);border-color:#2E2A45}
+html.dark .kpi-stage.rain{border-color:#2B3550;background:linear-gradient(180deg,#232C46 0%,#2A3552 42%,#2C3A50 62%,#1E3A2B 80%,#173022 100%)}
+html.dark .rain .kpi-stage-title{background:rgba(30,27,46,.82);color:#C8D4F5}
+html.dark .rain .char-name{background:rgba(30,27,46,.82)}
+html.dark .rain .char-pos,html.dark .rain .char-mood{text-shadow:none}
+html.dark .rain-cloud{opacity:.5}
+html.dark .rain-grass{background:radial-gradient(ellipse 14px 9px at 10px 100%,#2F6B43 98%,transparent 100%) 0 100%/22px 18px repeat-x,linear-gradient(#1E4A30,#1A4029)}
+html.dark .puddle{background:linear-gradient(180deg,#34486E,#2A3A5A)}
+html.dark .login-hero{background:linear-gradient(160deg,#2D2748 0%,#3A2436 58%,#3A2E22 100%)}
+html.dark .login-icon{background:#1E1B2E;box-shadow:0 8px 20px rgba(0,0,0,.4)}
+html.dark .logo-mark{background:linear-gradient(135deg,#4A2A3A,#382F63 55%,#1F3450)}
+html.dark .pill-wip{background:#3A2A17;color:#FFB86B}
+html.dark .toast{background:#EEEBFF;color:#1E1B2E}
+html.dark .sheet-handle{background:#4A4280}
+html.dark .empty i{color:#5C548F}
+html.dark .viewers{background:#173A30;color:#86E5C6}
+html.dark .swatch{border-color:var(--surface)}
+html.dark .contact-btn.line{background:#163A23;color:#6EE29A;border-color:#245C38}
+html.dark .crit-row,html.dark .ck-item,html.dark .kpi-metric-row{border-color:#2E2A45}
+html.dark .cal-cell.drop{background:var(--p-lilac)}
+html.dark img{color-scheme:normal}
 </style>
 </head>
 <body>
@@ -1357,7 +1411,10 @@ function ts(){const d=new Date();return`${String(d.getDate()).padStart(2,'0')}/$
 function getM(n){return db.members.find(m=>m.name===n)||{name:n,cls:'av-d',init:(n||'?')[0],role:'designer'};}
 function detectFT(u){return FILE_TYPES.find(f=>f.match(u))||FILE_TYPES[FILE_TYPES.length-1];}
 function addAct(actor,action,target,taskId,type){db.activityLog.unshift({id:uid(),actor,action,target,taskId,type,time:ts()});if(db.activityLog.length>200)db.activityLog=db.activityLog.slice(0,200);saveDb();}
-function initNotifs(){notifications=[];db.tasks.forEach(t=>{t.comments.forEach(c=>{if(!c.resolved&&c.mention===currentUser&&c.author!==currentUser)notifications.push({taskId:t.id,taskName:t.name,comment:c,read:false});});});}
+function initNotifs(){notifications=[];db.tasks.forEach(t=>{(t.comments||[]).forEach(c=>{if(!c.resolved&&c.mention===currentUser&&c.author!==currentUser)notifications.push({taskId:t.id,taskName:t.name,comment:c,read:(c.seenBy||[]).includes(currentUser)});});});}
+// จำว่าอ่านแล้วไว้ที่ตัวคอมเมนต์ (ซิงค์ทุกเครื่อง) — ไม่งั้น initNotifs สร้างใหม่เป็น "ยังไม่อ่าน" ทุกครั้งที่รีเฟรช
+function markCommentSeen(c){if(!c||!currentUser)return false;if(!c.seenBy)c.seenBy=[];if(c.seenBy.includes(currentUser))return false;c.seenBy.push(currentUser);return true;}
+function markNotifsRead(list){let ch=false;list.forEach(n=>{n.read=true;if(!n.isBroadcast&&markCommentSeen(n.comment))ch=true;});if(ch)saveDb();updateBcDot();renderHome();}
 function myRole(){return(db.members.find(m=>m.name===currentUser)||{}).role;}
 function isLead(){const r=myRole();return r==='boss'||r==='lead';}// 'lead' = บทบาทเก่า (หัวหน้าทีม) ถูกย้ายเป็น boss
 function isSup(){return myRole()==='supervisor';}// ผู้ดูแล: ดู/ติดตาม/คอมเมนต์/ตรวจ แต่ไม่สร้าง-แก้-ลบงาน
@@ -1593,7 +1650,7 @@ function renderTasks(){
 function openDetail(id){
   detailTaskId=id;detailSubPage='info';editingTaskId=null;
   const t=db.tasks.find(x=>x.id===id);if(!t)return;
-  notifications.filter(n=>n.taskId===id).forEach(n=>n.read=true);
+  markNotifsRead(notifications.filter(n=>n.taskId===id));
   renderDetailSheet(t);
   document.getElementById('sheet-detail').classList.add('show');
   updateNotifDot();trackPresence();
@@ -2711,6 +2768,8 @@ function openMeSheet(){
       <button class="role-chip ${m.role==='boss'||m.role==='lead'?'sel':''}" id="erc-boss" onclick="editPickRole('boss')"><i class="ti ti-star"></i>หัวหน้า</button>
       <button class="role-chip ${m.role==='supervisor'?'sel':''}" id="erc-supervisor" onclick="editPickRole('supervisor')"><i class="ti ti-eye"></i>ผู้ดูแล</button>
     </div>
+    <label class="f-label">ธีม (เฉพาะเครื่องนี้)</label>
+    <div class="g-row">${[['light','สว่าง','ti-sun'],['dark','มืด','ti-moon'],['auto','ตามเครื่อง','ti-device-mobile-cog']].map(([k,l,ic])=>`<button class="role-chip ${themeMode===k?'sel':''}" onclick="setTheme('${k}');openMeSheet()" style="min-height:56px"><i class="ti ${ic}"></i>${l}</button>`).join('')}</div>
     <label class="f-label">การแสดงผล (เฉพาะเครื่องนี้)</label>
     <div class="view-seg">
       <button class="role-chip ${viewMode==='mobile'?'sel':''}" onclick="setView('mobile');openMeSheet()"><i class="ti ti-device-mobile"></i>มือถือ</button>
@@ -2843,7 +2902,7 @@ function updateNotifDot(){updateBcDot();}
 function fbUnread(){return notifications.filter(x=>!x.read&&!x.isBroadcast).length;}
 function markAllNotifs(){
   (db.broadcasts||[]).forEach(b=>{if(b.to.includes(currentUser)){if(!b.readBy)b.readBy=[];if(!b.readBy.includes(currentUser))b.readBy.push(currentUser);}});
-  notifications.forEach(n=>n.read=true);saveDb();renderBroadcast();renderHome();showToast('อ่านทั้งหมดแล้ว ✓');
+  notifications.forEach(n=>{n.read=true;if(!n.isBroadcast)markCommentSeen(n.comment);});saveDb();updateBcDot();renderBroadcast();renderHome();showToast('อ่านทั้งหมดแล้ว ✓');
 }
 function fbCardsHTML(){
   const list=notifications.filter(n=>!n.isBroadcast).slice().reverse();
@@ -2855,7 +2914,7 @@ function fbCardsHTML(){
       <div class="bc-message">${esc(n.taskName)}: ${esc(n.comment.text)}</div></div>
     </div></div>`).join('');
 }
-function openFbNotif(taskId,cid){const n=notifications.find(x=>x.taskId===taskId&&x.comment.id===cid);if(n)n.read=true;openDetail(taskId);detailSubPage='comments';const t=db.tasks.find(x=>x.id===taskId);if(t)renderDetailSheet(t);updateBcDot();renderBroadcast();}
+function openFbNotif(taskId,cid){const n=notifications.find(x=>x.taskId===taskId&&x.comment.id===cid);if(n)markNotifsRead([n]);openDetail(taskId);detailSubPage='comments';const t=db.tasks.find(x=>x.id===taskId);if(t)renderDetailSheet(t);updateBcDot();renderBroadcast();}
 function renderNotif(){
   const el=document.getElementById('notif-list');if(!el)return;
   if(!notifications.length){el.innerHTML=`<div class="empty"><i class="ti ti-bell-off"></i><p>ไม่มีการแจ้งเตือน</p></div>`;return;}
@@ -2869,7 +2928,7 @@ function renderNotif(){
     ${!n.read?`<div style="width:8px;height:8px;border-radius:50%;background:var(--red-mid);flex-shrink:0;margin-top:4px"></div>`:''}
   </div>`).join('');
 }
-function markAllRead(){notifications.forEach(n=>n.read=true);renderNotif();updateNotifDot();}
+function markAllRead(){markNotifsRead(notifications);renderNotif();}
 
 /* ── EXPORT ── */
 function renderExport(){
@@ -3361,6 +3420,17 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 
 /* ── RENDER ALL ── */
 function renderAll(){normalizeMembers();syncAvatarStyles();updateRoleUI();renderTasks();renderHome();updateNotifDot();updateBcDot();}
+
+/* ── THEME ── */
+let themeMode='light';
+function applyTheme(){
+  const dark=themeMode==='dark'||(themeMode==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.classList.toggle('dark',dark);
+  const mt=document.querySelector('meta[name="theme-color"]');if(mt)mt.setAttribute('content',dark?'#1E1B2E':'#F3EFFF');
+}
+function setTheme(t){themeMode=['light','dark','auto'].includes(t)?t:'light';try{localStorage.setItem('gf_theme',themeMode);}catch(e){}applyTheme();}
+(function(){try{themeMode=localStorage.getItem('gf_theme')||'light';}catch(e){}applyTheme();
+  try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(themeMode==='auto')applyTheme();});}catch(e){}})();
 
 /* ── VIEW MODE ── */
 let viewMode='mobile';
