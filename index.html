@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#7F77DD">
+<meta name="theme-color" content="#F3EFFF">
 <title>GraphFlow — จัดการงานกราฟิก</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&display=swap">
 <style>
 :root{
   --purple:#7F77DD;--purple-light:#EEEDFE;--purple-dark:#534AB7;--purple-border:#AFA9EC;
@@ -521,6 +523,115 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
 /* ── TOAST ── */
 .toast{position:fixed;bottom:calc(70px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:#26215C;color:#CECBF6;padding:11px 20px;border-radius:20px;font-size:14px;font-weight:500;z-index:999;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s}
 .toast.show{opacity:1}
+
+/* ═════════ PASTEL · GRAPHIC STUDIO THEME ═════════ */
+:root{
+  --purple:#7C6EE0;--purple-light:#F0ECFF;--purple-dark:#5547C2;--purple-border:#CFC6FA;
+  --teal-light:#DDF6EC;--amber-light:#FFF0D9;--blue-light:#E0EFFF;--green-light:#E6F6DC;--red-light:#FFE5E9;--gray-light:#F3F1F7;
+  --bg:#FBF9FF;--border:rgba(124,110,224,.16);
+  --text:#2B2545;--text2:#5E5880;--text3:#9A94BA;
+  --radius:18px;--radius-sm:12px;
+  --p-pink:#FFD9E6;--p-peach:#FFE3CF;--p-butter:#FFF1B8;--p-mint:#CFF2E2;--p-sky:#D5E9FF;--p-lilac:#E4DCFF;
+  --swatch:linear-gradient(90deg,#FFB3C7 0 16.66%,#FFC9A3 0 33.33%,#FFE58A 0 50%,#A8E6C9 0 66.66%,#A9D3FF 0 83.33%,#C4B5FD 0);
+  --card-shadow:0 1px 0 rgba(124,110,224,.05),0 6px 18px rgba(124,110,224,.07);
+  --display:'Prompt',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+html,body{background:radial-gradient(circle at 1px 1px,rgba(124,110,224,.17) 1px,transparent 1.6px) 0 0/18px 18px,var(--bg)}
+.safe-top{background:rgba(255,255,255,.94)}
+/* topbar + palette strip */
+.topbar{position:relative;background:rgba(255,255,255,.94);border-bottom:none;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.topbar::after{content:'';position:absolute;left:0;right:0;bottom:-3px;height:3px;background:var(--swatch);z-index:2}
+.logo{display:flex;align-items:center;font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:-.2px}
+.logo span:not(.logo-mark):not(.sync-dot){color:var(--purple)}
+.logo-mark{width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,var(--p-pink),var(--p-lilac) 55%,var(--p-sky));display:inline-flex;align-items:center;justify-content:center;color:var(--purple-dark);font-size:17px;margin-right:7px;box-shadow:inset 0 0 0 1px rgba(124,110,224,.18)}
+.me-pill{background:var(--p-lilac);color:var(--purple-dark);white-space:nowrap;max-width:132px;min-width:0}
+.me-pill #me-name{overflow:hidden;text-overflow:ellipsis}
+.logo{flex-shrink:0}
+.btn-add{background:linear-gradient(135deg,#7C6EE0,#B49CF7);box-shadow:0 4px 12px rgba(124,110,224,.35)}
+.btn-view{background:#fff;border-color:#E6E0FA}
+/* headings: display font + highlighter stroke */
+.sec-title,.home-hello-title,.cal-title,.sheet-title,.login-title,.kpi-score,.kpi-stage-title{font-family:var(--display)}
+.sec-title{display:inline-block;background:linear-gradient(transparent 58%,var(--p-butter) 58%,var(--p-butter) 90%,transparent 90%);padding:0 3px;margin-left:-3px}
+.sheet-title{font-weight:600}
+/* cards: artboard feel */
+.task-card,.home-sec,.bc-card,.stat-card,.kpi-card,.kpi-member-card,.prob-card,.ck-task,.cal-item{border:1px solid #ECE7FB;box-shadow:var(--card-shadow)}
+.task-card{position:relative;overflow:visible}
+.task-card::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .15s;border:1.5px solid var(--purple)}
+.task-card::before{content:'';position:absolute;inset:-4px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:1;
+  background:linear-gradient(var(--purple),var(--purple)) 0 0/8px 8px no-repeat,linear-gradient(var(--purple),var(--purple)) 100% 0/8px 8px no-repeat,linear-gradient(var(--purple),var(--purple)) 0 100%/8px 8px no-repeat,linear-gradient(var(--purple),var(--purple)) 100% 100%/8px 8px no-repeat}
+@media (hover:hover){.task-card:hover::after,.task-card:hover::before{opacity:1}}
+.card-title{font-weight:600}
+.cal-cell{border:1px solid #ECE7FB}
+.cal-cell.today .cal-num{background:linear-gradient(135deg,#7C6EE0,#B49CF7)}
+/* chips & tabs: pastel swatches */
+.chip{border:1px solid #ECE7FB;background:#fff}
+.chip.on{background:var(--p-lilac);border-color:var(--purple-border);color:#4A3DB5}
+.home-tab{border:1px solid transparent;color:var(--text)}
+.home-tab:nth-child(1){background:var(--p-lilac)}.home-tab:nth-child(2){background:var(--p-sky)}.home-tab:nth-child(3){background:var(--p-pink)}
+.home-tab:nth-child(4){background:var(--p-butter)}.home-tab:nth-child(5){background:var(--p-peach)}.home-tab:nth-child(6){background:var(--p-mint)}
+.home-tab .tab-count{background:rgba(255,255,255,.75);color:var(--text)}
+.home-tab.on{background:linear-gradient(135deg,#7C6EE0,#A893F5)!important;color:#fff;box-shadow:0 4px 12px rgba(124,110,224,.3)}
+/* notifications filter: 2 rows */
+#bc-filter-chips{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;overflow:visible;padding:0 12px 12px}
+#bc-filter-chips .chip{display:flex;align-items:center;justify-content:center;gap:3px;padding:7px 4px;font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis;border-color:transparent;color:var(--text)}
+#bc-filter-chips .chip:nth-child(1){background:var(--p-lilac)}#bc-filter-chips .chip:nth-child(2){background:var(--p-sky)}#bc-filter-chips .chip:nth-child(3){background:var(--p-pink)}#bc-filter-chips .chip:nth-child(4){background:var(--p-mint)}
+#bc-filter-chips .chip:nth-child(5){background:var(--p-peach)}#bc-filter-chips .chip:nth-child(6){background:var(--p-butter)}#bc-filter-chips .chip:nth-child(7){background:#EFEAF8}
+#bc-filter-chips .chip.on{background:linear-gradient(135deg,#7C6EE0,#A893F5);color:#fff;box-shadow:0 4px 12px rgba(124,110,224,.3)}
+html.desk #bc-filter-chips{grid-template-columns:repeat(7,minmax(0,1fr))}
+/* buttons */
+.big-btn{background:linear-gradient(135deg,#7C6EE0,#9F8CF2);border-radius:16px;box-shadow:0 6px 16px rgba(124,110,224,.28)}
+.outline-btn{border:1px solid #E2DBFA;border-radius:16px}
+.accept-btn{background:linear-gradient(135deg,#7C6EE0,#A893F5)}
+.seg-btn{border:1px solid #ECE7FB;background:#fff}
+.seg-btn.sel{background:var(--p-lilac);border-color:var(--purple-border)}
+.f-input,.f-select,.f-textarea{border:1px solid #E6E0FA;background:#FDFCFF}
+.f-input:focus,.f-select:focus,.f-textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,110,224,.15)}
+.role-chip{border:1px solid #ECE7FB}
+.role-chip.sel{background:var(--p-lilac)}
+/* bottom nav */
+.bottom-nav{background:rgba(255,255,255,.95);border-top:1px solid #ECE7FB}
+.nav-btn.active{color:var(--purple-dark)}
+.nav-btn.active i{background:var(--p-lilac);border-radius:12px;padding:1px 14px}
+html.desk .nav-btn.active i{background:none;padding:0}
+html.desk .nav-btn.active{background:var(--p-lilac)}
+/* sheets */
+.sheet{border-radius:24px 24px 0 0}
+.sheet-handle{background:#D9D1FA}
+html.desk .sheet{border-radius:24px}
+/* home greeting card */
+.home-hello{position:relative;overflow:hidden;margin:12px 12px 0;padding:16px 18px;border-radius:22px;background:linear-gradient(135deg,var(--p-lilac),var(--p-pink) 60%,var(--p-peach));border:1px solid rgba(255,255,255,.7)}
+.home-hello::before{content:'';position:absolute;right:-18px;top:-22px;width:86px;height:86px;border-radius:50%;background:rgba(255,255,255,.45)}
+.home-hello::after{content:'';position:absolute;right:22px;bottom:-10px;width:44px;height:40px;background:var(--p-butter);clip-path:polygon(50% 0,100% 100%,0 100%);opacity:.9}
+.home-hello-title,.home-hello-sub{position:relative;z-index:1}
+.home-hello-sub{color:var(--text2)}
+html.desk #home-body .home-hello{padding-left:18px;padding-right:18px}
+/* KPI hero: pastel */
+.kpi-hero{position:relative;overflow:hidden;margin:12px;border-radius:22px;background:linear-gradient(135deg,var(--p-lilac) 0%,var(--p-pink) 55%,var(--p-peach) 100%);color:var(--text)}
+.kpi-hero::after{content:'';position:absolute;left:-20px;bottom:-30px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.35)}
+.kpi-hero>*{position:relative;z-index:1}
+.kpi-bar-wrap{background:rgba(255,255,255,.7)}
+.kpi-bar-fill{background:linear-gradient(90deg,#7C6EE0,#F48FB1)}
+.kpi-stage{background:linear-gradient(180deg,#FFFFFF 0%,#F4F0FF 65%,#E8E1FF 100%);border:1px solid #ECE7FB}
+/* login */
+.login-wrap{background:radial-gradient(circle at 1px 1px,rgba(124,110,224,.17) 1px,transparent 1.6px) 0 0/18px 18px,var(--bg)}
+.login-hero{position:relative;overflow:hidden;background:linear-gradient(160deg,#F0ECFF 0%,#FFE9F1 58%,#FFF4E3 100%);border-bottom:none}
+.login-hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--swatch)}
+.login-hero>*:not(.deco){position:relative;z-index:1}
+.login-icon{background:#fff;box-shadow:0 8px 20px rgba(124,110,224,.2)}
+.login-title{font-weight:700}
+.deco{position:absolute;pointer-events:none}
+.deco-circle{width:70px;height:70px;border-radius:50%;background:var(--p-sky);left:-18px;top:28px}
+.deco-tri{width:46px;height:42px;background:var(--p-butter);clip-path:polygon(50% 0,100% 100%,0 100%);right:26px;top:24px;transform:rotate(12deg)}
+.deco-square{width:30px;height:30px;border-radius:8px;background:var(--p-mint);right:-6px;bottom:40px;transform:rotate(18deg)}
+.deco-ring{width:38px;height:38px;border-radius:50%;border:5px solid var(--p-pink);left:34px;bottom:22px}
+.deco-bezier{width:96px;height:48px;right:-8px;bottom:6px;opacity:.8}
+html.desk .login-hero{border-radius:0 0 28px 28px}
+/* misc */
+.empty i{color:#C4B8F7}
+.toast{background:#2B2545;color:#F0ECFF;border-radius:16px}
+.pill{border-radius:20px}
+.work-box{border:1px solid #ECE7FB}
+@media (prefers-reduced-motion:reduce){.task-card::before,.task-card::after{transition:none}}
 </style>
 </head>
 <body>
@@ -530,7 +641,9 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
 <!-- LOGIN SCREEN -->
 <div id="login-wrap" class="login-wrap" style="display:none;position:fixed;inset:0;z-index:500;overflow-y:auto">
   <div class="login-hero">
-    <div class="login-icon"><i class="ti ti-layers-subtract" style="color:#7F77DD"></i></div>
+    <span class="deco deco-circle" aria-hidden="true"></span><span class="deco deco-tri" aria-hidden="true"></span><span class="deco deco-square" aria-hidden="true"></span><span class="deco deco-ring" aria-hidden="true"></span>
+    <svg class="deco deco-bezier" viewBox="0 0 120 60" aria-hidden="true"><path d="M6 50 C 30 4, 70 4, 114 40" fill="none" stroke="#9C8AF0" stroke-width="2.5" stroke-linecap="round"/><line x1="6" y1="50" x2="30" y2="10" stroke="#C9BEF7" stroke-width="1.5"/><line x1="114" y1="40" x2="80" y2="6" stroke="#C9BEF7" stroke-width="1.5"/><rect x="2" y="46" width="8" height="8" fill="#fff" stroke="#7C6EE0" stroke-width="1.5"/><rect x="110" y="36" width="8" height="8" fill="#fff" stroke="#7C6EE0" stroke-width="1.5"/><circle cx="30" cy="10" r="3.5" fill="#7C6EE0"/><circle cx="80" cy="6" r="3.5" fill="#7C6EE0"/></svg>
+    <div class="login-icon"><i class="ti ti-vector-bezier-2" style="color:#5547C2"></i></div>
     <div class="login-title"><span style="color:#7F77DD">Graph</span>Flow</div>
     <div class="login-sub">ระบบจัดการงานกราฟิก</div>
   </div>
@@ -565,7 +678,7 @@ html.desk .login-hero{border-radius:0 0 20px 20px}
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <div class="logo"><span>Graph</span>Flow<span class="sync-dot" id="sync-dot" onclick="showToast(this.title||'ใช้ข้อมูลในเครื่อง')"></span></div>
+  <div class="logo"><span class="logo-mark" aria-hidden="true"><i class="ti ti-vector-bezier-2"></i></span><span>Graph</span>Flow<span class="sync-dot" id="sync-dot" onclick="showToast(this.title||'ใช้ข้อมูลในเครื่อง')"></span></div>
   <div class="online-stack" id="online-stack" style="display:none" onclick="showToast(this.title)"></div>
   <button class="me-pill" id="me-pill" onclick="openMeSheet()">
     <span id="me-name">-</span>
