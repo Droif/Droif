@@ -671,6 +671,7 @@ html.desk .login-hero{border-radius:0 0 28px 28px}
 @keyframes umbSwing{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
 @keyframes umbBreath{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
 .rain .mood-happy .char-fx{display:none}
+.halloween .mood-happy .char-fx{top:-30px}
 html.desk .kpi-stage.rain{padding-bottom:50px}
 html.desk .frog{width:52px}
 @media (prefers-reduced-motion:reduce){.rain-drops,.rain-cloud,.frog,.puddle::after,.umbrella{animation:none!important}}
@@ -727,6 +728,68 @@ html.dark .contact-btn.line{background:#163A23;color:#6EE29A;border-color:#245C3
 html.dark .crit-row,html.dark .ck-item,html.dark .kpi-metric-row{border-color:#2E2A45}
 html.dark .cal-cell.drop{background:var(--p-lilac)}
 html.dark img{color-scheme:normal}
+
+/* ═════════ KPI · HALLOWEEN STAGE ═════════ */
+.kpi-stage.halloween{position:relative;isolation:isolate;padding:14px 6px 46px;border:1px solid #4B3A70;
+  background:radial-gradient(circle at 82% 16%,rgba(255,236,170,.35) 0,rgba(255,236,170,0) 26%),linear-gradient(180deg,#2A1D4D 0%,#43296E 38%,#7A4A86 64%,#C9767A 82%,#F2A65A 100%)}
+.halloween .kpi-stage-title{position:relative;z-index:6;display:table;margin:0 auto 2px;padding:3px 12px;border-radius:20px;background:rgba(30,20,50,.72);color:#FFD9A0}
+.halloween .chars{position:relative;z-index:5}
+.halloween .char{padding-top:34px}
+.halloween .char-name{background:rgba(255,255,255,.88);border-radius:10px;padding:0 6px;color:#2B2545}
+.halloween .char-pos{color:#FFE2B8;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+.halloween .char-mood{color:#F3D6FF;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+.halloween .char-shadow{background:rgba(20,10,30,.35)}
+.hw-moon{position:absolute;z-index:1;right:9%;top:16px;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 38% 38%,#FFF8D6,#FFE79A 70%);box-shadow:0 0 24px 8px rgba(255,231,154,.35)}
+.hw-moon::before,.hw-moon::after{content:'';position:absolute;border-radius:50%;background:rgba(214,190,110,.35)}
+.hw-moon::before{width:11px;height:11px;left:14px;top:20px}.hw-moon::after{width:7px;height:7px;left:31px;top:12px}
+.hw-stars{position:absolute;inset:0 0 45% 0;z-index:1;pointer-events:none;background-image:radial-gradient(1.4px 1.4px at 12% 22%,#fff 99%,transparent),radial-gradient(1.2px 1.2px at 30% 10%,#fff 99%,transparent),radial-gradient(1.6px 1.6px at 55% 26%,#FFE9B0 99%,transparent),radial-gradient(1.2px 1.2px at 68% 8%,#fff 99%,transparent),radial-gradient(1.3px 1.3px at 44% 40%,#fff 99%,transparent),radial-gradient(1.2px 1.2px at 8% 46%,#fff 99%,transparent);animation:twinkle 3s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.9}50%{opacity:.45}}
+.hw-web{position:absolute;z-index:2;left:0;top:0;width:70px;pointer-events:none;opacity:.8}
+.hw-spider{position:absolute;z-index:3;left:44px;top:0;width:18px;pointer-events:none;animation:spiderBob 3.4s ease-in-out infinite;transform-origin:50% 0}
+@keyframes spiderBob{0%,100%{transform:translateY(0)}50%{transform:translateY(14px)}}
+.hw-bat{position:absolute;z-index:2;width:30px;pointer-events:none}
+.hw-bat svg{animation:flap .28s ease-in-out infinite alternate;transform-origin:50% 50%}
+.hw-bat.b1{top:34px;left:18%;animation:batFly 9s ease-in-out infinite}
+.hw-bat.b2{top:60px;left:58%;width:22px;animation:batFly 12s ease-in-out infinite reverse}
+.hw-bat.b3{top:22px;left:40%;width:18px;animation:batFly 15s ease-in-out infinite}
+@keyframes flap{from{transform:scaleY(1)}to{transform:scaleY(.45)}}
+@keyframes batFly{0%,100%{transform:translate(0,0)}25%{transform:translate(22px,-8px)}50%{transform:translate(40px,6px)}75%{transform:translate(14px,12px)}}
+.hw-ghost{position:absolute;z-index:3;left:6%;top:42%;width:34px;pointer-events:none;opacity:.92;animation:ghostFloat 4s ease-in-out infinite}
+@keyframes ghostFloat{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-12px) rotate(4deg)}}
+.hw-ground{position:absolute;left:0;right:0;bottom:0;height:52px;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 60% 70% at 25% 100%,#3A2856 98%,transparent 100%),radial-gradient(ellipse 55% 60% at 80% 100%,#33234D 98%,transparent 100%),linear-gradient(transparent 55%,#2E2046 55%)}
+.hw-pumpkin{position:absolute;z-index:6;bottom:6px;width:40px;pointer-events:none}
+.hw-pumpkin .glow{animation:flicker 1.6s ease-in-out infinite}
+.hw-pumpkin.k1{left:6px}.hw-pumpkin.k2{right:8px;width:34px}.hw-pumpkin.k3{left:40%;width:26px;bottom:4px}
+.hw-pumpkin.k2 .glow{animation-delay:.5s}.hw-pumpkin.k3 .glow{animation-delay:.9s}
+@keyframes flicker{0%,100%{opacity:1}45%{opacity:.75}55%{opacity:.95}70%{opacity:.6}}
+.hw-candy{position:absolute;z-index:6;bottom:8px;pointer-events:none}
+.hw-candy.c1{left:52px;width:24px}.hw-candy.c2{right:48px;width:16px;bottom:10px}.hw-candy.c3{left:30%;width:14px}.hw-candy.c4{right:30%;width:22px;bottom:6px}
+.hw-candy.c5{left:62%;width:12px;bottom:12px}
+/* costumes */
+.cos-back{position:absolute;left:0;top:46px;width:80px;height:88px;z-index:1;overflow:visible;pointer-events:none}
+.cos-front{position:absolute;left:0;top:46px;width:80px;height:88px;z-index:2;overflow:visible;pointer-events:none}
+.cos-hat{position:absolute;left:50%;z-index:4;pointer-events:none;overflow:visible}
+.cos-hat.witch{width:70px;margin-left:-38px;top:-34px;transform:rotate(-8deg)}
+.cos-hat.ears{width:60px;margin-left:-30px;top:-10px}
+.cos-hat.horns{width:60px;margin-left:-30px;top:-8px}
+.cos-hat.stem{width:30px;margin-left:-15px;top:-14px}
+.cos-hat.wrap{width:58px;margin-left:-29px;top:4px}
+.mood-happy .cos-hat{animation:headBob .7s ease-in-out infinite}
+.mood-sad .cos-hat{animation:droop 4s ease-in-out infinite}
+.mood-happy .cos-hat.witch{animation:hatBob .7s ease-in-out infinite}
+@keyframes hatBob{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(-2deg)}}
+.trick-bucket{position:absolute;z-index:4;right:-14px;bottom:4px;width:26px;pointer-events:none}
+.mood-happy .trick-bucket{animation:hop .7s ease-in-out infinite}
+.cos-tag{font-size:9.5px;font-weight:700;color:#FFD9A0;background:rgba(30,20,50,.6);border-radius:8px;padding:0 6px;margin-top:2px}
+html.desk .kpi-stage.halloween{padding-bottom:54px}
+@media (prefers-reduced-motion:reduce){.hw-stars,.hw-spider,.hw-bat,.hw-bat svg,.hw-ghost,.hw-pumpkin .glow,.cos-hat,.trick-bucket{animation:none!important}}
+/* app-wide seasonal accents */
+html.season-halloween{--swatch:linear-gradient(90deg,#F2A65A 0 16.66%,#7E57C2 0 33.33%,#2B2545 0 50%,#9CCC65 0 66.66%,#F2A65A 0 83.33%,#B39DDB 0)}
+html.season-halloween .logo-mark{background:linear-gradient(135deg,#FFD7A8,#F2A65A);color:#5A2E0E}
+html.season-halloween .home-hello{background:linear-gradient(135deg,#E9DDFF,#FFE0C2 60%,#FFD1A3)}
+html.season-halloween .home-hello::after{background:#F2A65A;clip-path:none;border-radius:50% 50% 45% 45%;width:40px;height:34px;right:24px;bottom:-8px;box-shadow:inset 6px 0 0 rgba(0,0,0,.06),inset -6px 0 0 rgba(0,0,0,.06)}
+html.dark.season-halloween .home-hello{background:linear-gradient(135deg,#382F63,#4A2E26 60%,#5A3518)}
 </style>
 </head>
 <body>
@@ -2296,15 +2359,17 @@ function charHTML(m,score,opts={}){
   const sh=shirtOf(m),skirt=/^#(F06292|D4537E|E24B4A)$/i.test(sh)?'#7E57C2':'#F06292';
   const hairBack=g==='female'?'<div class="char-hair long"></div>':g==='lgbt'?'<div class="char-hair bob"></div>':'';
   const emo=m.photo?`<div class="char-emo">${mood==='happy'?'😄':mood==='mid'?'🙂':'😢'}</div>`:'';
-  const fx=mood==='happy'?'<div class="char-fx">🎉</div>':mood==='sad'?'<div class="char-fx">🌧️</div>':'';
+  const cos=opts.costume?costumeOf(m.name):null,cz=cos?costumeHTML(cos[0],mood,g==='female'):{back:'',front:'',hat:''};
+  const fx=cos?(mood==='happy'?'<div class="char-fx">🍬</div>':mood==='sad'?'<div class="char-fx">👻</div>':''):(mood==='happy'?'<div class="char-fx">🎉</div>':mood==='sad'?'<div class="char-fx">🌧️</div>':'');
   const tear=mood==='sad'?'<div class="char-tear"></div>':'';
   const label=mood==='happy'?'เยี่ยมมาก! 🎶':mood==='mid'?'พอใช้ ค่อยๆ ไป':'สู้ๆ นะ';
   return`<div class="char mood-${mood} g-${g} ${me?'me':''}" style="--shirt:${sh};--skirt:${skirt}${opts.click?';cursor:pointer':''}" ${opts.click?`onclick="viewMemberDetail('${esc(m.name)}')"`:''} aria-label="${esc(m.name)} KPI ${score}">
     ${opts.noScore?'':`<div class="char-score" style="background:${gradeColor(score)}">${score}</div>`}
-    <div class="char-fig">${fx}${opts.rain&&mood!=='sad'?umbrellaSVG(m.name,mood):''}${hairBack}<div class="char-head">${head}</div>${emo}${tear}<svg class="char-body" viewBox="0 0 80 88">${charBodySVG(mood,g)}</svg><div class="char-shadow"></div></div>
+    <div class="char-fig">${fx}${opts.rain&&mood!=='sad'?umbrellaSVG(m.name,mood):''}${cz.back}${hairBack}<div class="char-head">${head}</div>${cz.hat}${emo}${tear}<svg class="char-body" viewBox="0 0 80 88">${charBodySVG(mood,g)}</svg>${cz.front}${cos&&mood!=='sad'?bucketSVG():''}<div class="char-shadow"></div></div>
     <div class="char-name">${esc(m.name)}${me?' (คุณ)':''}</div>
     ${m.position?`<div class="char-pos">${esc(m.position)}</div>`:''}
     <div class="char-mood">${opts.sub!=null?opts.sub:label}</div>
+    ${cos?`<div class="cos-tag">${cos[1]}</div>`:''}
   </div>`;
 }
 const UMB_COLORS=[['#FFB3C7','#FFD6E2'],['#A9D3FF','#D2E8FF'],['#FFE58A','#FFF1BE'],['#A8E6C9','#D3F4E4'],['#C4B5FD','#E2DAFE'],['#FFC9A3','#FFE3D0']];
@@ -2320,6 +2385,63 @@ function umbrellaSVG(name,mood){
     <line x1="48" y1="-2" x2="48" y2="-8" stroke="#6B6488" stroke-width="2.2" stroke-linecap="round"/>
   </svg></div>`;
 }
+/* ── ฤดูกาลของฉาก KPI: 'halloween' | 'rain' ── */
+const SEASON='halloween';
+document.documentElement.classList.add('season-'+SEASON);
+const COSTUMES=[['ghost','ผีผ้าห่ม 👻'],['witch','แม่มด 🧙'],['vampire','แวมไพร์ 🧛'],['pumpkin','ฟักทอง 🎃'],['mummy','มัมมี่'],['cat','แมวดำ 🐈‍⬛'],['devil','ปีศาจน้อย 😈'],['skeleton','โครงกระดูก 💀']];
+function costumeOf(name){let h=7;for(const c of String(name)+'|'+todayStr())h=(h*33+c.charCodeAt(0))>>>0;return COSTUMES[h%COSTUMES.length];}// สุ่มใหม่ทุกวัน
+let _cosSeq=0;
+function costumeHTML(kind,mood,fem){
+  const T=mood==='sad'?3:0,bot=fem?47:52;
+  const torso=`M22 ${14+T} Q40 ${5+T} 58 ${14+T} L56 ${bot+T} Q40 ${bot+5+T} 24 ${bot+T} Z`;
+  let back='',front='',hat='';
+  if(kind==='ghost'){
+    front=`<path d="M17 ${10+T} Q40 ${-3+T} 63 ${10+T} L67 ${62+T} Q61 ${56+T} 55 ${62+T} Q48 ${56+T} 40 ${62+T} Q32 ${56+T} 25 ${62+T} Q19 ${56+T} 13 ${62+T} Z" fill="#FFFFFF" stroke="rgba(60,40,90,.25)" stroke-width="1.2"/><ellipse cx="33" cy="${29+T}" rx="3.2" ry="4.4" fill="#2B2545"/><ellipse cx="47" cy="${29+T}" rx="3.2" ry="4.4" fill="#2B2545"/><ellipse cx="40" cy="${40+T}" rx="3.4" ry="4" fill="#2B2545"/><circle cx="29" cy="${35+T}" r="2.6" fill="#FFB3C7" opacity=".7"/><circle cx="51" cy="${35+T}" r="2.6" fill="#FFB3C7" opacity=".7"/>`;
+  }else if(kind==='witch'){
+    back=`<path d="M22 ${14+T} Q8 ${50+T} 6 ${78} L74 78 Q72 ${50+T} 58 ${14+T} Z" fill="#5B3A8E"/>`;
+    front=`<path d="M33 ${16+T} L40 ${22+T} L47 ${16+T} L47 ${26+T} L40 ${21+T} L33 ${26+T} Z" fill="#F2A65A"/>`;
+    hat=`<svg class="cos-hat witch" viewBox="0 0 70 50"><ellipse cx="35" cy="42" rx="34" ry="7" fill="#3E2466"/><path d="M18 41 Q26 20 34 6 Q40 -2 50 4 Q42 8 44 18 L52 41 Z" fill="#5B3A8E"/><rect x="19" y="33" width="32" height="6" rx="2" fill="#F2A65A"/><rect x="31" y="32" width="8" height="8" rx="1.5" fill="none" stroke="#FFE79A" stroke-width="1.8"/><circle cx="50" cy="4" r="3" fill="#F2A65A"/></svg>`;
+  }else if(kind==='vampire'){
+    back=`<path d="M20 ${12+T} Q4 ${46+T} 2 80 Q20 72 40 80 Q60 72 78 80 Q76 ${46+T} 60 ${12+T} Z" fill="#1F1530"/><path d="M24 ${16+T} Q14 ${46+T} 12 76 Q26 70 40 76 Q54 70 68 76 Q66 ${46+T} 56 ${16+T} Z" fill="#B3263A"/>`;
+    front=`<path d="M24 ${12+T} L18 ${4+T} L32 ${12+T} Z M56 ${12+T} L62 ${4+T} L48 ${12+T} Z" fill="#1F1530"/><circle cx="40" cy="${20+T}" r="3.2" fill="#E24B4A" stroke="#FFE79A" stroke-width="1.2"/>`;
+  }else if(kind==='pumpkin'){
+    front=`<g><ellipse cx="40" cy="${33+T}" rx="22" ry="${fem?20:23}" fill="#F28C28"/><path d="M30 ${14+T} Q24 ${33+T} 30 ${52+T} M50 ${14+T} Q56 ${33+T} 50 ${52+T} M40 ${11+T} L40 ${55+T}" fill="none" stroke="#D9701A" stroke-width="1.6"/><path d="M29 ${27+T} l5 -6 l5 6 Z M41 ${27+T} l5 -6 l5 6 Z" fill="#3A1F0E"/><path d="M28 ${37+T} l4 4 l4 -4 l4 4 l4 -4 l4 4 l4 -4 q-12 12 -24 0 Z" fill="#3A1F0E"/></g>`;
+    hat=`<svg class="cos-hat stem" viewBox="0 0 30 22"><path d="M13 22 Q12 10 16 4" stroke="#5E8C31" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M17 8 Q26 2 29 10 Q22 12 17 8 Z" fill="#7CB342"/></svg>`;
+  }else if(kind==='mummy'){
+    const id='mm'+(++_cosSeq);
+    front=`<defs><clipPath id="${id}"><path d="${torso}"/></clipPath></defs><g clip-path="url(#${id})"><path d="${torso}" fill="#F2E6CF"/>${[0,1,2,3,4,5,6].map(i=>`<path d="M14 ${8+T+i*8} L66 ${14+T+i*8}" stroke="#D8C7A3" stroke-width="3.2"/>`).join('')}<path d="M20 ${30+T} L60 ${24+T}" stroke="#E9DBBE" stroke-width="5"/></g><circle cx="35" cy="${26+T}" r="2" fill="#2B2545"/><circle cx="45" cy="${26+T}" r="2" fill="#2B2545"/>`;
+    hat=`<svg class="cos-hat wrap" viewBox="0 0 58 16"><path d="M2 10 Q29 0 56 8" stroke="#F2E6CF" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M8 9 Q29 2 50 7" stroke="#D8C7A3" stroke-width="1.5" fill="none"/></svg>`;
+  }else if(kind==='cat'){
+    back=`<path d="M56 ${48+T} Q76 ${52+T} 72 ${30+T} Q70 ${20+T} 76 ${16+T}" fill="none" stroke="#2B2545" stroke-width="5" stroke-linecap="round"/>`;
+    front=`<path d="M28 ${15+T} Q40 ${21+T} 52 ${15+T}" fill="none" stroke="#E24B4A" stroke-width="3.5" stroke-linecap="round"/><circle cx="40" cy="${22+T}" r="3.2" fill="#FFD54F" stroke="#C99A1B" stroke-width="1"/>`;
+    hat=`<svg class="cos-hat ears" viewBox="0 0 60 26"><path d="M4 24 L10 2 L24 18 Z" fill="#2B2545"/><path d="M9 20 L12 8 L19 17 Z" fill="#F7A9C4"/><path d="M56 24 L50 2 L36 18 Z" fill="#2B2545"/><path d="M51 20 L48 8 L41 17 Z" fill="#F7A9C4"/></svg>`;
+  }else if(kind==='devil'){
+    back=`<path d="M52 ${50+T} Q72 ${60+T} 70 ${40+T} Q69 ${34+T} 72 ${30+T}" fill="none" stroke="#D32F2F" stroke-width="3.5" stroke-linecap="round"/><path d="M68 ${26+T} L78 ${30+T} L70 ${36+T} Z" fill="#D32F2F"/>`;
+    front=`<path d="M34 ${18+T} L40 ${26+T} L46 ${18+T}" fill="none" stroke="#D32F2F" stroke-width="3" stroke-linecap="round"/>`;
+    hat=`<svg class="cos-hat horns" viewBox="0 0 60 26"><path d="M8 26 Q2 12 10 2 Q12 14 20 20 Z" fill="#E53935"/><path d="M52 26 Q58 12 50 2 Q48 14 40 20 Z" fill="#E53935"/></svg>`;
+  }else if(kind==='skeleton'){
+    const id='sk'+(++_cosSeq);
+    front=`<defs><clipPath id="${id}"><path d="${torso}"/></clipPath></defs><g clip-path="url(#${id})"><path d="${torso}" fill="#26213A"/><line x1="40" y1="${12+T}" x2="40" y2="${56+T}" stroke="#F4F1E8" stroke-width="3" stroke-linecap="round"/>${[0,1,2,3].map(i=>`<path d="M40 ${20+T+i*7} Q31 ${18+T+i*7} 27 ${23+T+i*7} M40 ${20+T+i*7} Q49 ${18+T+i*7} 53 ${23+T+i*7}" fill="none" stroke="#F4F1E8" stroke-width="2.4" stroke-linecap="round"/>`).join('')}</g>`;
+  }
+  return{back:back?`<svg class="cos-back" viewBox="0 0 80 88">${back}</svg>`:'',front:front?`<svg class="cos-front" viewBox="0 0 80 88">${front}</svg>`:'',hat};
+}
+function bucketSVG(){return`<svg class="trick-bucket" viewBox="0 0 30 30" aria-hidden="true"><path d="M5 9 Q15 -2 25 9" fill="none" stroke="#5A3A1E" stroke-width="2"/><circle cx="9" cy="8" r="3" fill="#FF7AA8"/><circle cx="15" cy="6" r="3" fill="#7FD6FF"/><circle cx="21" cy="8" r="3" fill="#FFE066"/><ellipse cx="15" cy="19" rx="12" ry="10" fill="#F28C28"/><path d="M9 16 l3 -3 l3 3 Z M15 16 l3 -3 l3 3 Z" fill="#3A1F0E"/><path d="M9 21 q6 5 12 0" fill="none" stroke="#3A1F0E" stroke-width="2" stroke-linecap="round"/></svg>`;}
+function halloweenSceneHTML(){
+  const bat=c=>`<div class="hw-bat ${c}" aria-hidden="true"><svg viewBox="0 0 40 20"><path d="M20 8 Q16 2 12 6 Q8 1 2 6 Q8 8 8 14 Q12 10 16 14 Q18 10 20 12 Q22 10 24 14 Q28 10 32 14 Q32 8 38 6 Q32 1 28 6 Q24 2 20 8 Z" fill="#1E1430"/><circle cx="18" cy="9" r="1" fill="#FFD54F"/><circle cx="22" cy="9" r="1" fill="#FFD54F"/></svg></div>`;
+  const pumpkin=k=>`<div class="hw-pumpkin ${k}" aria-hidden="true"><svg viewBox="0 0 44 38"><path d="M21 6 Q20 0 26 1" stroke="#5E8C31" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="22" cy="22" rx="20" ry="15" fill="#F28C28"/><path d="M12 9 Q6 22 12 35 M32 9 Q38 22 32 35 M22 7 L22 37" stroke="#D9701A" stroke-width="1.6" fill="none"/><g class="glow"><path d="M11 19 l5 -6 l5 6 Z M23 19 l5 -6 l5 6 Z" fill="#FFE066"/><path d="M10 26 l4 4 l4 -4 l4 4 l4 -4 l4 4 l4 -4 q-12 10 -24 0 Z" fill="#FFE066"/></g></svg></div>`;
+  const candies=`<svg class="hw-candy c1" viewBox="0 0 30 14" aria-hidden="true"><path d="M2 2 L8 7 L2 12 Z M28 2 L22 7 L28 12 Z" fill="#FF7AA8"/><circle cx="15" cy="7" r="6.5" fill="#FF7AA8"/><path d="M11 3 Q15 7 11 11 M15 1 Q19 7 15 13" stroke="#fff" stroke-width="1.5" fill="none" opacity=".8"/></svg>
+    <svg class="hw-candy c2" viewBox="0 0 16 30" aria-hidden="true"><line x1="8" y1="14" x2="8" y2="30" stroke="#fff" stroke-width="2"/><circle cx="8" cy="8" r="7" fill="#7FD6FF"/><path d="M8 8 m-4 0 a4 4 0 1 1 4 4 a2.5 2.5 0 1 1 -2.5 -2.5" fill="none" stroke="#fff" stroke-width="1.6"/></svg>
+    <svg class="hw-candy c3" viewBox="0 0 14 16" aria-hidden="true"><path d="M7 1 L13 15 L1 15 Z" fill="#FFF8E1"/><path d="M3.6 9 L10.4 9 L13 15 L1 15 Z" fill="#F28C28"/><path d="M1 15 L13 15 L12 13 L2 13 Z" fill="#FFE066"/></svg>
+    <svg class="hw-candy c4" viewBox="0 0 30 14" aria-hidden="true"><path d="M2 2 L8 7 L2 12 Z M28 2 L22 7 L28 12 Z" fill="#9CCC65"/><circle cx="15" cy="7" r="6.5" fill="#B39DDB"/><circle cx="13" cy="5" r="1.6" fill="#fff" opacity=".7"/></svg>
+    <svg class="hw-candy c5" viewBox="0 0 14 16" aria-hidden="true"><path d="M7 1 L13 15 L1 15 Z" fill="#FFF8E1"/><path d="M3.6 9 L10.4 9 L13 15 L1 15 Z" fill="#F28C28"/><path d="M1 15 L13 15 L12 13 L2 13 Z" fill="#FFE066"/></svg>`;
+  return`<div class="hw-stars" aria-hidden="true"></div><div class="hw-moon" aria-hidden="true"></div>
+    <svg class="hw-web" viewBox="0 0 70 70" aria-hidden="true"><g fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1"><path d="M0 0 L70 8 M0 0 L58 40 M0 0 L30 66 M0 0 L6 70"/><path d="M0 18 Q10 14 16 4 M0 34 Q20 28 30 8 M0 50 Q30 42 44 12 M10 66 Q34 50 54 22 M24 60 Q44 40 58 36"/></g></svg>
+    <svg class="hw-spider" viewBox="0 0 18 40" aria-hidden="true"><line x1="9" y1="0" x2="9" y2="22" stroke="rgba(255,255,255,.6)" stroke-width="1"/><g stroke="#1E1430" stroke-width="1.4" fill="none"><path d="M4 24 L0 20 M4 28 L0 28 M4 32 L0 36 M14 24 L18 20 M14 28 L18 28 M14 32 L18 36"/></g><ellipse cx="9" cy="28" rx="5.5" ry="6" fill="#1E1430"/><circle cx="7" cy="26" r="1.4" fill="#fff"/><circle cx="11" cy="26" r="1.4" fill="#fff"/><circle cx="7" cy="26.3" r=".6" fill="#1E1430"/><circle cx="11" cy="26.3" r=".6" fill="#1E1430"/></svg>
+    ${bat('b1')}${bat('b2')}${bat('b3')}
+    <svg class="hw-ghost" viewBox="0 0 34 40" aria-hidden="true"><path d="M3 18 Q3 2 17 2 Q31 2 31 18 L31 36 Q27 32 24 37 Q20 32 17 37 Q14 32 10 37 Q7 32 3 36 Z" fill="#fff" opacity=".95"/><ellipse cx="12" cy="17" rx="2.4" ry="3.2" fill="#2B2545"/><ellipse cx="22" cy="17" rx="2.4" ry="3.2" fill="#2B2545"/><ellipse cx="17" cy="24" rx="2.6" ry="2" fill="#2B2545"/><circle cx="9" cy="22" r="2" fill="#FFB3C7" opacity=".7"/><circle cx="25" cy="22" r="2" fill="#FFB3C7" opacity=".7"/></svg>
+    <div class="hw-ground" aria-hidden="true"></div>
+    ${pumpkin('k1')}${pumpkin('k2')}${pumpkin('k3')}${candies}`;
+}
 function rainSceneHTML(){
   const cloud=c=>`<svg class="rain-cloud ${c}" viewBox="0 0 110 54" aria-hidden="true"><g fill="#F4F7FC"><circle cx="30" cy="32" r="18"/><circle cx="54" cy="22" r="22"/><circle cx="80" cy="30" r="17"/><rect x="18" y="30" width="76" height="20" rx="10"/></g><g fill="#E3EAF6"><circle cx="40" cy="42" r="10"/><circle cx="70" cy="42" r="10"/></g></svg>`;
   const frog=f=>`<div class="frog ${f}" aria-hidden="true"><svg viewBox="0 0 60 44"><ellipse cx="30" cy="34" rx="22" ry="11" fill="#7CCB8E"/><ellipse cx="30" cy="36" rx="13" ry="6" fill="#C9EFD2"/><circle cx="19" cy="16" r="9" fill="#7CCB8E"/><circle cx="41" cy="16" r="9" fill="#7CCB8E"/><circle cx="19" cy="15" r="5.5" fill="#fff"/><circle cx="41" cy="15" r="5.5" fill="#fff"/><circle cx="20" cy="15.5" r="2.8" fill="#2B2545"/><circle cx="42" cy="15.5" r="2.8" fill="#2B2545"/><path d="M22 29 Q30 35 38 29" fill="none" stroke="#3E8C55" stroke-width="2" stroke-linecap="round"/><circle cx="14" cy="27" r="3" fill="#F7A9A0" opacity=".7"/><circle cx="46" cy="27" r="3" fill="#F7A9A0" opacity=".7"/><ellipse cx="11" cy="42" rx="7" ry="3" fill="#6BB97D"/><ellipse cx="49" cy="42" rx="7" ry="3" fill="#6BB97D"/></svg></div>`;
@@ -2327,6 +2449,7 @@ function rainSceneHTML(){
 }
 function kpiStageHTML(allScores){
   if(!allScores.length)return'';
+  if(SEASON==='halloween')return`<div class="kpi-stage halloween">${halloweenSceneHTML()}<div class="kpi-stage-title">🎃 ทีมของเรา · KPI เดือนนี้</div><div class="chars">${allScores.map(({m,k})=>charHTML(m,k.score,{click:true,sub:gradeLabel(k.score),costume:true})).join('')}</div></div>`;
   return`<div class="kpi-stage rain">${rainSceneHTML()}<div class="kpi-stage-title">🌧️ ทีมของเรา · KPI เดือนนี้</div><div class="chars">${allScores.map(({m,k})=>charHTML(m,k.score,{click:true,sub:gradeLabel(k.score),rain:true})).join('')}</div></div>`;
 }
 
