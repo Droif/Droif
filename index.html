@@ -790,6 +790,58 @@ html.season-halloween .logo-mark{background:linear-gradient(135deg,#FFD7A8,#F2A6
 html.season-halloween .home-hello{background:linear-gradient(135deg,#E9DDFF,#FFE0C2 60%,#FFD1A3)}
 html.season-halloween .home-hello::after{background:#F2A65A;clip-path:none;border-radius:50% 50% 45% 45%;width:40px;height:34px;right:24px;bottom:-8px;box-shadow:inset 6px 0 0 rgba(0,0,0,.06),inset -6px 0 0 rgba(0,0,0,.06)}
 html.dark.season-halloween .home-hello{background:linear-gradient(135deg,#382F63,#4A2E26 60%,#5A3518)}
+
+/* ═════════ KPI TABS ═════════ */
+.kpi-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:12px 12px 4px;padding:4px;border-radius:16px;background:var(--p-lilac)}
+.kpi-tab{display:flex;align-items:center;justify-content:center;gap:6px;min-height:42px;border:none;border-radius:12px;background:transparent;color:var(--text2);font-size:14px;font-weight:700;cursor:pointer}
+.kpi-tab.on{background:var(--surface);color:var(--purple-dark);box-shadow:0 2px 8px rgba(124,110,224,.2)}
+.kpi-people{padding-top:10px}
+.kpi-people .chip{display:inline-flex;align-items:center;gap:5px}
+.kpi-member-card{cursor:pointer}
+.kpi-team-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--border);cursor:pointer}
+.kpi-team-row:last-child{border-bottom:none}
+.kpi-team-bar{height:6px;border-radius:3px;background:var(--gray-light);overflow:hidden;margin:5px 0 3px}
+.kpi-team-bar>div{height:100%;border-radius:3px}
+html.desk .stat-row{grid-template-columns:repeat(4,minmax(0,1fr))}
+/* ═════════ KPI · LOY KRATHONG STAGE ═════════ */
+.kpi-stage.loykrathong{position:relative;isolation:isolate;padding:14px 6px 76px;border:1px solid #2B3A70;background:radial-gradient(circle at 80% 13%,rgba(255,240,190,.4) 0,rgba(255,240,190,0) 30%),linear-gradient(180deg,#121A45 0%,#1D2B66 42%,#33407F 70%,#47508C 100%)}
+.loykrathong .kpi-stage-title{position:relative;z-index:6;display:table;margin:0 auto 2px;padding:3px 12px;border-radius:20px;background:rgba(15,20,60,.72);color:#FFE3A3}
+.loykrathong .chars{position:relative;z-index:5}
+.loykrathong .char{padding-top:28px}
+.loykrathong .char-name{background:rgba(255,255,255,.9);border-radius:10px;padding:0 6px;color:#2B2545}
+.loykrathong .char-pos{color:#FFE9B5;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.loykrathong .char-mood{color:#DCE4FF;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.loykrathong .char-shadow{background:rgba(5,10,40,.35)}
+.loykrathong .mood-happy .char-fx{top:-30px}
+.lk-moon{position:absolute;z-index:1;right:9%;top:14px;width:58px;height:58px;border-radius:50%;background:radial-gradient(circle at 38% 38%,#FFFBE3,#FFEFB0 72%);box-shadow:0 0 28px 10px rgba(255,239,176,.32)}
+.lk-stars{position:absolute;inset:0 0 40% 0;z-index:1;pointer-events:none;background-image:radial-gradient(1.4px 1.4px at 10% 18%,#fff 99%,transparent),radial-gradient(1.2px 1.2px at 28% 8%,#fff 99%,transparent),radial-gradient(1.5px 1.5px at 50% 24%,#FFE9B0 99%,transparent),radial-gradient(1.2px 1.2px at 64% 7%,#fff 99%,transparent),radial-gradient(1.3px 1.3px at 40% 40%,#fff 99%,transparent),radial-gradient(1.2px 1.2px at 6% 42%,#fff 99%,transparent);animation:twinkle 3s ease-in-out infinite}
+.lk-lantern{position:absolute;z-index:2;width:18px;pointer-events:none;filter:drop-shadow(0 0 5px rgba(255,180,70,.75));animation:lanternRise 13s ease-in-out infinite}
+.lk-lantern.l1{left:8%;top:30%}.lk-lantern.l2{left:32%;top:22%;width:13px;animation-delay:-3s;animation-duration:16s}.lk-lantern.l3{left:62%;top:34%;width:15px;animation-delay:-7s}.lk-lantern.l4{left:88%;top:44%;width:12px;animation-delay:-10s;animation-duration:18s}
+@keyframes lanternRise{0%{transform:translate(0,34px);opacity:0}12%{opacity:1}85%{opacity:1}100%{transform:translate(14px,-46px);opacity:0}}
+.lk-temple{position:absolute;z-index:1;left:10%;bottom:92px;width:230px;pointer-events:none}
+.lk-bank{position:absolute;z-index:1;left:0;right:0;bottom:60px;height:34px;background:linear-gradient(180deg,#25365F,#1C2B4F);pointer-events:none}
+.lk-river{position:absolute;z-index:2;left:0;right:0;bottom:0;height:64px;overflow:hidden;background:linear-gradient(180deg,#223D78,#16295A);pointer-events:none}
+.lk-reflect{position:absolute;right:8%;top:0;width:70px;height:100%;background:repeating-linear-gradient(180deg,rgba(255,239,176,.55) 0 3px,transparent 3px 9px);-webkit-mask:linear-gradient(90deg,transparent,#000 30%,#000 70%,transparent);mask:linear-gradient(90deg,transparent,#000 30%,#000 70%,transparent)}
+.lk-wave{position:absolute;left:-40px;right:-40px;height:10px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='10'%3E%3Cpath d='M0 5 Q10 0 20 5 T40 5' fill='none' stroke='%239DB8F0' stroke-width='1.2' opacity='.55'/%3E%3C/svg%3E") repeat-x;animation:lkWave 5s linear infinite}
+.lk-wave.w1{top:14px}.lk-wave.w2{top:40px;animation-duration:8s;animation-direction:reverse}
+@keyframes lkWave{to{transform:translateX(40px)}}
+.lk-krathong{position:absolute;z-index:6;bottom:8px;width:42px;pointer-events:none;animation:lkFloat 3.6s ease-in-out infinite}
+.lk-krathong.k1{left:7%}.lk-krathong.k2{left:44%;width:36px;bottom:14px;animation-delay:-1.2s}.lk-krathong.k3{right:9%;width:40px;bottom:6px;animation-delay:-2.3s}
+@keyframes lkFloat{0%,100%{transform:translate(0,0) rotate(-2.5deg)}50%{transform:translate(9px,-4px) rotate(2.5deg)}}
+.lk-flame,.lk-glow{animation:flicker 1.4s ease-in-out infinite;transform-origin:22px 10px}
+.char-krathong{position:absolute;z-index:4;right:-16px;bottom:2px;width:30px;pointer-events:none}
+.mood-mid .char-krathong{right:-13px;bottom:0}
+.cos-hat.lk-flower{width:18px;margin-left:12px;top:8px}
+html.desk .kpi-stage.loykrathong{padding-bottom:84px}
+@media (prefers-reduced-motion:reduce){.lk-stars,.lk-lantern,.lk-wave,.lk-krathong,.lk-flame,.lk-glow{animation:none!important}.lk-lantern{opacity:1}}
+html.dark .kpi-stage.loykrathong{border-color:#2B3A70;background:radial-gradient(circle at 80% 13%,rgba(255,240,190,.3) 0,rgba(255,240,190,0) 30%),linear-gradient(180deg,#0E1538 0%,#172354 42%,#28336B 70%,#384279 100%)}
+html.dark .kpi-stage.halloween{border-color:#4B3A70;background:radial-gradient(circle at 82% 16%,rgba(255,236,170,.35) 0,rgba(255,236,170,0) 26%),linear-gradient(180deg,#2A1D4D 0%,#43296E 38%,#7A4A86 64%,#C9767A 82%,#F2A65A 100%)}
+.loykrathong .char.me .char-name,.halloween .char.me .char-name{color:#4A3DB5}
+html.season-loykrathong{--swatch:linear-gradient(90deg,#E9C25A 0 16.66%,#FF9EC0 0 33.33%,#5FA868 0 50%,#6C8EDB 0 66.66%,#E9C25A 0 83.33%,#B98CE0 0)}
+html.season-loykrathong .logo-mark{background:linear-gradient(135deg,#FFE3EE,#FFEFC4);color:#B0255F}
+html.season-loykrathong .home-hello{background:linear-gradient(135deg,#DDE4FF,#FFE3EE 60%,#FFF0C9)}
+html.season-loykrathong .home-hello::after{background:#FFEFB0;clip-path:none;border-radius:50%;width:38px;height:38px;right:26px;bottom:auto;top:14px}
+html.dark.season-loykrathong .home-hello{background:linear-gradient(135deg,#232F66,#3A2645 60%,#4A3C22)}
 </style>
 </head>
 <body>
@@ -939,7 +991,7 @@ html.dark.season-halloween .home-hello{background:linear-gradient(135deg,#382F63
 
   <!-- KPI PAGE -->
   <div class="page" id="page-kpi">
-    <div class="sec-header"><div class="sec-title">คะแนน KPI</div><div class="sec-sub" id="kpi-period">เดือนนี้</div></div>
+    <div class="sec-header"><div class="sec-title">คะแนน KPI</div><div class="sec-sub" id="kpi-period">จากงานทั้งหมด</div></div>
     <div id="kpi-body"></div>
   </div>
 
@@ -1627,7 +1679,7 @@ async function saveMyPassword(){
   saveDb();showToast('บันทึกชื่อผู้ใช้และรหัสผ่านแล้ว ✓');openMeSheet();renderHome();
 }
 function loginAs(name){
-  currentUser=name;ckFilter=null;calScope=null;
+  currentUser=name;ckFilter=null;calScope=null;kpiView=null;kpiPerson=null;
   try{localStorage.setItem('gf_user',name);}catch(e){}
   document.getElementById('login-wrap').style.display='none';
   document.getElementById('me-name').textContent=name;
@@ -1789,7 +1841,9 @@ function saveEditTask(id){
   t.client=document.getElementById('e-client').value.trim()||'-';
   t.due=document.getElementById('e-due').value;
   t.priority=document.getElementById('e-priority').value;
+  const wasDone=t.status==='done';
   t.status=document.getElementById('e-status').value;
+  if(t.status==='done'&&!wasDone)t.doneAt=todayStr();else if(t.status!=='done')delete t.doneAt;
   t.step=Number(document.getElementById('e-step').value);
   t.note=document.getElementById('e-note').value;
   t.recur=document.getElementById('e-recur').value||'';
@@ -1956,7 +2010,7 @@ function confirmAction(){
   t.status=m.status;t.step=m.step;
   t.log.push({time:tt,user:currentUser,action:m.action+(note?' — '+note:''),icon:m.icon,color:m.color});
   addAct(currentUser,m.action+(note?' — '+note.slice(0,20):''),t.name,t.id,m.type);
-  if(m.status==='done')spawnNextRecurring(t);
+  if(m.status==='done'){t.doneAt=todayStr();spawnNextRecurring(t);}
   closeSheet('action');pendingAction=null;saveDb();renderAll();showToast('อัปเดตสถานะ ✓');
 }
 
@@ -2148,7 +2202,7 @@ function tickTask(tid){
   const warn=pr.n&&pr.d<pr.n?`\n(เช็คลิสต์ยังไม่ครบ ${pr.d}/${pr.n})`:'';
   if(!confirm(`${ckAdvanceLabel(t)}: "${t.name}"?${warn}`))return;
   const tt=ts();
-  if(isLead()){t.status='done';t.step=5;t.log.push({time:tt,user:currentUser,action:'ส่งมอบเสร็จ (จากเช็คลิสต์)',icon:'ti-archive',color:'#5F5E5A'});addAct(currentUser,'ส่งมอบเสร็จ',t.name,t.id,'done');spawnNextRecurring(t);}
+  if(isLead()){t.status='done';t.step=5;t.doneAt=todayStr();t.log.push({time:tt,user:currentUser,action:'ส่งมอบเสร็จ (จากเช็คลิสต์)',icon:'ti-archive',color:'#5F5E5A'});addAct(currentUser,'ส่งมอบเสร็จ',t.name,t.id,'done');spawnNextRecurring(t);}
   else{t.status='review';t.step=2;t.log.push({time:tt,user:currentUser,action:'ส่งตรวจ (จากเช็คลิสต์)',icon:'ti-send',color:'#534AB7'});addAct(currentUser,'ส่งตรวจ',t.name,t.id,'status');}
   saveDb();renderAll();renderChecklistPage();showToast(isLead()?'ส่งมอบเสร็จ ✓':'ส่งตรวจแล้ว ✓');
 }
@@ -2315,9 +2369,9 @@ function calMoveTo(kind,id,date){
 }
 
 /* ── KPI CHARACTER ── */
-function moodOf(score){return score>=75?'happy':score>=60?'mid':'sad';}
+function moodOf(score){return score==null?'mid':score>=75?'happy':score>=60?'mid':'sad';}
 function charBodySVG(mood,gender){
-  const P='#3D3A5C',S='var(--shirt)',K='#FCD9B8',SH='#2C2C2A',O='rgba(40,30,80,.18)';
+  const P='var(--pants,#3D3A5C)',S='var(--shirt)',K='#FCD9B8',SH='#2C2C2A',O='rgba(40,30,80,.18)';
   const fem=gender==='female',lg=gender==='lgbt';
   const SK='var(--skirt)';
   const arm=(cls,d,hx,hy,extra='')=>`<g class="arm ${cls}"><path d="${d}" stroke="${O}" stroke-width="10" stroke-linecap="round"/><path d="${d}" stroke="${S}" stroke-width="8" stroke-linecap="round"/><circle cx="${hx}" cy="${hy}" r="5" fill="${K}"/>${extra}</g>`;
@@ -2356,16 +2410,16 @@ function charFaceSVG(mood,gender){
 function charHTML(m,score,opts={}){
   const mood=moodOf(score),me=m.name===currentUser,g=genderOf(m);
   const head=m.photo&&/^data:image\//.test(m.photo)?`<img src="${m.photo}" alt="">`:charFaceSVG(mood,g);
-  const sh=shirtOf(m),skirt=/^#(F06292|D4537E|E24B4A)$/i.test(sh)?'#7E57C2':'#F06292';
+  const sh=shirtOf(m),skirt=opts.thai?thaiSilk(m.name):/^#(F06292|D4537E|E24B4A)$/i.test(sh)?'#7E57C2':'#F06292';
   const hairBack=g==='female'?'<div class="char-hair long"></div>':g==='lgbt'?'<div class="char-hair bob"></div>':'';
   const emo=m.photo?`<div class="char-emo">${mood==='happy'?'😄':mood==='mid'?'🙂':'😢'}</div>`:'';
-  const cos=opts.costume?costumeOf(m.name):null,cz=cos?costumeHTML(cos[0],mood,g==='female'):{back:'',front:'',hat:''};
-  const fx=cos?(mood==='happy'?'<div class="char-fx">🍬</div>':mood==='sad'?'<div class="char-fx">👻</div>':''):(mood==='happy'?'<div class="char-fx">🎉</div>':mood==='sad'?'<div class="char-fx">🌧️</div>':'');
+  const cos=opts.costume?costumeOf(m.name):null,cz=opts.thai?{back:'',...thaiDressHTML(g,mood)}:cos?costumeHTML(cos[0],mood,g==='female'):{back:'',front:'',hat:''};
+  const fx=opts.thai?(mood==='happy'?'<div class="char-fx">🪷</div>':''):cos?(mood==='happy'?'<div class="char-fx">🍬</div>':mood==='sad'?'<div class="char-fx">👻</div>':''):(mood==='happy'?'<div class="char-fx">🎉</div>':mood==='sad'?'<div class="char-fx">🌧️</div>':'');
   const tear=mood==='sad'?'<div class="char-tear"></div>':'';
   const label=mood==='happy'?'เยี่ยมมาก! 🎶':mood==='mid'?'พอใช้ ค่อยๆ ไป':'สู้ๆ นะ';
-  return`<div class="char mood-${mood} g-${g} ${me?'me':''}" style="--shirt:${sh};--skirt:${skirt}${opts.click?';cursor:pointer':''}" ${opts.click?`onclick="viewMemberDetail('${esc(m.name)}')"`:''} aria-label="${esc(m.name)} KPI ${score}">
-    ${opts.noScore?'':`<div class="char-score" style="background:${gradeColor(score)}">${score}</div>`}
-    <div class="char-fig">${fx}${opts.rain&&mood!=='sad'?umbrellaSVG(m.name,mood):''}${cz.back}${hairBack}<div class="char-head">${head}</div>${cz.hat}${emo}${tear}<svg class="char-body" viewBox="0 0 80 88">${charBodySVG(mood,g)}</svg>${cz.front}${cos&&mood!=='sad'?bucketSVG():''}<div class="char-shadow"></div></div>
+  return`<div class="char mood-${mood} g-${g} ${me?'me':''}" style="--shirt:${sh};--skirt:${skirt}${opts.thai?';--pants:'+skirt:''}${opts.click?';cursor:pointer':''}" ${opts.click?`onclick="viewMemberDetail('${esc(m.name)}')"`:''} aria-label="${esc(m.name)} KPI ${score==null?'ยังไม่มีงาน':score}">
+    ${opts.noScore?'':`<div class="char-score" style="background:${gradeColor(score)}">${score==null?'–':score}</div>`}
+    <div class="char-fig">${fx}${opts.rain&&mood!=='sad'?umbrellaSVG(m.name,mood):''}${cz.back}${hairBack}<div class="char-head">${head}</div>${cz.hat}${emo}${tear}<svg class="char-body" viewBox="0 0 80 88">${charBodySVG(mood,g)}</svg>${cz.front}${cos&&mood!=='sad'?bucketSVG():''}${opts.thai?`<div class="char-krathong">${krathongSVG(mood!=='sad')}</div>`:''}<div class="char-shadow"></div></div>
     <div class="char-name">${esc(m.name)}${me?' (คุณ)':''}</div>
     ${m.position?`<div class="char-pos">${esc(m.position)}</div>`:''}
     <div class="char-mood">${opts.sub!=null?opts.sub:label}</div>
@@ -2385,8 +2439,8 @@ function umbrellaSVG(name,mood){
     <line x1="48" y1="-2" x2="48" y2="-8" stroke="#6B6488" stroke-width="2.2" stroke-linecap="round"/>
   </svg></div>`;
 }
-/* ── ฤดูกาลของฉาก KPI: 'halloween' | 'rain' ── */
-const SEASON='halloween';
+/* ── ฤดูกาลของฉาก KPI: 'loykrathong' | 'halloween' | 'rain' ── */
+const SEASON='loykrathong';
 document.documentElement.classList.add('season-'+SEASON);
 const COSTUMES=[['ghost','ผีผ้าห่ม 👻'],['witch','แม่มด 🧙'],['vampire','แวมไพร์ 🧛'],['pumpkin','ฟักทอง 🎃'],['mummy','มัมมี่'],['cat','แมวดำ 🐈‍⬛'],['devil','ปีศาจน้อย 😈'],['skeleton','โครงกระดูก 💀']];
 function costumeOf(name){let h=7;for(const c of String(name)+'|'+todayStr())h=(h*33+c.charCodeAt(0))>>>0;return COSTUMES[h%COSTUMES.length];}// สุ่มใหม่ทุกวัน
@@ -2447,8 +2501,41 @@ function rainSceneHTML(){
   const frog=f=>`<div class="frog ${f}" aria-hidden="true"><svg viewBox="0 0 60 44"><ellipse cx="30" cy="34" rx="22" ry="11" fill="#7CCB8E"/><ellipse cx="30" cy="36" rx="13" ry="6" fill="#C9EFD2"/><circle cx="19" cy="16" r="9" fill="#7CCB8E"/><circle cx="41" cy="16" r="9" fill="#7CCB8E"/><circle cx="19" cy="15" r="5.5" fill="#fff"/><circle cx="41" cy="15" r="5.5" fill="#fff"/><circle cx="20" cy="15.5" r="2.8" fill="#2B2545"/><circle cx="42" cy="15.5" r="2.8" fill="#2B2545"/><path d="M22 29 Q30 35 38 29" fill="none" stroke="#3E8C55" stroke-width="2" stroke-linecap="round"/><circle cx="14" cy="27" r="3" fill="#F7A9A0" opacity=".7"/><circle cx="46" cy="27" r="3" fill="#F7A9A0" opacity=".7"/><ellipse cx="11" cy="42" rx="7" ry="3" fill="#6BB97D"/><ellipse cx="49" cy="42" rx="7" ry="3" fill="#6BB97D"/></svg></div>`;
   return cloud('c1')+cloud('c2')+cloud('c3')+'<div class="rain-drops" aria-hidden="true"></div><div class="rain-grass" aria-hidden="true"></div><div class="puddle p1"></div><div class="puddle p2"></div>'+frog('f1')+frog('f2');
 }
+const THAI_SILK=['#B0255F','#6A1B9A','#0F7A63','#B7791F','#1F5FAE','#A33B20'];
+function thaiSilk(name){let h=5;for(const c of String(name))h=(h*31+c.charCodeAt(0))>>>0;return THAI_SILK[h%THAI_SILK.length];}
+function thaiDressHTML(g,mood){
+  const T=mood==='sad'?3:0,G='#E9C25A';
+  let front='',hat='';
+  if(g==='female'||g==='lgbt'){
+    front+=`<path d="M25 ${13+T} L35 ${9+T} L57 ${43+T} L50 ${49+T} Z" fill="${G}" stroke="#B98F2E" stroke-width=".8"/><path d="M31 ${15+T} L52 ${44+T}" stroke="#FFF3C4" stroke-width="1.2" stroke-dasharray="1.5 3"/>`;
+    hat=`<svg class="cos-hat lk-flower" viewBox="0 0 22 22"><g fill="#FF8FB4">${[0,72,144,216,288].map(a=>`<ellipse cx="11" cy="5.5" rx="3.6" ry="5" transform="rotate(${a} 11 11)"/>`).join('')}</g><circle cx="11" cy="11" r="3" fill="#FFE066"/></svg>`;
+  }else{
+    front+=`<path d="M31 ${10+T} L40 ${16+T} L49 ${10+T} L47 ${15+T} L40 ${20+T} L33 ${15+T} Z" fill="${G}"/><line x1="40" y1="${20+T}" x2="40" y2="${52+T}" stroke="rgba(60,40,20,.25)" stroke-width="1"/>${[24,31,38,45].map(y=>`<circle cx="40" cy="${y+T}" r="1.7" fill="${G}" stroke="#B98F2E" stroke-width=".5"/>`).join('')}`;
+  }
+  if(g==='female'&&mood!=='mid')front+=`<path d="M24 ${45+T} L56 ${45+T} L58 77 Q40 81 22 77 Z" fill="var(--skirt)" stroke="rgba(40,20,40,.2)"/><path d="M22.5 72 Q40 76 57.5 72 L58 77 Q40 81 22 77 Z" fill="${G}"/><path d="M40 ${47+T} L40 72" stroke="rgba(255,255,255,.3)" stroke-width="1.4"/>`;
+  if(g==='female'&&mood==='mid')front+=`<path d="M15 66 Q40 74 65 66 L66 62 Q66 70 40 71 Q14 70 14 62 Z" fill="${G}"/>`;
+  return{front:`<svg class="cos-front" viewBox="0 0 80 88">${front}</svg>`,hat};
+}
+function krathongSVG(lit){
+  return`<svg viewBox="0 0 44 40" aria-hidden="true">${lit?`<ellipse class="lk-glow" cx="22" cy="10" rx="9" ry="9" fill="#FFD76B" opacity=".35"/>`:''}
+    <line x1="22" y1="22" x2="22" y2="11" stroke="#FFF8E1" stroke-width="2.4"/>${lit?'<path class="lk-flame" d="M22 3 Q26 8 22 11 Q18 8 22 3 Z" fill="#FFB347"/>':''}
+    <line x1="27" y1="22" x2="30" y2="11" stroke="#8D5A3B" stroke-width="1"/><line x1="17" y1="22" x2="14" y2="11" stroke="#8D5A3B" stroke-width="1"/>
+    <g fill="#FF9EC0" stroke="#E86B9B" stroke-width=".6"><path d="M22 28 Q10 26 10 15 Q18 18 22 28 Z"/><path d="M22 28 Q34 26 34 15 Q26 18 22 28 Z"/><path d="M22 28 Q15 22 17 13 Q23 19 22 28 Z"/><path d="M22 28 Q29 22 27 13 Q21 19 22 28 Z"/></g>
+    <path d="M4 26 Q8 22 11 26 Q14 22 18 26 Q22 22 26 26 Q30 22 33 26 Q36 22 40 26 Q38 38 22 38 Q6 38 4 26 Z" fill="#5FA868" stroke="#3E7D49" stroke-width=".8"/><path d="M8 30 Q22 35 36 30" fill="none" stroke="#8ED29A" stroke-width="1.2"/></svg>`;
+}
+function loyKrathongSceneHTML(){
+  const lantern=c=>`<div class="lk-lantern ${c}" aria-hidden="true"><svg viewBox="0 0 24 32"><ellipse cx="12" cy="16" rx="11" ry="14" fill="#FFC56B" opacity=".25"/><path d="M5 4 Q12 0 19 4 L16 24 L8 24 Z" fill="#FFB13D"/><path d="M8 24 L16 24 L15 26 L9 26 Z" fill="#C96F1E"/><ellipse cx="12" cy="22" rx="3" ry="4" fill="#FFF3B0"/></svg></div>`;
+  const float=c=>`<div class="lk-krathong ${c}" aria-hidden="true">${krathongSVG(true)}</div>`;
+  return`<div class="lk-stars" aria-hidden="true"></div><div class="lk-moon" aria-hidden="true"></div>
+    ${lantern('l1')}${lantern('l2')}${lantern('l3')}${lantern('l4')}
+    <svg class="lk-temple" viewBox="0 0 150 70" aria-hidden="true"><g fill="#2A3775"><path d="M40 70 L40 44 L46 44 L48 26 L51 26 L53 8 L55 0 L57 8 L59 26 L62 26 L64 44 L70 44 L70 70 Z"/><path d="M0 70 L8 52 L20 52 L28 38 L36 52 L40 52 L40 70 Z"/><path d="M70 70 L70 54 L92 54 L102 36 L112 54 L134 54 L150 70 Z"/></g></svg>
+    <div class="lk-bank" aria-hidden="true"></div>
+    <div class="lk-river" aria-hidden="true"><div class="lk-reflect"></div><div class="lk-wave w1"></div><div class="lk-wave w2"></div></div>
+    ${float('k1')}${float('k2')}${float('k3')}`;
+}
 function kpiStageHTML(allScores){
   if(!allScores.length)return'';
+  if(SEASON==='loykrathong')return`<div class="kpi-stage loykrathong">${loyKrathongSceneHTML()}<div class="kpi-stage-title">🪷 ลอยกระทงกับทีมของเรา</div><div class="chars">${allScores.map(({m,k})=>charHTML(m,k.score,{click:true,sub:gradeLabel(k.score),thai:true})).join('')}</div></div>`;
   if(SEASON==='halloween')return`<div class="kpi-stage halloween">${halloweenSceneHTML()}<div class="kpi-stage-title">🎃 ทีมของเรา · KPI เดือนนี้</div><div class="chars">${allScores.map(({m,k})=>charHTML(m,k.score,{click:true,sub:gradeLabel(k.score),costume:true})).join('')}</div></div>`;
   return`<div class="kpi-stage rain">${rainSceneHTML()}<div class="kpi-stage-title">🌧️ ทีมของเรา · KPI เดือนนี้</div><div class="chars">${allScores.map(({m,k})=>charHTML(m,k.score,{click:true,sub:gradeLabel(k.score),rain:true})).join('')}</div></div>`;
 }
@@ -3006,7 +3093,7 @@ function viewMemberDetail(name){
       ${avHTML(name,40)}
       <div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:700;color:var(--text)">${esc(name)}${m.probation?'<span class="prob-badge">🌱 ทดลองงาน</span>':''}</div><div style="font-size:12px;color:var(--text3)">${m.position?esc(m.position)+' · ':''}${roleLabel(m)}</div>${contactHTML(m)}</div>
     </div>
-    <div class="kpi-stage" style="margin:12px 16px 0"><div class="chars">${charHTML(m,calcKPI(name).score,{sub:'KPI '+calcKPI(name).score+' · '+gradeLabel(calcKPI(name).score)})}</div></div>
+    <div class="kpi-stage" style="margin:12px 16px 0"><div class="chars">${charHTML(m,calcKPI(name).score,{sub:(calcKPI(name).noData?'':'KPI '+calcKPI(name).score+' · ')+gradeLabel(calcKPI(name).score)})}</div></div>
     ${accountCardHTML(m)}
     ${probationCardHTML(m)}
     <div class="member-stats">
@@ -3086,131 +3173,131 @@ function exportActivity(){
 }
 
 /* ── KPI ── */
-function calcKPI(member){
-  const all=db.tasks.filter(t=>(t.assignees||[]).includes(member));
-  const done=all.filter(t=>t.status==='done').length;
-  const total=all.length;
-  const blocked=all.filter(t=>t.status==='blocked').length;
-  const onTime=all.filter(t=>t.status==='done'&&t.due&&new Date(t.due)>=new Date(t.log[t.log.length-1]?.time?.split(' ')[0]||t.due)).length;
-  const feedbackResolved=all.reduce((a,t)=>a+t.comments.filter(c=>c.resolved).length,0);
-  const feedbackOpen=all.reduce((a,t)=>a+t.comments.filter(c=>!c.resolved).length,0);
-  const completionRate=total?Math.round(done/total*100):0;
-  const onTimeRate=done?Math.round(onTime/done*100):100;
-  const qualityRate=Math.max(0,100-feedbackOpen*10);
-  const blockPenalty=blocked*8;
-  const rated=all.filter(t=>t.status==='done'&&t.rating);
+/* วันที่ส่งมอบจริง: ใช้ doneAt, งานเก่าอ่านจากประวัติ (dd/mm) แล้วเลือกปีที่ใกล้วันกำหนดส่งที่สุด */
+function taskDoneDate(t){
+  if(t.doneAt)return parseDay(t.doneAt);
+  const logs=t.log||[];
+  const l=logs.slice().reverse().find(x=>String(x.action||'').startsWith('ส่งมอบเสร็จ'))||logs[logs.length-1];
+  const m=l&&String(l.time||'').match(/^(\d{1,2})\/(\d{1,2})/);if(!m)return null;
+  const due=parseDay(t.due),base=due||new Date();
+  let d=new Date(base.getFullYear(),Number(m[2])-1,Number(m[1]));
+  const diff=(d-base)/86400000;
+  if(diff>180)d=new Date(d.getFullYear()-1,d.getMonth(),d.getDate());else if(diff<-180)d=new Date(d.getFullYear()+1,d.getMonth(),d.getDate());
+  return d;
+}
+function isOverdue(t){return t.status!=='done'&&!!t.due&&daysUntil(t.due)<0;}
+/* สูตรเดียวกันทั้งรายคนและทีม — div = จำนวนคน ใช้เฉลี่ยค่าหักคะแนนของทีมให้เทียบกับรายคนได้ */
+function kpiFromTasks(all,div=1){
+  const total=all.length,doneTasks=all.filter(t=>t.status==='done'),done=doneTasks.length;
+  const blocked=all.filter(t=>t.status==='blocked').length,overdue=all.filter(isOverdue).length;
+  const dueDone=doneTasks.filter(t=>t.due);
+  const onTime=dueDone.filter(t=>{const d=taskDoneDate(t);return d&&d<=parseDay(t.due);}).length;
+  const onTimeBase=dueDone.length+overdue;
+  const feedback=all.flatMap(t=>(t.comments||[]).filter(c=>c.type==='feedback'));
+  const feedbackOpen=feedback.filter(c=>!c.resolved).length,feedbackResolved=feedback.length-feedbackOpen;
+  const rated=doneTasks.filter(t=>t.rating);
   const avgStars=rated.length?rated.reduce((a,t)=>a+t.rating.stars,0)/rated.length:0;
+  const completionRate=total?Math.round(done/total*100):0;
+  const onTimeRate=onTimeBase?Math.round(onTime/onTimeBase*100):null;
+  const qualityRate=Math.max(0,Math.round(100-feedbackOpen/div*10));
   const starRate=Math.round(avgStars/5*100);
-  // มีงานที่ได้ดาว → ดาวคิด 30%, ยังไม่มี → ใช้สูตรเดิม
-  const w=rated.length?{c:.25,o:.25,q:.2,s:.3}:{c:.35,o:.35,q:.3,s:0};
-  const score=Math.max(0,Math.min(100,Math.round(completionRate*w.c+onTimeRate*w.o+qualityRate*w.q+starRate*w.s-blockPenalty)));
-  return{score,completionRate,onTimeRate,qualityRate,done,total,blocked,feedbackOpen,feedbackResolved,onTime,ratedCount:rated.length,avgStars,starRate,w};
+  const blockPenalty=Math.round(blocked/div*8);
+  // ตัวไหนยังไม่มีข้อมูลไม่นำมาคิด แล้วเกลี่ยน้ำหนักให้ตัวที่เหลือ
+  const raw=rated.length?{c:.25,o:.25,q:.2,s:.3}:{c:.35,o:.35,q:.3,s:0};
+  if(onTimeRate===null)raw.o=0;
+  const sum=raw.c+raw.o+raw.q+raw.s,w={c:raw.c/sum,o:raw.o/sum,q:raw.q/sum,s:raw.s/sum};
+  const score=total?Math.max(0,Math.min(100,Math.round(completionRate*w.c+(onTimeRate||0)*w.o+qualityRate*w.q+starRate*w.s-blockPenalty))):null;
+  return{score,noData:!total,completionRate,onTimeRate,qualityRate,done,total,blocked,overdue,blockPenalty,feedbackOpen,feedbackResolved,onTime,onTimeBase,ratedCount:rated.length,avgStars,starRate,w};
+}
+function calcKPI(member){return kpiFromTasks(db.tasks.filter(t=>(t.assignees||[]).includes(member)));}
+function kpiMembers(){return db.members.filter(m=>m.role!=='supervisor');}
+/* ทีม: นับงานไม่ซ้ำ งานที่ทำร่วมกันนับครั้งเดียว */
+function calcTeamKPI(){
+  const names=new Set(kpiMembers().map(m=>m.name));
+  const tasks=db.tasks.filter(t=>(t.assignees||[]).some(n=>names.has(n)));
+  const active=new Set(tasks.flatMap(t=>t.assignees.filter(n=>names.has(n))));// เฉลี่ยเฉพาะคนที่มีงาน คนยังไม่มีงานไม่ช่วยลดค่าหักคะแนน
+  return kpiFromTasks(tasks,Math.max(1,active.size));
 }
 function starHTML(score){
-  const stars=score>=90?5:score>=75?4:score>=60?3:score>=45?2:1;
+  const stars=score==null?0:score>=90?5:score>=75?4:score>=60?3:score>=45?2:1;
   return Array.from({length:5},(_,i)=>`<i class="ti ti-star${i<stars?'-filled':''}" style="font-size:16px;color:${i<stars?'#EF9F27':'#D3D1C7'}"></i>`).join('');
 }
-function gradeColor(s){return s>=90?'#3B6D11':s>=75?'#185FA5':s>=60?'#854F0B':s>=45?'#D85A30':'#A32D2D';}
-function gradeLabel(s){return s>=90?'ดีเยี่ยม':s>=75?'ดี':s>=60?'พอใช้':s>=45?'ต้องปรับปรุง':'ต่ำกว่าเกณฑ์';}
+function gradeColor(s){return s==null?'#8C87AE':s>=90?'#3B6D11':s>=75?'#185FA5':s>=60?'#854F0B':s>=45?'#D85A30':'#A32D2D';}
+function gradeLabel(s){return s==null?'ยังไม่มีงาน':s>=90?'ดีเยี่ยม':s>=75?'ดี':s>=60?'พอใช้':s>=45?'ต้องปรับปรุง':'ต่ำกว่าเกณฑ์';}
 
+let kpiView=null,kpiPerson=null;
+function setKpiView(v){kpiView=v;renderKPI();}
+function setKpiPerson(n){kpiPerson=n;kpiView='person';renderKPI();}
+function kpiStars(score){return score==null?0:score>=90?5:score>=75?4:score>=60?3:score>=45?2:1;}
+function kpiHeroHTML(title,sub,score){
+  return`<div class="kpi-hero"><div style="display:flex;align-items:flex-start;gap:12px"><div style="flex:1;min-width:0">
+    <div style="font-size:13px;opacity:.8;margin-bottom:4px">${title}</div>
+    <div class="kpi-score">${score==null?'–':score}</div>
+    <div style="font-size:14px;opacity:.85;margin-top:2px">${sub}</div>
+    <div class="kpi-bar-wrap" style="margin-top:14px"><div class="kpi-bar-fill" style="width:${score||0}%"></div></div>
+  </div><div style="display:flex;flex-direction:column;align-items:center;gap:4px;background:rgba(255,255,255,.15);border-radius:12px;padding:10px 12px">
+    <div class="kpi-star-row">${starHTML(score)}</div><div style="font-size:11px;opacity:.8">ดาว ${kpiStars(score)}/5</div>
+  </div></div></div>`;
+}
+function kpiMetricsHTML(k,team){
+  const row=(bg,ic,col,label,sub,val,color,wt)=>`<div class="kpi-metric-row"><div class="kpi-metric-icon" style="background:${bg}"><i class="ti ${ic}" style="color:${col}"></i></div><div style="flex:1;min-width:0"><div class="kpi-metric-label">${label}</div><div class="kpi-metric-sub">${sub}</div></div><div><div class="kpi-score-sm" style="color:${color}">${val}</div><div style="font-size:10px;color:var(--text3);text-align:right">${wt?'น้ำหนัก '+Math.round(wt*100)+'%':'ยังไม่คิด'}</div></div></div>`;
+  return`<div class="kpi-card">
+    ${row('#EAF3DE','ti-check','#3B6D11','อัตราเสร็จงาน',`งานเสร็จ ${k.done} / ${k.total} งาน`,k.completionRate+'%',gradeColor(k.completionRate),k.w.c)}
+    ${row('#E6F1FB','ti-clock','#185FA5','ส่งงานทันกำหนด',k.onTimeBase?`ทันกำหนด ${k.onTime} / ${k.onTimeBase} งาน${k.overdue?` · เลยกำหนดค้าง ${k.overdue}`:''}`:'ยังไม่มีงานที่ครบกำหนด',k.onTimeRate===null?'–':k.onTimeRate+'%',k.onTimeRate===null?'var(--text3)':gradeColor(k.onTimeRate),k.w.o)}
+    ${row('#FBEAF0','ti-rosette','#993556','คุณภาพงาน',`feedback ขอแก้ค้าง ${k.feedbackOpen} รายการ${team?' (เฉลี่ยต่อคน)':''}`,k.qualityRate+'%',gradeColor(k.qualityRate),k.w.q)}
+    ${row('#FEF6E7','ti-star-filled','#EF9F27','ดาวจากหัวหน้า',k.ratedCount?`เฉลี่ย ${k.avgStars.toFixed(1)} ดาว จาก ${k.ratedCount} งาน`:'ยังไม่มีงานที่ได้ดาว',k.ratedCount?k.starRate+'%':'–',k.ratedCount?gradeColor(k.starRate):'var(--text3)',k.w.s)}
+    ${k.blocked?`<div class="kpi-metric-row"><div class="kpi-metric-icon" style="background:#FCEBEB"><i class="ti ti-lock" style="color:#A32D2D"></i></div><div style="flex:1"><div class="kpi-metric-label">งานติดปัญหา</div><div class="kpi-metric-sub">${k.blocked} งาน · หัก ${team?'เฉลี่ยต่อคน ':''}${k.blockPenalty} คะแนน</div></div><div><div class="kpi-score-sm" style="color:#A32D2D">-${k.blockPenalty}</div></div></div>`:''}
+  </div>`;
+}
+const kpiHead=t=>`<div style="padding:12px 12px 0"><div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:.5px">${t}</div></div>`;
+function kpiRankHTML(allScores,selected){
+  let rank=0;
+  return allScores.map(({m,k})=>{
+    if(!k.noData)rank++;
+    const on=m.name===selected,isMe=m.name===currentUser;
+    const rankColor=k.noData?'var(--text3)':rank===1?'#EF9F27':rank===2?'#888780':rank===3?'#CD7F32':'var(--text3)';
+    const rankBg=k.noData?'var(--bg)':rank===1?'#FAEEDA':rank===2?'#F1EFE8':rank===3?'#FAEEDA':'var(--bg)';
+    return`<div class="kpi-member-card" onclick="setKpiPerson('${esc(m.name)}')" style="${on?'border-color:var(--purple-border);background:var(--purple-light)':''}">
+      <div class="kpi-rank" style="background:${rankBg};color:${rankColor}">${k.noData?'–':rank}</div>${avHTML(m.name,36)}
+      <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;color:var(--text)">${esc(m.name)}${isMe?' <span style="font-size:11px;color:var(--purple-dark)">(คุณ)</span>':''}</div><div style="display:flex;gap:2px;margin-top:3px">${starHTML(k.score)}</div></div>
+      <div style="text-align:right"><div style="font-size:20px;font-weight:800;color:${gradeColor(k.score)}">${k.noData?'–':k.score}</div><div style="font-size:11px;color:var(--text3)">${gradeLabel(k.score)}</div></div>
+    </div>`;
+  }).join('');
+}
+function kpiPersonHTML(allScores){
+  const entry=allScores.find(x=>x.m.name===kpiPerson)||allScores.find(x=>x.m.name===currentUser)||allScores[0];
+  if(!entry)return`<div class="empty"><i class="ti ti-users"></i><p>ยังไม่มีสมาชิกในทีม</p></div>`;
+  const{m,k}=entry,me=m.name===currentUser,ranked=allScores.filter(x=>!x.k.noData);
+  const rank=ranked.findIndex(x=>x.m.name===m.name)+1;
+  return`<div class="chip-row kpi-people">${allScores.map(({m:x})=>`<button class="chip ${x.name===m.name?'on':''}" onclick="setKpiPerson('${esc(x.name)}')">${avHTML(x.name,20)} ${esc(x.name)}</button>`).join('')}</div>
+    ${kpiHeroHTML(me?'คะแนน KPI ของคุณ':`คะแนน KPI ของ ${esc(m.name)}`,k.noData?'ยังไม่มีงาน จึงยังไม่มีคะแนน':`${gradeLabel(k.score)} · อันดับ ${rank}/${ranked.length}`,k.score)}
+    ${k.noData?'':kpiHead('เกณฑ์คะแนนรายคน')+kpiMetricsHTML(k,false)}
+    ${kpiHead('อันดับรายคน')}${kpiRankHTML(allScores,m.name)}`;
+}
+function kpiTeamHTML(allScores){
+  const k=calcTeamKPI(),n=allScores.length,scored=allScores.filter(x=>!x.k.noData);
+  const stat=(v,l,c)=>`<div class="stat-card"><div class="stat-num" style="${c?'color:'+c:''}">${v}</div><div class="stat-label">${l}</div></div>`;
+  return`${kpiHeroHTML('คะแนน KPI ทีม',k.noData?'ทีมยังไม่มีงาน จึงยังไม่มีคะแนน':`${gradeLabel(k.score)} · สมาชิก ${n} คน`,k.score)}
+    <div class="stat-row" style="margin-top:4px">${stat(k.total,'งานทั้งหมดของทีม')}${stat(k.done,'เสร็จแล้ว','var(--green)')}${stat(k.total-k.done,'ยังไม่เสร็จ','var(--amber)')}${stat(k.overdue,'เลยกำหนด',k.overdue?'var(--red)':'')}</div>
+    ${k.noData?'':kpiHead('เกณฑ์คะแนนทีม')+kpiMetricsHTML(k,true)}
+    ${kpiHead('คะแนนแต่ละคนในทีม')}
+    <div class="kpi-card">${allScores.map(({m,k:x})=>{const tasks=x.total;return`<div class="kpi-team-row" onclick="setKpiPerson('${esc(m.name)}')">${avHTML(m.name,28)}<div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:600;color:var(--text)"><span>${esc(m.name)}</span><span style="color:${gradeColor(x.score)}">${x.noData?'–':x.score}</span></div><div class="kpi-team-bar"><div style="width:${x.score||0}%;background:${gradeColor(x.score)}"></div></div><div style="font-size:11px;color:var(--text3)">งาน ${tasks} · เสร็จ ${x.done}${x.overdue?` · เลยกำหนด ${x.overdue}`:''}</div></div></div>`;}).join('')}</div>
+    ${scored.length>1?`<div style="margin:0 12px 8px;font-size:12px;color:var(--text3)">ค่าเฉลี่ยคะแนนรายคน ${Math.round(scored.reduce((a,x)=>a+x.k.score,0)/scored.length)} · คะแนนทีมนับงานที่ทำร่วมกันครั้งเดียว จึงอาจไม่เท่าค่าเฉลี่ย</div>`:''}`;
+}
 function renderKPI(){
   const el=document.getElementById('kpi-body');if(!el)return;
-  const myKPI=calcKPI(currentUser);
-  const allScores=db.members.filter(m=>m.role!=='supervisor').map(m=>({m,k:calcKPI(m.name)})).sort((a,b)=>b.k.score-a.k.score);
-  const showMine=!isSup();
-  const myRank=allScores.findIndex(x=>x.m.name===currentUser)+1;
-
-  el.innerHTML=`
-  ${kpiStageHTML(allScores)}
-  ${showMine?`
-  <!-- MY SCORE HERO -->
-  <div class="kpi-hero">
-    <div style="display:flex;align-items:flex-start;gap:12px">
-      <div style="flex:1">
-        <div style="font-size:13px;opacity:.8;margin-bottom:4px">คะแนน KPI ของคุณ</div>
-        <div class="kpi-score">${myKPI.score}</div>
-        <div style="font-size:14px;opacity:.85;margin-top:2px">${gradeLabel(myKPI.score)} · อันดับ ${myRank}/${allScores.length}</div>
-        <div class="kpi-bar-wrap" style="margin-top:14px"><div class="kpi-bar-fill" style="width:${myKPI.score}%"></div></div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;background:rgba(255,255,255,.15);border-radius:12px;padding:10px 12px">
-        <div class="kpi-star-row">${starHTML(myKPI.score)}</div>
-        <div style="font-size:11px;opacity:.8">ดาว ${myKPI.score>=90?5:myKPI.score>=75?4:myKPI.score>=60?3:myKPI.score>=45?2:1}/5</div>
-      </div>
-    </div>
+  const allScores=kpiMembers().map(m=>({m,k:calcKPI(m.name)})).sort((a,b)=>(b.k.score==null?-1:b.k.score)-(a.k.score==null?-1:a.k.score));
+  if(!kpiView)kpiView=isSup()?'team':'person';
+  el.innerHTML=`${kpiStageHTML(allScores)}
+  <div class="kpi-tabs" role="tablist">
+    <button class="kpi-tab ${kpiView==='person'?'on':''}" role="tab" aria-selected="${kpiView==='person'}" onclick="setKpiView('person')"><i class="ti ti-user"></i>รายคน</button>
+    <button class="kpi-tab ${kpiView==='team'?'on':''}" role="tab" aria-selected="${kpiView==='team'}" onclick="setKpiView('team')"><i class="ti ti-users-group"></i>ทีม</button>
   </div>
-
-  <!-- MY METRICS -->
-  <div style="padding:12px 12px 0">
-    <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">เกณฑ์คะแนนของคุณ</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-metric-row">
-      <div class="kpi-metric-icon" style="background:#EAF3DE"><i class="ti ti-check" style="color:#3B6D11"></i></div>
-      <div style="flex:1"><div class="kpi-metric-label">อัตราเสร็จงาน</div><div class="kpi-metric-sub">งานเสร็จ ${myKPI.done} / ${myKPI.total} งาน</div></div>
-      <div>
-        <div class="kpi-score-sm" style="color:${gradeColor(myKPI.completionRate)}">${myKPI.completionRate}%</div>
-        <div style="font-size:10px;color:var(--text3);text-align:right">น้ำหนัก ${Math.round(myKPI.w.c*100)}%</div>
-      </div>
-    </div>
-    <div class="kpi-metric-row">
-      <div class="kpi-metric-icon" style="background:#E6F1FB"><i class="ti ti-clock" style="color:#185FA5"></i></div>
-      <div style="flex:1"><div class="kpi-metric-label">ส่งงานทันกำหนด</div><div class="kpi-metric-sub">ทันกำหนด ${myKPI.onTime} / ${myKPI.done} งาน</div></div>
-      <div>
-        <div class="kpi-score-sm" style="color:${gradeColor(myKPI.onTimeRate)}">${myKPI.onTimeRate}%</div>
-        <div style="font-size:10px;color:var(--text3);text-align:right">น้ำหนัก ${Math.round(myKPI.w.o*100)}%</div>
-      </div>
-    </div>
-    <div class="kpi-metric-row">
-      <div class="kpi-metric-icon" style="background:#FBEAF0"><i class="ti ti-rosette" style="color:#993556"></i></div>
-      <div style="flex:1"><div class="kpi-metric-label">คุณภาพงาน</div><div class="kpi-metric-sub">feedback ค้าง ${myKPI.feedbackOpen} รายการ</div></div>
-      <div>
-        <div class="kpi-score-sm" style="color:${gradeColor(myKPI.qualityRate)}">${myKPI.qualityRate}%</div>
-        <div style="font-size:10px;color:var(--text3);text-align:right">น้ำหนัก ${Math.round(myKPI.w.q*100)}%</div>
-      </div>
-    </div>
-    <div class="kpi-metric-row">
-      <div class="kpi-metric-icon" style="background:#FEF6E7"><i class="ti ti-star-filled" style="color:#EF9F27"></i></div>
-      <div style="flex:1"><div class="kpi-metric-label">ดาวจากหัวหน้า</div><div class="kpi-metric-sub">${myKPI.ratedCount?`เฉลี่ย ${myKPI.avgStars.toFixed(1)} ดาว จาก ${myKPI.ratedCount} งาน`:'ยังไม่มีงานที่ได้ดาว · ยังไม่นำมาคิด'}</div></div>
-      <div>
-        <div class="kpi-score-sm" style="color:${myKPI.ratedCount?gradeColor(myKPI.starRate):'var(--text3)'}">${myKPI.ratedCount?myKPI.starRate+'%':'–'}</div>
-        <div style="font-size:10px;color:var(--text3);text-align:right">น้ำหนัก ${Math.round(myKPI.w.s*100)}%</div>
-      </div>
-    </div>
-    ${myKPI.blocked?`<div class="kpi-metric-row">
-      <div class="kpi-metric-icon" style="background:#FCEBEB"><i class="ti ti-lock" style="color:#A32D2D"></i></div>
-      <div style="flex:1"><div class="kpi-metric-label">งานติดปัญหา</div><div class="kpi-metric-sub">หักคะแนน ${myKPI.blocked*8} คะแนน</div></div>
-      <div><div class="kpi-score-sm" style="color:#A32D2D">-${myKPI.blocked*8}</div></div>
-    </div>`:''}
-  </div>
-
-  `:''}
-  <!-- TEAM RANKING -->
-  <div style="padding:12px 12px 0">
-    <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">อันดับทีม</div>
-  </div>
-  ${allScores.map(({m,k},i)=>{
-    const rank=i+1;
-    const isMe=m.name===currentUser;
-    const rankColor=rank===1?'#EF9F27':rank===2?'#888780':rank===3?'#CD7F32':'var(--text3)';
-    const rankBg=rank===1?'#FAEEDA':rank===2?'#F1EFE8':rank===3?'#FAEEDA':'var(--bg)';
-    return`<div class="kpi-member-card" style="${isMe?'border-color:var(--purple-border);background:var(--purple-light)':''}">
-      <div class="kpi-rank" style="background:${rankBg};color:${rankColor}">${rank}</div>
-      ${avHTML(m.name,36)}
-      <div style="flex:1">
-        <div style="font-size:14px;font-weight:700;color:var(--text)">${m.name}${isMe?' <span style="font-size:11px;color:var(--purple-dark)">(คุณ)</span>':''}</div>
-        <div style="display:flex;gap:2px;margin-top:3px">${starHTML(k.score)}</div>
-      </div>
-      <div style="text-align:right">
-        <div style="font-size:20px;font-weight:800;color:${gradeColor(k.score)}">${k.score}</div>
-        <div style="font-size:11px;color:var(--text3)">${gradeLabel(k.score)}</div>
-      </div>
-    </div>`;
-  }).join('')}
-
-  <!-- KPI LEGEND -->
-  <div style="margin:0 12px 16px;padding:12px 14px;background:var(--bg);border-radius:var(--radius);border:0.5px solid var(--border)">
+  ${kpiView==='team'?kpiTeamHTML(allScores):kpiPersonHTML(allScores)}
+  <div style="margin:12px 12px 16px;padding:12px 14px;background:var(--bg);border-radius:var(--radius);border:0.5px solid var(--border)">
     <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px">เกณฑ์คะแนน</div>
     ${[['90–100','ดีเยี่ยม','#3B6D11'],['75–89','ดี','#185FA5'],['60–74','พอใช้','#854F0B'],['45–59','ต้องปรับปรุง','#D85A30'],['0–44','ต่ำกว่าเกณฑ์','#A32D2D']].map(([r,l,c])=>`<div style="display:flex;align-items:center;gap:8px;padding:4px 0"><div style="width:8px;height:8px;border-radius:50%;background:${c};flex-shrink:0"></div><span style="font-size:12px;color:var(--text2);flex:1">${l}</span><span style="font-size:12px;color:${c};font-weight:600">${r} คะแนน</span></div>`).join('')}
+    <div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.6">สูตร: อัตราเสร็จงาน + ส่งทันกำหนด + คุณภาพ + ดาว ตามน้ำหนักที่แสดง แล้วหักงานติดปัญหา งานละ 8 คะแนน ตัวไหนยังไม่มีข้อมูลจะไม่นำมาคิด</div>
   </div>`;
 }
 
