@@ -2789,6 +2789,7 @@ function renderApLinks(){
   </div>`).join('');
 }
 function createAnnouncement(){
+  if(!isLead()){showToast('ส่งประกาศได้เฉพาะหัวหน้า');return;}
   const subject=document.getElementById('an-subject').value.trim(),message=document.getElementById('an-message').value.trim();
   if(!subject){showToast('กรุณาใส่หัวข้อประกาศ');return;}
   const url=safeUrl(document.getElementById('an-link').value),li=url?detectLinkIcon(url):null;
@@ -2975,6 +2976,9 @@ function homeOpenAppt(id){
 /* ── NEW TASK ── */
 function openNewTaskSheet(){
   if(isSup()){showToast('ผู้ดูแลดูและตรวจงานได้ แต่สร้างงานไม่ได้');return;}
+  const canAnn=isLead();
+  document.getElementById('nt-announce').style.display=canAnn?'':'none';
+  document.querySelector('#sheet-new .seg').style.gridTemplateColumns=`repeat(${canAnn?5:4},minmax(0,1fr))`;
   pickNewType('task');
   document.getElementById('n-recur').value='daily';
   selectedNewMembers=new Set([currentUser]);
