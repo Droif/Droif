@@ -396,7 +396,7 @@ html.desk #home-body .home-tabs{grid-column:1/-1;padding-left:0;padding-right:0;
 html.desk #home-body .home-empty{grid-column:1/-1}
 
 /* ── SEGMENT / STARS / WORK LINK ── */
-.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:14px 18px 0}
+.seg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding:14px 14px 0}
 .seg-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--radius-sm);border:0.5px solid var(--border);background:var(--bg);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer}
 .seg-btn i{font-size:20px}
 .seg-btn.sel{background:var(--purple-light);border-color:var(--purple-border);color:var(--purple-dark)}
@@ -842,6 +842,26 @@ html.season-loykrathong .logo-mark{background:linear-gradient(135deg,#FFE3EE,#FF
 html.season-loykrathong .home-hello{background:linear-gradient(135deg,#DDE4FF,#FFE3EE 60%,#FFF0C9)}
 html.season-loykrathong .home-hello::after{background:#FFEFB0;clip-path:none;border-radius:50%;width:38px;height:38px;right:26px;bottom:auto;top:14px}
 html.dark.season-loykrathong .home-hello{background:linear-gradient(135deg,#232F66,#3A2645 60%,#4A3C22)}
+
+/* ═════════ ANNOUNCEMENT ═════════ */
+.seg-btn{font-size:11px;padding:10px 2px;white-space:nowrap}
+.ann-card{margin:10px 12px 0;padding:12px 14px;border-radius:18px;background:linear-gradient(135deg,#FFF6D8,#FFE7D6);border:1px solid #F4D48A;box-shadow:var(--card-shadow)}
+.ann-card.unread{border:2px solid #E9A23B}
+.ann-head{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#8A5A0B}
+.ann-head i{font-size:16px}
+.ann-meta{margin-left:auto;font-weight:500;color:#8A6D3B;font-size:11px}
+.ann-title{font-size:16px;font-weight:700;color:#2B2545;margin-top:6px;font-family:var(--display)}
+.ann-msg{font-size:13px;color:#4F4A68;line-height:1.55;margin-top:3px;white-space:pre-wrap;word-break:break-word}
+.ann-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;font-size:11px;color:#8A6D3B}
+.ann-ack{display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:6px 14px;border:none;border-radius:18px;background:#7C6EE0;color:#fff;font-size:13px;font-weight:700;cursor:pointer}
+.ann-del{width:36px;height:36px;border-radius:50%;border:1px solid #E9C98A;background:rgba(255,255,255,.6);color:#A32D2D;font-size:16px;cursor:pointer}
+html.dark .ann-card{background:linear-gradient(135deg,#4A4224,#4A3326);border-color:#7A6330}
+html.dark .ann-card.unread{border-color:#E9A23B}
+html.dark .ann-head,html.dark .ann-meta,html.dark .ann-foot{color:#F2C46D}
+html.dark .ann-title{color:#FFF6D8}
+html.dark .ann-msg{color:#EADFC4}
+html.dark .ann-del{background:rgba(0,0,0,.2);border-color:#7A6330;color:#FF9DAB}
+html.desk #home-body .ann-card{grid-column:1/-1;margin:0}
 </style>
 </head>
 <body>
@@ -1067,6 +1087,7 @@ html.dark.season-loykrathong .home-hello{background:linear-gradient(135deg,#232F
       <button class="seg-btn" id="nt-recur" onclick="pickNewType('recur')"><i class="ti ti-repeat"></i>งานประจำ</button>
       <button class="seg-btn" id="nt-trial" onclick="pickNewType('trial')"><i class="ti ti-plant-2"></i>ทดลองงาน</button>
       <button class="seg-btn" id="nt-appt" onclick="pickNewType('appt')"><i class="ti ti-calendar-event"></i>นัดหมาย</button>
+      <button class="seg-btn" id="nt-announce" onclick="pickNewType('announce')"><i class="ti ti-speakerphone"></i>ประกาศ</button>
     </div>
     <div class="sheet-body" id="n-task-fields">
       <div id="n-recur-wrap" style="display:none">
@@ -1077,7 +1098,7 @@ html.dark.season-loykrathong .home-hello{background:linear-gradient(135deg,#232F
           <select class="f-select" id="n-recur-day" onchange="showFirstDue()"></select>
         </div>
         <div id="n-first-due" style="font-size:12px;color:var(--purple-dark);margin-top:8px;font-weight:600"></div>
-        <div style="font-size:12px;color:var(--text3);margin-top:4px">ส่งมอบเสร็จแล้ว ระบบจะสร้างรอบถัดไปให้อัตโนมัติ</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px">อนุมัติงานแล้ว ระบบจะสร้างรอบถัดไปให้อัตโนมัติ</div>
       </div>
       <div id="n-trial-wrap" style="display:none;background:#F2FAF2;border:0.5px solid #CDE8CF;border-radius:var(--radius-sm);padding:12px;margin-bottom:4px">
         <div style="font-size:12px;color:#2E7D32;font-weight:600;line-height:1.5"><i class="ti ti-plant-2"></i> งานสำหรับพนักงานทดลองงาน — พี่เลี้ยงจะประเมินตามเกณฑ์ทีละข้อ (1–5 ดาว) และสรุปผลไว้ในหน้าทีม</div>
@@ -1103,6 +1124,19 @@ html.dark.season-loykrathong .home-hello{background:linear-gradient(135deg,#232F
       <label class="f-label">ลิงก์อ้างอิง (ไม่บังคับ) — Google Drive / YouTube / รูป</label>
       <input class="f-input" id="n-link" placeholder="วางลิงก์ แล้วจะเห็นรูป/วิดีโอในงาน">
       <button class="big-btn" onclick="createTask()" id="n-create-btn">สร้างงาน</button>
+      <button class="outline-btn" style="margin-top:8px" onclick="closeSheet('new')">ยกเลิก</button>
+    </div>
+    <div class="sheet-body" id="n-ann-fields" style="display:none">
+      <div style="font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:4px">ประกาศจะขึ้นด้านบนสุดของหน้าแรกให้ทุกคนเห็น จนกว่าแต่ละคนจะกดรับทราบ</div>
+      <label class="f-label">หัวข้อประกาศ</label>
+      <input class="f-input" id="an-subject" maxlength="80" placeholder="เช่น หยุดทำการวันศุกร์นี้">
+      <label class="f-label">รายละเอียด</label>
+      <textarea class="f-textarea" id="an-message" placeholder="ข้อความที่อยากแจ้งทุกคน" style="min-height:90px"></textarea>
+      <label class="f-label">ลิงก์ (ไม่บังคับ)</label>
+      <input class="f-input" id="an-link" placeholder="https://...">
+      <label class="f-label">แสดงถึงวันที่ (ไม่บังคับ)</label>
+      <input class="f-input" id="an-until" type="date">
+      <button class="big-btn" onclick="createAnnouncement()"><i class="ti ti-speakerphone" style="font-size:16px"></i> ส่งประกาศถึงทุกคน</button>
       <button class="outline-btn" style="margin-top:8px" onclick="closeSheet('new')">ยกเลิก</button>
     </div>
     <div class="sheet-body" id="n-appt-fields" style="display:none">
@@ -1399,7 +1433,9 @@ function applyRemote(ev){
     else if(localDirty){arr[idx]=merge3(synced[key]?JSON.parse(synced[key]):null,arr[idx],item);schedulePush();}
     else arr[idx]=item;
     synced[key]=J(item);
-    if(k==='broadcasts'&&idx<0&&item.auto&&currentUser&&(item.to||[]).includes(currentUser)&&item.from!==currentUser){
+    if(k==='broadcasts'&&idx<0&&item.announce&&currentUser&&item.from!==currentUser){
+      showToast(`📢 ประกาศจาก ${item.from}: ${item.subject}`);
+    }else if(k==='broadcasts'&&idx<0&&item.auto&&currentUser&&(item.to||[]).includes(currentUser)&&item.from!==currentUser){
       showToast(`📋 ${item.from} มอบงานให้คุณ: ${item.taskName||item.subject}`);try{if(navigator.vibrate&&(!navigator.userActivation||navigator.userActivation.hasBeenActive))navigator.vibrate([120,60,120]);}catch(_){}
     }else if(k==='activityLog'&&ev.eventType==='INSERT'&&item.actor&&item.actor!==currentUser&&currentUser)
       showToast(`${item.actor} ${item.action}${item.target&&item.target!=='ระบบ'&&item.target!=='ทีม'?' · '+item.target:''}`);
@@ -1821,7 +1857,7 @@ function renderLeadTools(t){
     <label class="f-label">ลูกค้า / โปรเจกต์</label><input class="f-input" id="e-client" value="${v(t.client==='-'?'':t.client)}">
     <label class="f-label">วันกำหนดส่ง</label><input class="f-input" id="e-due" type="date" value="${v(t.due)}">
     <label class="f-label">ความสำคัญ</label><select class="f-select" id="e-priority"><option value="normal" ${t.priority!=='high'?'selected':''}>ปกติ</option><option value="high" ${t.priority==='high'?'selected':''}>ด่วน</option></select>
-    <label class="f-label">สถานะ</label><select class="f-select" id="e-status">${Object.entries(STATUS_MAP).map(([k,l])=>`<option value="${k}" ${t.status===k?'selected':''}>${l}</option>`).join('')}</select>
+    <label class="f-label">สถานะ</label><select class="f-select" id="e-status">${Object.entries(STATUS_MAP).filter(([k])=>k!=='approved'||t.status==='approved').map(([k,l])=>`<option value="${k}" ${t.status===k?'selected':''}>${l}</option>`).join('')}</select>
     <label class="f-label">ขั้นตอน</label><select class="f-select" id="e-step">${STEPS.map((l,i)=>`<option value="${i}" ${t.step===i?'selected':''}>${l}</option>`).join('')}</select>
     <label class="f-label">ทำซ้ำ</label><select class="f-select" id="e-recur" onchange="fillRecurDay('e-recur','e-recur-day','e-recur-day-wrap')">${[['','ไม่ทำซ้ำ'],['daily','ทุกวัน'],['weekly','ทุกสัปดาห์'],['monthly','ทุกเดือน']].map(([k,l])=>`<option value="${k}" ${(t.recur||'')===k?'selected':''}>${l}</option>`).join('')}</select>
     <div id="e-recur-day-wrap" style="display:${t.recur==='weekly'||t.recur==='monthly'?'block':'none'}"><label class="f-label" id="e-recur-day-label">${t.recur==='monthly'?'ทุกวันที่':'ทุกวัน'}</label><select class="f-select" id="e-recur-day">${recurDayOptions(t.recur,recurDayOf(t))}</select></div>
@@ -1844,6 +1880,7 @@ function saveEditTask(id){
   const wasDone=t.status==='done';
   t.status=document.getElementById('e-status').value;
   if(t.status==='done'&&!wasDone)t.doneAt=todayStr();else if(t.status!=='done')delete t.doneAt;
+  if(t.status!=='done'&&t.status!=='review')delete t.submittedAt;
   t.step=Number(document.getElementById('e-step').value);
   t.note=document.getElementById('e-note').value;
   t.recur=document.getElementById('e-recur').value||'';
@@ -1892,7 +1929,7 @@ function renderActionsTab(t){
   if(['wip','blocked'].includes(t.status))actions.push({key:'submit',label:'ส่งตรวจ',icon:'ti-send',cls:''});
   if(t.status==='wip')actions.push({key:'block',label:'ติดปัญหา',icon:'ti-alert-triangle',cls:'amber'});
   if(t.status==='blocked')actions.push({key:'unblock',label:'แก้ปัญหาแล้ว',icon:'ti-player-play',cls:'primary'});
-  if(t.status==='review'){actions.push({key:'approve',label:'อนุมัติ',icon:'ti-circle-check',cls:'success'});actions.push({key:'reject',label:'ส่งแก้ไข',icon:'ti-arrow-back',cls:'danger'});}
+  if(t.status==='review'){actions.push({key:'approve',label:'อนุมัติ · งานเสร็จ',icon:'ti-circle-check',cls:'success'});actions.push({key:'reject',label:'ส่งแก้ไข',icon:'ti-arrow-back',cls:'danger'});}
   if(t.status==='approved')actions.push({key:'done',label:'ส่งมอบเสร็จ',icon:'ti-archive',cls:'success'});
   const ok=actions.filter(a=>actionAllowed(t,a.key));
   if(!actions.length)return`<div style="text-align:center;padding:24px;color:var(--text3);font-size:14px">งานเสร็จสิ้นแล้ว</div>`;
@@ -1989,7 +2026,7 @@ function renderLogTab(t){
 /* ── ACTION FLOW ── */
 function doAction(id,action){
   pendingAction={id,action};
-  const labels={start:'รับงาน',submit:'ส่งตรวจ',approve:'อนุมัติงาน',reject:'ส่งแก้ไข',done:'ส่งมอบเสร็จ',block:'แจ้งติดปัญหา',unblock:'แก้ปัญหาแล้ว'};
+  const labels={start:'รับงาน',submit:'ส่งตรวจ',approve:'อนุมัติ · งานเสร็จ',reject:'ส่งแก้ไข',done:'ส่งมอบเสร็จ',block:'แจ้งติดปัญหา',unblock:'แก้ปัญหาแล้ว'};
   document.getElementById('action-title').textContent=labels[action]||action;
   document.getElementById('action-note').value='';
   document.getElementById('action-link').value='';
@@ -2002,16 +2039,18 @@ function confirmAction(){
   if(!pendingAction)return;
   const {id,action}=pendingAction;const t=db.tasks.find(x=>x.id===id);if(!t)return;
   const note=document.getElementById('action-note').value;const tt=ts();
-  const map={start:{status:'wip',step:1,action:'รับงาน',icon:'ti-player-play',color:'#854F0B',type:'status'},submit:{status:'review',step:2,action:'ส่งตรวจ',icon:'ti-send',color:'#534AB7',type:'status'},approve:{status:'approved',step:4,action:'อนุมัติ',icon:'ti-circle-check',color:'#3B6D11',type:'status'},reject:{status:'wip',step:3,action:'ส่งแก้ไข',icon:'ti-arrow-back',color:'#993C1D',type:'status'},done:{status:'done',step:5,action:'ส่งมอบเสร็จ',icon:'ti-archive',color:'#5F5E5A',type:'done'},block:{status:'blocked',step:t.step,action:'ติดปัญหา',icon:'ti-alert-triangle',color:'#E24B4A',type:'blocked'},unblock:{status:'wip',step:t.step,action:'แก้ปัญหาแล้ว',icon:'ti-player-play',color:'#854F0B',type:'status'}};
+  const map={start:{status:'wip',step:1,action:'รับงาน',icon:'ti-player-play',color:'#854F0B',type:'status'},submit:{status:'review',step:2,action:'ส่งตรวจ',icon:'ti-send',color:'#534AB7',type:'status'},approve:{status:'done',step:5,action:'อนุมัติ',icon:'ti-circle-check',color:'#3B6D11',type:'done'},reject:{status:'wip',step:3,action:'ส่งแก้ไข',icon:'ti-arrow-back',color:'#993C1D',type:'status'},done:{status:'done',step:5,action:'ส่งมอบเสร็จ',icon:'ti-archive',color:'#5F5E5A',type:'done'},block:{status:'blocked',step:t.step,action:'ติดปัญหา',icon:'ti-alert-triangle',color:'#E24B4A',type:'blocked'},unblock:{status:'wip',step:t.step,action:'แก้ปัญหาแล้ว',icon:'ti-player-play',color:'#854F0B',type:'status'}};
   const m=map[action];if(!m)return;
   if(!actionAllowed(t,action)){showToast('ไม่มีสิทธิ์ทำรายการนี้');closeSheet('action');return;}
   const wl=(action==='submit'||action==='done')?document.getElementById('action-link').value.trim():'';
   if(wl)pushWorkLink(t,wl);
   t.status=m.status;t.step=m.step;
+  if(action==='submit')t.submittedAt=todayStr();else if(action==='reject')delete t.submittedAt;
   t.log.push({time:tt,user:currentUser,action:m.action+(note?' — '+note:''),icon:m.icon,color:m.color});
   addAct(currentUser,m.action+(note?' — '+note.slice(0,20):''),t.name,t.id,m.type);
   if(m.status==='done'){t.doneAt=todayStr();spawnNextRecurring(t);}
-  closeSheet('action');pendingAction=null;saveDb();renderAll();showToast('อัปเดตสถานะ ✓');
+  closeSheet('action');pendingAction=null;saveDb();renderAll();
+  if(action==='approve'){showToast('อนุมัติแล้ว งานเสร็จ ✓');openDetail(id);}else showToast('อัปเดตสถานะ ✓');
 }
 
 /* ── DATES ── */
@@ -2108,7 +2147,7 @@ function mediaInfo(url){
 function mediaFail(img){
   const box=img.closest('.media');if(!box)return;
   box.classList.add('media-fail');
-  box.innerHTML=box.classList.contains('media-sm')?'<i class="ti ti-lock"></i>':'<i class="ti ti-lock"></i><div>ดูตัวอย่างไม่ได้<br>ตั้งแชร์ไฟล์ใน Drive เป็น <b>"ทุกคนที่มีลิงก์"</b><br>หรือแตะเพื่อลองเปิด</div>';
+  box.innerHTML=box.classList.contains('media-sm')?'<i class="ti ti-lock"></i>':box.closest('.media-row')?'<i class="ti ti-lock"></i><div>ยังไม่เปิดแชร์</div>':'<i class="ti ti-lock"></i><div>ดูตัวอย่างไม่ได้<br>ตั้งแชร์ไฟล์ใน Drive เป็น <b>"ทุกคนที่มีลิงก์"</b><br>หรือแตะเพื่อลองเปิด</div>';
 }
 function mediaHTML(url,size){
   const mi=mediaInfo(url);if(!mi)return'';
@@ -2203,7 +2242,7 @@ function tickTask(tid){
   if(!confirm(`${ckAdvanceLabel(t)}: "${t.name}"?${warn}`))return;
   const tt=ts();
   if(isLead()){t.status='done';t.step=5;t.doneAt=todayStr();t.log.push({time:tt,user:currentUser,action:'ส่งมอบเสร็จ (จากเช็คลิสต์)',icon:'ti-archive',color:'#5F5E5A'});addAct(currentUser,'ส่งมอบเสร็จ',t.name,t.id,'done');spawnNextRecurring(t);}
-  else{t.status='review';t.step=2;t.log.push({time:tt,user:currentUser,action:'ส่งตรวจ (จากเช็คลิสต์)',icon:'ti-send',color:'#534AB7'});addAct(currentUser,'ส่งตรวจ',t.name,t.id,'status');}
+  else{t.status='review';t.step=2;t.submittedAt=todayStr();t.log.push({time:tt,user:currentUser,action:'ส่งตรวจ (จากเช็คลิสต์)',icon:'ti-send',color:'#534AB7'});addAct(currentUser,'ส่งตรวจ',t.name,t.id,'status');}
   saveDb();renderAll();renderChecklistPage();showToast(isLead()?'ส่งมอบเสร็จ ✓':'ส่งตรวจแล้ว ✓');
 }
 function renderChecklistPage(){
@@ -2703,7 +2742,7 @@ function markRatingSeen(id){
 let newType='task';let apTo=new Set();let apLinks=[];
 function pickNewType(tp){
   newType=tp;
-  ['task','recur','trial','appt'].forEach(x=>document.getElementById('nt-'+x).classList.toggle('sel',x===tp));
+  ['task','recur','trial','appt','announce'].forEach(x=>document.getElementById('nt-'+x).classList.toggle('sel',x===tp));
   document.getElementById('n-trial-wrap').style.display=tp==='trial'?'block':'none';
   if(tp==='trial'){
     const leads=db.members.filter(m=>!m.probation);
@@ -2713,12 +2752,14 @@ function pickNewType(tp){
     if(probs.length)selectedNewMembers=new Set(probs.slice(0,1));
     renderNewMemberChips();
   }
-  document.getElementById('n-task-fields').style.display=tp==='appt'?'none':'block';
+  document.getElementById('n-task-fields').style.display=tp==='appt'||tp==='announce'?'none':'block';
+  document.getElementById('n-ann-fields').style.display=tp==='announce'?'block':'none';
+  if(tp==='announce')['an-subject','an-message','an-link','an-until'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('n-appt-fields').style.display=tp==='appt'?'block':'none';
   document.getElementById('n-recur-wrap').style.display=tp==='recur'?'block':'none';
   document.getElementById('n-due-wrap').style.display=tp==='recur'?'none':'block';
   if(tp==='recur')fillRecurDay('n-recur','n-recur-day','n-recur-day-wrap');
-  document.getElementById('new-sheet-title').textContent=tp==='appt'?'สร้างนัดหมาย':tp==='recur'?'สร้างงานประจำ':tp==='trial'?'มอบงานทดลองงาน':'สร้างงานใหม่';
+  document.getElementById('new-sheet-title').textContent=tp==='announce'?'สร้างประกาศ':tp==='appt'?'สร้างนัดหมาย':tp==='recur'?'สร้างงานประจำ':tp==='trial'?'มอบงานทดลองงาน':'สร้างงานใหม่';
   document.getElementById('n-create-btn').textContent=tp==='recur'?'สร้างงานประจำ':tp==='trial'?'มอบงานทดลองงาน':'สร้างงาน';
   if(tp==='appt'){
     apTo=new Set(db.members.filter(m=>m.name!==currentUser).map(m=>m.name));apLinks=[];
@@ -2747,6 +2788,43 @@ function renderApLinks(){
     <button onclick="apLinks.splice(${i},1);renderApLinks()" style="border:none;background:none;cursor:pointer;color:var(--text3);font-size:16px;padding:4px"><i class="ti ti-x"></i></button>
   </div>`).join('');
 }
+function createAnnouncement(){
+  const subject=document.getElementById('an-subject').value.trim(),message=document.getElementById('an-message').value.trim();
+  if(!subject){showToast('กรุณาใส่หัวข้อประกาศ');return;}
+  const url=safeUrl(document.getElementById('an-link').value),li=url?detectLinkIcon(url):null;
+  if(!db.broadcasts)db.broadcasts=[];
+  db.broadcasts.push({id:uid(),type:'info',announce:true,from:currentUser,to:db.members.filter(m=>m.name!==currentUser).map(m=>m.name),subject,message,date:'',time:'',until:document.getElementById('an-until').value,links:url?[{label:li.label,url,icon:li.icon,color:li.color,bg:li.bg}]:[],readBy:[currentUser],hiddenBy:[],time_sent:ts()});
+  addAct(currentUser,`ประกาศ: ${subject}`,'ทีม',null,'other');
+  saveDb();closeSheet('new');homeTab='all';switchPage('home');renderAll();showToast('ส่งประกาศถึงทุกคนแล้ว ✓');
+}
+function activeAnnouncements(){return(db.broadcasts||[]).filter(b=>b.announce&&!(b.hiddenBy||[]).includes(currentUser)&&(!b.until||daysUntil(b.until)>=0)).slice().reverse();}
+function ackAnnouncement(id){
+  const b=(db.broadcasts||[]).find(x=>x.id===id);if(!b)return;
+  b.readBy=b.readBy||[];b.hiddenBy=b.hiddenBy||[];
+  if(!b.readBy.includes(currentUser))b.readBy.push(currentUser);
+  if(!b.hiddenBy.includes(currentUser))b.hiddenBy.push(currentUser);
+  saveDb();renderAll();
+}
+function deleteAnnouncement(id){
+  const b=(db.broadcasts||[]).find(x=>x.id===id);if(!b||!(isLead()||b.from===currentUser))return;
+  if(!confirm(`ลบประกาศ "${b.subject}" ออกจากทุกคน?`))return;
+  db.broadcasts=db.broadcasts.filter(x=>x.id!==id);
+  addAct(currentUser,`ลบประกาศ: ${b.subject}`,'ทีม',null,'other');
+  saveDb();renderAll();const fd=document.getElementById('page-broadcast');if(fd&&fd.style.display==='block')renderBroadcast();
+}
+function announcementsHTML(){
+  const others=Math.max(0,db.members.length-1);
+  return activeAnnouncements().map(b=>{
+    const mine=b.from===currentUser,read=(b.readBy||[]).filter(n=>n!==b.from).length;
+    return`<div class="ann-card ${(b.readBy||[]).includes(currentUser)?'':'unread'}">
+      <div class="ann-head"><i class="ti ti-speakerphone"></i><span>ประกาศ</span><span class="ann-meta">${esc(mine?'คุณ':b.from)} · ${esc(b.time_sent)}</span></div>
+      <div class="ann-title">${esc(b.subject)}</div>
+      ${b.message?`<div class="ann-msg">${linkify(b.message)}</div>`:''}
+      ${linkPills(b.links)}${mediaRow((b.links||[]).map(l=>l.url))}
+      <div class="ann-foot"><span>${b.until?'แสดงถึง '+fmtThaiDate(b.until)+' · ':''}${mine||isLead()?`รับทราบแล้ว ${read}/${others} คน`:''}</span>
+        <span style="display:flex;gap:6px;flex-shrink:0">${mine||isLead()?`<button class="ann-del" onclick="deleteAnnouncement(${b.id})" aria-label="ลบประกาศ"><i class="ti ti-trash"></i></button>`:''}<button class="ann-ack" onclick="ackAnnouncement(${b.id})"><i class="ti ti-check"></i>${mine?'ซ่อน':'รับทราบ'}</button></span></div>
+    </div>`;}).join('');
+}
 function createAppointment(){
   const subject=document.getElementById('ap-subject').value.trim();
   const date=document.getElementById('ap-date').value,time=document.getElementById('ap-time').value;
@@ -2773,13 +2851,13 @@ function homeData(){
   const toRate=lead?db.tasks.filter(t=>t.status==='done'&&!t.rating):[];
   const rated=db.tasks.filter(t=>t.rating&&(mine(t)||lead)).sort((a,b)=>b.id-a.id).slice(0,10);
   const fb=notifications.filter(n=>!n.isBroadcast&&!n.read);
-  const news=(db.broadcasts||[]).filter(b=>b.type!=='meet'&&!b.auto&&b.to.includes(me)&&!(b.readBy||[]).includes(me)).slice().reverse();
+  const news=(db.broadcasts||[]).filter(b=>b.type!=='meet'&&!b.auto&&!b.announce&&b.to.includes(me)&&!(b.readBy||[]).includes(me)).slice().reverse();
   const fresh=db.tasks.filter(t=>t.status==='new'&&(mine(t)||lead)).sort((a,b)=>b.id-a.id);
   return{appts,due,review,toRate,rated,fb,news,fresh};
 }
 function homeUnseen(){
   if(!currentUser)return 0;const h=homeData(),me=currentUser;
-  return h.appts.filter(b=>!(b.readBy||[]).includes(me)).length+h.news.length+h.fb.length
+  return activeAnnouncements().filter(b=>!(b.readBy||[]).includes(me)).length+h.appts.filter(b=>!(b.readBy||[]).includes(me)).length+h.news.length+h.fb.length
     +h.fresh.filter(t=>(t.assignees||[]).includes(me)).length
     +h.rated.filter(t=>!(t.rating.seenBy||[]).includes(me)&&(t.assignees||[]).includes(me)).length;
 }
@@ -2818,6 +2896,7 @@ function renderHome(){
   const hr=new Date().getHours();
   let html=`<div class="home-hello"><div class="home-hello-title">${hr<12?'สวัสดีตอนเช้า':hr<17?'สวัสดีตอนบ่าย':'สวัสดีตอนเย็น'}, ${esc(me)}</div><div class="home-hello-sub">${fmtThaiDate(todayStr())} · สรุปสิ่งที่ต้องรู้วันนี้</div></div>`;
   if(!(getM(me).pw))html+=`<div class="home-sec" style="border-color:var(--red);background:var(--red-light);cursor:pointer" onclick="openMeSheet()"><div class="home-item"><i class="ti ti-lock-exclamation" style="font-size:22px;color:var(--red)"></i><div style="flex:1"><div class="home-item-title" style="color:var(--red)">ยังไม่ได้ตั้งชื่อผู้ใช้และรหัสผ่าน</div><div class="home-item-sub">แตะเพื่อตั้งค่า ไม่งั้นจะเข้าใช้ไม่ได้หลังออกจากระบบ</div></div><i class="ti ti-chevron-right" style="color:var(--red)"></i></div></div>`;
+  html+=announcementsHTML();
   html+=`<div class="home-tabs" role="tablist">${tabs.map(([id,icon,label,n,hot])=>`<button class="home-tab ${homeTab===id?'on':''}" role="tab" aria-selected="${homeTab===id}" onclick="setHomeTab('${id}')"><i class="ti ${icon}"></i>${label}${n!=null?`<span class="tab-count ${hot&&homeTab!==id?'hot':''}">${n}</span>`:''}</button>`).join('')}</div>`;
   const show=id=>homeTab==='all'||homeTab===id;
   let any=false;const sec=(id,...args)=>{const out=homeSec(id,...args);if(out)any=true;return out;};
@@ -3175,6 +3254,7 @@ function exportActivity(){
 /* ── KPI ── */
 /* วันที่ส่งมอบจริง: ใช้ doneAt, งานเก่าอ่านจากประวัติ (dd/mm) แล้วเลือกปีที่ใกล้วันกำหนดส่งที่สุด */
 function taskDoneDate(t){
+  if(t.submittedAt)return parseDay(t.submittedAt);// นับวันที่พนักงานส่งตรวจ ไม่นับเวลาที่รอตรวจ
   if(t.doneAt)return parseDay(t.doneAt);
   const logs=t.log||[];
   const l=logs.slice().reverse().find(x=>String(x.action||'').startsWith('ส่งมอบเสร็จ'))||logs[logs.length-1];
@@ -3185,7 +3265,7 @@ function taskDoneDate(t){
   if(diff>180)d=new Date(d.getFullYear()-1,d.getMonth(),d.getDate());else if(diff<-180)d=new Date(d.getFullYear()+1,d.getMonth(),d.getDate());
   return d;
 }
-function isOverdue(t){return t.status!=='done'&&!!t.due&&daysUntil(t.due)<0;}
+function isOverdue(t){return t.status!=='done'&&!!t.due&&daysUntil(t.due)<0&&!(t.submittedAt&&t.submittedAt<=t.due);}
 /* สูตรเดียวกันทั้งรายคนและทีม — div = จำนวนคน ใช้เฉลี่ยค่าหักคะแนนของทีมให้เทียบกับรายคนได้ */
 function kpiFromTasks(all,div=1){
   const total=all.length,doneTasks=all.filter(t=>t.status==='done'),done=doneTasks.length;
