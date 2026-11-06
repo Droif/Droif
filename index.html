@@ -1128,7 +1128,7 @@ html.desk #home-body .ann-card{grid-column:1/-1;margin:0}
       <div id="n-due-wrap">
         <label class="f-label" id="n-due-label">วันกำหนดส่ง / เวลา</label>
         <div class="due-row" id="n-due-row">
-          <input class="f-input" id="n-due" type="date">
+          <input class="f-input" id="n-due" type="date" oninput="this.dataset.touched='1';if(newType==='recur')showFirstDue()">
           <input class="f-input" id="n-time" type="time" aria-label="เวลาส่ง">
         </div>
       </div>
@@ -2132,7 +2132,9 @@ function fillRecurDay(recurId,dayId,wrapId){
 function showFirstDue(){
   const rc=document.getElementById('n-recur').value;
   const day=rc==='daily'?null:Number(document.getElementById('n-recur-day').value);
-  const d=firstDue(rc,day);
+  const nd=document.getElementById('n-due');
+  if(nd&&!nd.dataset.touched)nd.value=firstDue(rc,day);// ยังไม่ได้แก้เอง → ใช้วันแรกที่ตรงรอบ
+  const d=(nd&&nd.value)||firstDue(rc,day);
   document.getElementById('n-first-due').textContent=`รอบแรกกำหนดส่ง: ${fmtThaiDate(d)} (${whenLabel(d)})`;
 }
 function monthDay(y,m,day){return new Date(y,m,Math.min(day,new Date(y,m+1,0).getDate()));}
@@ -2796,9 +2798,10 @@ function pickNewType(tp){
   document.getElementById('n-recur-wrap').style.display=tp==='recur'?'block':'none';
   document.getElementById('n-page-wrap').style.display=tp==='post'?'block':'none';
   document.getElementById('n-name-wrap').style.display=tp==='post'?'none':'block';
-  document.getElementById('n-due').style.display=rec?'none':'';
-  document.getElementById('n-due-row').classList.toggle('time-only',rec);
-  document.getElementById('n-due-label').textContent=rec?'เวลาส่งของแต่ละรอบ':'วันกำหนดส่ง / เวลา';
+  const nd=document.getElementById('n-due');
+  nd.dataset.touched='';
+  if(rec)nd.value=firstDue(tp==='post'?'daily':document.getElementById('n-recur').value,null);// วันแรกที่แนะนำ แก้ได้
+  document.getElementById('n-due-label').textContent=rec?'วันกำหนดส่งรอบแรก / เวลาส่งแต่ละรอบ':'วันกำหนดส่ง / เวลา';
   if(tp==='post'){document.getElementById('n-page').innerHTML=PAGE_LIST.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');}
   if(tp==='recur')fillRecurDay('n-recur','n-recur-day','n-recur-day-wrap');
   document.getElementById('new-sheet-title').textContent=tp==='announce'?'สร้างประกาศ':tp==='appt'?'สร้างนัดหมาย':tp==='post'?'สร้างโพสต์เพจรายวัน':tp==='recur'?'สร้างงานประจำ':tp==='trial'?'มอบงานทดลองงาน':'สร้างงานใหม่';
@@ -3047,7 +3050,7 @@ function createTask(){
   if(!selectedNewMembers.size){showToast('กรุณาเลือกผู้รับผิดชอบ');return;}
   let recurDay=null;
   const isRec=newType==='recur'||newType==='post',rc=newType==='post'?'daily':document.getElementById('n-recur').value;
-  if(isRec){recurDay=rc==='daily'?null:Number(document.getElementById('n-recur-day').value);document.getElementById('n-due').value=firstDue(rc,recurDay);}
+  if(isRec){recurDay=rc==='daily'?null:Number(document.getElementById('n-recur-day').value);if(!document.getElementById('n-due').value)document.getElementById('n-due').value=firstDue(rc,recurDay);}
   const tt=ts();
   const task={id:uid(),name,client:document.getElementById('n-client').value.trim()||(newType==='post'?'โพสต์เพจรายวัน':'-'),assignees:Array.from(selectedNewMembers),due:document.getElementById('n-due').value,priority:document.getElementById('n-priority').value,status:'new',step:0,note:document.getElementById('n-note').value,recur:isRec?rc:'',recurDay,dueTime:document.getElementById('n-time').value||'',pagePost:newType==='post'||undefined,links:[],comments:[],log:[{time:tt,user:currentUser,action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'}]};
   const nl=safeUrl(document.getElementById('n-link').value);
