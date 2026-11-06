@@ -862,6 +862,10 @@ html.dark .ann-title{color:#FFF6D8}
 html.dark .ann-msg{color:#EADFC4}
 html.dark .ann-del{background:rgba(0,0,0,.2);border-color:#7A6330;color:#FF9DAB}
 html.desk #home-body .ann-card{grid-column:1/-1;margin:0}
+
+.due-row{display:grid;grid-template-columns:1fr 112px;gap:8px}
+.due-row.time-only{grid-template-columns:1fr}
+.seg{grid-template-columns:repeat(3,minmax(0,1fr))!important}
 </style>
 </head>
 <body>
@@ -1085,6 +1089,7 @@ html.desk #home-body .ann-card{grid-column:1/-1;margin:0}
     <div class="seg">
       <button class="seg-btn sel" id="nt-task" onclick="pickNewType('task')"><i class="ti ti-clipboard-plus"></i>งาน</button>
       <button class="seg-btn" id="nt-recur" onclick="pickNewType('recur')"><i class="ti ti-repeat"></i>งานประจำ</button>
+      <button class="seg-btn" id="nt-post" onclick="pickNewType('post')"><i class="ti ti-brand-facebook"></i>โพสต์เพจรายวัน</button>
       <button class="seg-btn" id="nt-trial" onclick="pickNewType('trial')"><i class="ti ti-plant-2"></i>ทดลองงาน</button>
       <button class="seg-btn" id="nt-appt" onclick="pickNewType('appt')"><i class="ti ti-calendar-event"></i>นัดหมาย</button>
       <button class="seg-btn" id="nt-announce" onclick="pickNewType('announce')"><i class="ti ti-speakerphone"></i>ประกาศ</button>
@@ -1107,15 +1112,25 @@ html.desk #home-body .ann-card{grid-column:1/-1;margin:0}
         <label class="f-label">เกณฑ์ประเมิน (บรรทัดละ 1 ข้อ)</label>
         <textarea class="f-textarea" id="n-criteria" style="min-height:96px"></textarea>
       </div>
-      <label class="f-label">ชื่องาน</label>
-      <input class="f-input" id="n-name" placeholder="เช่น แบนเนอร์โปรโมชั่น">
+      <div id="n-page-wrap" style="display:none">
+        <label class="f-label">ชื่องาน (เลื่อนเลือกเพจ)</label>
+        <select class="f-select" id="n-page"></select>
+        <div style="font-size:12px;color:var(--text3);margin-top:6px">ทำซ้ำทุกวัน · อนุมัติแล้วระบบสร้างรอบพรุ่งนี้ให้อัตโนมัติ</div>
+      </div>
+      <div id="n-name-wrap">
+        <label class="f-label">ชื่องาน</label>
+        <input class="f-input" id="n-name" placeholder="เช่น แบนเนอร์โปรโมชั่น">
+      </div>
       <label class="f-label">ลูกค้า / โปรเจกต์</label>
       <input class="f-input" id="n-client" placeholder="ชื่อลูกค้า">
       <label class="f-label">ผู้รับผิดชอบ</label>
       <div class="m-chips" id="n-members" style="margin-top:6px"></div>
       <div id="n-due-wrap">
-        <label class="f-label">วันกำหนดส่ง</label>
-        <input class="f-input" id="n-due" type="date">
+        <label class="f-label" id="n-due-label">วันกำหนดส่ง / เวลา</label>
+        <div class="due-row" id="n-due-row">
+          <input class="f-input" id="n-due" type="date">
+          <input class="f-input" id="n-time" type="time" aria-label="เวลาส่ง">
+        </div>
       </div>
       <label class="f-label">ความสำคัญ</label>
       <select class="f-select" id="n-priority"><option value="normal">ปกติ</option><option value="high">ด่วน</option></select>
@@ -1595,6 +1610,26 @@ function contactHTML(m){
 function avStack(as,size=24){if(!as||!as.length)return'';return`<div class="avatar-stack">${as.slice(0,3).map(n=>avHTML(n,size)).join('')}${as.length>3?`<div class="av av-d" style="width:${size}px;height:${size}px;font-size:${Math.round(size*.36)}px;background:var(--gray-light);color:var(--gray)">+${as.length-3}</div>`:''}</div>`;}
 function sIcon(status,size=44,showLabel=false){const s=STATUS_ICONS[status]||STATUS_ICONS.new;const ic=`<div class="status-icon" style="width:${size}px;height:${size}px;border-radius:50%;background:${s.bg}"><i class="ti ${s.icon}" style="color:${s.fg};font-size:${Math.round(size*.46)}px"></i>${s.dot?`<div class="si-dot" style="background:${s.dotBg}"><i class="ti ${s.dot}" style="color:#fff;font-size:8px"></i></div>`:''}</div>`;if(!showLabel)return ic;return`<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">${ic}<span style="font-size:9px;font-weight:600;color:${s.fg};white-space:nowrap">${s.label}</span></div>`;}
 function sPill(s){const m={new:'pill-new',wip:'pill-wip',blocked:'pill-blocked',review:'pill-review',approved:'pill-approved',done:'pill-done',rejected:'pill-blocked'};return`<span class="pill ${m[s]||'pill-new'}">${STATUS_MAP[s]||s}</span>`;}
+const PAGE_LIST=['นรรเดลิเวอรี่','นรรกรุ๊ป','StarShine','ปตท.ปั๊ม','FiveStar','Amazon','นมสดพระนคร'];
+/* กำหนดส่ง = วันที่ + เวลา (ไม่ใส่เวลา = สิ้นวัน) — เกินกำหนดเมื่อเลยเวลานั้น */
+function dueMoment(t){const d=parseDay(t&&t.due);if(!d)return null;const[h,m]=String(t.dueTime||'23:59').split(':').map(Number);d.setHours(h||0,m||0,59,999);return d;}
+function taskOverdue(t){if(!t||t.status==='done'||!t.due)return false;const dm=dueMoment(t);return!!dm&&Date.now()>dm.getTime();}
+function taskWhen(t){
+  if(!t||!t.due)return null;const n=daysUntil(t.due),tm=t.dueTime?' '+t.dueTime+' น.':'';
+  if(t.status!=='done'&&taskOverdue(t))return{label:n<0?`เกิน ${-n} วัน`:`เกินเวลา${tm}`,bg:'var(--red-light)',fg:'var(--red)',level:'over'};
+  if(n===0)return{label:`ส่งวันนี้${tm}`,bg:'#FEF0E0',fg:'#D85A30',level:'today'};
+  if(n===1)return{label:`พรุ่งนี้${tm}`,bg:'#FEF0E0',fg:'#D85A30',level:'soon'};
+  return{label:`อีก ${n} วัน`,bg:'var(--amber-light)',fg:'var(--amber)',level:'later'};
+}
+function whenPill(t){const w=taskWhen(t);return w?`<span class="home-when" style="background:${w.bg};color:${w.fg}">${w.label}</span>`:'';}
+function fmtDueT(t){
+  if(!t||!t.due)return'';
+  const w=taskWhen(t),tm=t.dueTime?' '+t.dueTime:'';
+  if(t.status==='done'||!w)return`<span class="due-tag"><i class="ti ti-calendar" style="font-size:11px"></i>${t.due}${tm}</span>`;
+  const color=w.level==='over'?'#A32D2D':w.level==='today'||w.level==='soon'?'#D85A30':daysUntil(t.due)<=5?'#854F0B':'var(--text3)';
+  const tag=w.level==='over'?(daysUntil(t.due)<0?` (${w.label})`:' (เกินเวลาแล้ว)'):w.level==='today'?' (ส่งวันนี้)':'';
+  return`<span class="due-tag" style="color:${color}"><i class="ti ti-calendar" style="font-size:11px"></i>${t.due}${tm}${tag}</span>`;
+}
 function fmtDue(d){if(!d)return'';const diff=Math.ceil((new Date(d)-new Date())/86400000);const color=diff<=0?'#A32D2D':diff<=2?'#D85A30':diff<=5?'#854F0B':'var(--text3)';return`<span class="due-tag" style="color:${color}"><i class="ti ti-calendar" style="font-size:11px"></i>${d}${diff<=0?' (เกิน!)':diff<=2?' (ด่วน!)':''}</span>`;}
 function stepBar(step,status,count=6){return`<div class="step-bar">${Array.from({length:count},(_,i)=>`<div class="step-seg ${i<step?'done':i===step?(status==='blocked'?'blocked':'active'):''}"></div>`).join('')}</div>`;}
 
@@ -1784,7 +1819,7 @@ function renderTasks(){
         ${stepBar(t.step,t.status)}
         <div class="card-footer">
           ${sPill(t.status)}
-          ${fmtDue(t.due)}
+          ${fmtDueT(t)}
           ${t.trial?`<span class="trial-badge"><i class="ti ti-plant-2" style="font-size:11px"></i>ทดลองงาน</span>`:''}
           ${t.recur?`<span class="recur-badge"><i class="ti ti-repeat" style="font-size:11px"></i>${recurLabel(t)}</span>`:''}
           ${(t.checklist||[]).length?`<span class="ck-badge"><i class="ti ti-checkbox" style="font-size:11px"></i>${t.checklist.filter(i=>i.done).length}/${t.checklist.length}</span>`:''}
@@ -1834,7 +1869,7 @@ function renderDetailSub(t){
   return '';
 }
 function renderInfoTab(t){
-  return`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center">${sPill(t.status)}${t.priority==='high'?'<span class="pill" style="background:#FEF0E0;color:#D85A30"><i class="ti ti-flame" style="font-size:11px"></i> ด่วน</span>':''}<span style="font-size:13px;color:var(--text3)">${t.client}</span>${fmtDue(t.due)}</div>
+  return`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center">${sPill(t.status)}${t.priority==='high'?'<span class="pill" style="background:#FEF0E0;color:#D85A30"><i class="ti ti-flame" style="font-size:11px"></i> ด่วน</span>':''}<span style="font-size:13px;color:var(--text3)">${t.client}</span>${fmtDueT(t)}</div>
   <div class="sheet-section">ผู้รับผิดชอบ</div>
   <div class="m-chips" id="ass-editor-${t.id}">${db.members.map(m=>{const sel=(t.assignees||[]).includes(m.name);return`<button class="m-chip ${sel?'sel':''}" onclick="toggleAss(${t.id},'${m.name}')">${avHTML(m.name,18)}<span>${m.name}</span>${sel?'<i class="ti ti-check" style="font-size:12px;color:var(--purple-dark)"></i>':''}</button>`;}).join('')}</div>
   <div class="sheet-section" style="margin-top:14px">ขั้นตอน</div>
@@ -1855,7 +1890,7 @@ function renderLeadTools(t){
     <div class="sheet-section">แก้ไขงาน</div>
     <label class="f-label">ชื่องาน</label><input class="f-input" id="e-name" value="${v(t.name)}">
     <label class="f-label">ลูกค้า / โปรเจกต์</label><input class="f-input" id="e-client" value="${v(t.client==='-'?'':t.client)}">
-    <label class="f-label">วันกำหนดส่ง</label><input class="f-input" id="e-due" type="date" value="${v(t.due)}">
+    <label class="f-label">วันกำหนดส่ง / เวลา</label><div class="due-row"><input class="f-input" id="e-due" type="date" value="${v(t.due)}"><input class="f-input" id="e-time" type="time" value="${v(t.dueTime)}"></div>
     <label class="f-label">ความสำคัญ</label><select class="f-select" id="e-priority"><option value="normal" ${t.priority!=='high'?'selected':''}>ปกติ</option><option value="high" ${t.priority==='high'?'selected':''}>ด่วน</option></select>
     <label class="f-label">สถานะ</label><select class="f-select" id="e-status">${Object.entries(STATUS_MAP).filter(([k])=>k!=='approved'||t.status==='approved').map(([k,l])=>`<option value="${k}" ${t.status===k?'selected':''}>${l}</option>`).join('')}</select>
     <label class="f-label">ขั้นตอน</label><select class="f-select" id="e-step">${STEPS.map((l,i)=>`<option value="${i}" ${t.step===i?'selected':''}>${l}</option>`).join('')}</select>
@@ -1876,6 +1911,7 @@ function saveEditTask(id){
   t.name=name;
   t.client=document.getElementById('e-client').value.trim()||'-';
   t.due=document.getElementById('e-due').value;
+  t.dueTime=document.getElementById('e-time').value||'';
   t.priority=document.getElementById('e-priority').value;
   const wasDone=t.status==='done';
   t.status=document.getElementById('e-status').value;
@@ -2118,7 +2154,7 @@ function spawnNextRecurring(t){
   if(!t.recur||t.recurSpawned)return;
   t.recurSpawned=true;
   const due=nextDue(t);const tt=ts();
-  const n={id:uid(),name:t.name,client:t.client,assignees:[...(t.assignees||[])],due,priority:t.priority,status:'new',step:0,note:t.note,recur:t.recur,recurDay:t.recur==='daily'?null:recurDayOf(t),links:[],comments:[],log:[{time:tt,user:currentUser,action:`สร้างรอบถัดไป (${recurLabel(t)})`,icon:'ti-repeat',color:'#185FA5'}]};
+  const n={id:uid(),name:t.name,client:t.client,assignees:[...(t.assignees||[])],due,priority:t.priority,status:'new',step:0,note:t.note,recur:t.recur,recurDay:t.recur==='daily'?null:recurDayOf(t),dueTime:t.dueTime||'',pagePost:t.pagePost||undefined,links:[],comments:[],log:[{time:tt,user:currentUser,action:`สร้างรอบถัดไป (${recurLabel(t)})`,icon:'ti-repeat',color:'#185FA5'}]};
   if(t.trial){n.trial=true;n.mentor=t.mentor;n.criteria=(t.criteria||[]).map(c=>({id:uid(),text:c.text,score:0}));}
   db.tasks.unshift(n);
   addAct(currentUser,`สร้างงานประจำรอบถัดไป (${fmtThaiDate(due)})`,n.name,n.id,'create');
@@ -2251,7 +2287,7 @@ function renderChecklistPage(){
   document.querySelectorAll('#ck-filter .chip').forEach(b=>b.classList.toggle('on',b.dataset.f===ckFilter));
   const list=db.tasks.filter(t=>t.status!=='done'&&(ckFilter==='all'||(t.assignees||[]).includes(currentUser)));
   const groups=[['over','เกินกำหนด','ti-alert-triangle','var(--red)'],['today','วันนี้','ti-sun','#D85A30'],['week','7 วันข้างหน้า','ti-calendar-week','var(--amber)'],['later','ภายหลัง','ti-calendar','var(--text3)'],['none','ไม่มีกำหนดส่ง','ti-calendar-off','var(--text3)']];
-  const gOf=t=>{const n=daysUntil(t.due);return n===null?'none':n<0?'over':n===0?'today':n<=7?'week':'later';};
+  const gOf=t=>{const n=daysUntil(t.due);return n===null?'none':taskOverdue(t)?'over':n===0?'today':n<=7?'week':'later';};
   document.getElementById('ck-count').textContent=`${list.length} งานค้าง`;
   if(!list.length){el.innerHTML=`<div class="empty" style="grid-column:1/-1"><i class="ti ti-checks"></i><p>ไม่มีงานค้าง เยี่ยมมาก!</p></div>`;return;}
   el.innerHTML=groups.map(([g,label,icon,color])=>{
@@ -2267,7 +2303,7 @@ function renderChecklistPage(){
             <div class="home-item-sub">${esc((t.assignees||[]).join(', '))} · ${STATUS_MAP[t.status]}${t.due?' · '+fmtThaiDate(t.due):''}${pr.n?` · ☑ ${pr.d}/${pr.n}`:''}</div>
             ${pr.n?`<div class="ck-prog" style="margin:6px 0 0"><div style="width:${pr.pct}%"></div></div>`:''}
           </div>
-          ${t.due?(()=>{const[wb,wc]=whenColor(t.due);return`<span class="home-when" style="background:${wb};color:${wc}">${whenLabel(t.due)}</span>`;})():''}
+          ${whenPill(t)}
           <i class="ti ti-chevron-${open?'up':'down'}" style="color:var(--text3)"></i>
         </div>
         ${open?`<div class="ck-task-body">${ckItemsHTML(t,true)||'<div style="font-size:13px;color:var(--text3);padding:4px 0">ยังไม่มีรายการย่อย</div>'}
@@ -2294,7 +2330,7 @@ function chipStyle(kind,x){
   const si=STATUS_ICONS[x.status]||STATUS_ICONS.new;return`background:${si.bg};color:${si.fg};border-color:${si.fg}${x.status==='done'?';opacity:.6;text-decoration:line-through':''}`;
 }
 function chipHTML(kind,x,big){
-  const label=kind==='appt'?(x.time?x.time+' ':'')+'🗓 '+x.subject:(x.priority==='high'?'🔥':'')+(x.recur?'🔁':'')+x.name;
+  const label=kind==='appt'?(x.time?x.time+' ':'')+'🗓 '+x.subject:(x.dueTime?x.dueTime+' ':'')+(x.priority==='high'?'🔥':'')+(x.recur?'🔁':'')+x.name;
   return`<div class="cal-chip" style="${chipStyle(kind,x)}" data-kind="${kind}" data-id="${x.id}" onpointerdown="calDown(event)">${esc(label)}</div>`;
 }
 function renderCalendar(){
@@ -2586,7 +2622,7 @@ function notifyNewTask(t,names,kind){
   if(!db.broadcasts)db.broadcasts=[];
   const lines=[`ผู้รับ: ${(t.assignees||[]).join(', ')}`];
   if(t.client&&t.client!=='-')lines.push(`ลูกค้า: ${t.client}`);
-  if(t.due)lines.push(`กำหนดส่ง: ${fmtThaiDate(t.due)} (${whenLabel(t.due)})`);
+  if(t.due)lines.push(`กำหนดส่ง: ${fmtThaiDate(t.due)}${t.dueTime?' '+t.dueTime+' น.':''} (${(taskWhen(t)||{}).label||''})`);
   if(t.priority==='high')lines.push('ความสำคัญ: 🔥 ด่วน');
   if(t.recur)lines.push(`ทำซ้ำ: ${recurLabel(t)}`);
   if(t.trial)lines.push(`พี่เลี้ยง: ${t.mentor||'-'} · เกณฑ์ ${(t.criteria||[]).length} ข้อ`);
@@ -2742,7 +2778,7 @@ function markRatingSeen(id){
 let newType='task';let apTo=new Set();let apLinks=[];
 function pickNewType(tp){
   newType=tp;
-  ['task','recur','trial','appt','announce'].forEach(x=>document.getElementById('nt-'+x).classList.toggle('sel',x===tp));
+  ['task','recur','post','trial','appt','announce'].forEach(x=>document.getElementById('nt-'+x).classList.toggle('sel',x===tp));
   document.getElementById('n-trial-wrap').style.display=tp==='trial'?'block':'none';
   if(tp==='trial'){
     const leads=db.members.filter(m=>!m.probation);
@@ -2756,11 +2792,17 @@ function pickNewType(tp){
   document.getElementById('n-ann-fields').style.display=tp==='announce'?'block':'none';
   if(tp==='announce')['an-subject','an-message','an-link','an-until'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('n-appt-fields').style.display=tp==='appt'?'block':'none';
+  const rec=tp==='recur'||tp==='post';
   document.getElementById('n-recur-wrap').style.display=tp==='recur'?'block':'none';
-  document.getElementById('n-due-wrap').style.display=tp==='recur'?'none':'block';
+  document.getElementById('n-page-wrap').style.display=tp==='post'?'block':'none';
+  document.getElementById('n-name-wrap').style.display=tp==='post'?'none':'block';
+  document.getElementById('n-due').style.display=rec?'none':'';
+  document.getElementById('n-due-row').classList.toggle('time-only',rec);
+  document.getElementById('n-due-label').textContent=rec?'เวลาส่งของแต่ละรอบ':'วันกำหนดส่ง / เวลา';
+  if(tp==='post'){document.getElementById('n-page').innerHTML=PAGE_LIST.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');}
   if(tp==='recur')fillRecurDay('n-recur','n-recur-day','n-recur-day-wrap');
-  document.getElementById('new-sheet-title').textContent=tp==='announce'?'สร้างประกาศ':tp==='appt'?'สร้างนัดหมาย':tp==='recur'?'สร้างงานประจำ':tp==='trial'?'มอบงานทดลองงาน':'สร้างงานใหม่';
-  document.getElementById('n-create-btn').textContent=tp==='recur'?'สร้างงานประจำ':tp==='trial'?'มอบงานทดลองงาน':'สร้างงาน';
+  document.getElementById('new-sheet-title').textContent=tp==='announce'?'สร้างประกาศ':tp==='appt'?'สร้างนัดหมาย':tp==='post'?'สร้างโพสต์เพจรายวัน':tp==='recur'?'สร้างงานประจำ':tp==='trial'?'มอบงานทดลองงาน':'สร้างงานใหม่';
+  document.getElementById('n-create-btn').textContent=tp==='post'?'สร้างโพสต์เพจรายวัน':tp==='recur'?'สร้างงานประจำ':tp==='trial'?'มอบงานทดลองงาน':'สร้างงาน';
   if(tp==='appt'){
     apTo=new Set(db.members.filter(m=>m.name!==currentUser).map(m=>m.name));apLinks=[];
     ['ap-subject','ap-message','ap-link-url','ap-time'].forEach(i=>document.getElementById(i).value='');
@@ -2860,6 +2902,7 @@ function homeUnseen(){
   if(!currentUser)return 0;const h=homeData(),me=currentUser;
   return activeAnnouncements().filter(b=>!(b.readBy||[]).includes(me)).length+h.appts.filter(b=>!(b.readBy||[]).includes(me)).length+h.news.length+h.fb.length
     +h.fresh.filter(t=>(t.assignees||[]).includes(me)).length
+    +h.due.filter(t=>(t.assignees||[]).includes(me)&&(daysUntil(t.due)===0||taskOverdue(t))).length
     +h.rated.filter(t=>!(t.rating.seenBy||[]).includes(me)&&(t.assignees||[]).includes(me)).length;
 }
 function homeSec(id,icon,bg,color,title,count,body){
@@ -2886,7 +2929,7 @@ function renderHome(){
   if(dot)dot.style.display=homeUnseen()?'block':'none';
   const myNew=h.fresh.filter(t=>(t.assignees||[]).includes(me)).length;
   const unseenStars=h.rated.filter(t=>(t.assignees||[]).includes(me)&&!(t.rating.seenBy||[]).includes(me)).length;
-  const overdue=h.due.filter(t=>daysUntil(t.due)<=0).length;
+  const overdue=h.due.filter(t=>taskOverdue(t)||daysUntil(t.due)===0).length;// ส่งวันนี้ หรือเกินแล้ว → จุดแดง
   const tabs=[
     ['all','ti-layout-dashboard','ทั้งหมด',null,false],
     ['new','ti-sparkles','งานใหม่',h.fresh.length,myNew>0],
@@ -2912,7 +2955,7 @@ function renderHome(){
         ${assigneeChips(t)}
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-        ${t.due?(()=>{const[wb,wc]=whenColor(t.due);return`<span class="home-when" style="background:${wb};color:${wc}">${whenLabel(t.due)}</span>`;})():''}
+        ${whenPill(t)}
         ${isMine?`<button class="accept-btn" onclick="event.stopPropagation();homeAccept(${t.id})"><i class="ti ti-player-play"></i> รับงาน</button>`:''}
       </div>
     </div>`;}).join(''));
@@ -2933,12 +2976,12 @@ function renderHome(){
       <div style="text-align:right"><span class="star-row">${starsHTML(t.rating.stars,14)}</span><div style="font-size:11px;color:#B7791F;font-weight:700;margin-top:2px">${t.rating.stars}/5</div></div></div>`;}).join(''));
   }
 
-  if(show('due'))html+=sec('due','ti-alarm','#FEF0E0','#D85A30','แจ้งเตือนงานใกล้ถึงกำหนด (3 วัน)',h.due.length,h.due.map(t=>{const[wb,wc]=whenColor(t.due);return`<div class="home-item" onclick="openDetail(${t.id})">
+  if(show('due'))html+=sec('due','ti-alarm','#FEF0E0','#D85A30','แจ้งเตือนงานใกล้ถึงกำหนด (3 วัน)',h.due.length,h.due.map(t=>{return`<div class="home-item" onclick="openDetail(${t.id})">
       ${sIcon(t.status,34)}
       <div style="flex:1;min-width:0"><div class="home-item-title">${t.priority==='high'?'<i class="ti ti-flame" style="color:#D85A30;font-size:13px"></i> ':''}${esc(t.name)}</div>
-      <div class="home-item-sub">${STATUS_MAP[t.status]} · ส่ง ${fmtThaiDate(t.due)}${t.recur?' · 🔁 '+recurLabel(t):''}${ckProgress(t).n?` · ☑ ${ckProgress(t).d}/${ckProgress(t).n}`:''}</div>
+      <div class="home-item-sub">${STATUS_MAP[t.status]} · ส่ง ${fmtThaiDate(t.due)}${t.dueTime?' '+t.dueTime+' น.':''}${t.recur?' · 🔁 '+recurLabel(t):''}${ckProgress(t).n?` · ☑ ${ckProgress(t).d}/${ckProgress(t).n}`:''}</div>
       ${assigneeChips(t)}</div>
-      <span class="home-when" style="background:${wb};color:${wc}">${whenLabel(t.due)}</span></div>`;}).join(''));
+      ${whenPill(t)}</div>`;}).join(''));
 
   if(show('appts'))html+=sec('appts','ti-calendar-event','var(--green-light)','var(--green)','นัดหมาย',h.appts.length,h.appts.map(b=>{
     const unread=!(b.readBy||[]).includes(me);const[wb,wc]=whenColor(b.date);
@@ -2978,9 +3021,9 @@ function openNewTaskSheet(){
   if(isSup()){showToast('ผู้ดูแลดูและตรวจงานได้ แต่สร้างงานไม่ได้');return;}
   const canAnn=isLead();
   document.getElementById('nt-announce').style.display=canAnn?'':'none';
-  document.querySelector('#sheet-new .seg').style.gridTemplateColumns=`repeat(${canAnn?5:4},minmax(0,1fr))`;
   pickNewType('task');
   document.getElementById('n-recur').value='daily';
+  document.getElementById('n-time').value='';
   selectedNewMembers=new Set([currentUser]);
   renderNewMemberChips();
   document.getElementById('n-name').value='';
@@ -2998,13 +3041,15 @@ function renderNewMemberChips(){
 function toggleNewM(name){if(selectedNewMembers.has(name))selectedNewMembers.delete(name);else selectedNewMembers.add(name);renderNewMemberChips();}
 function createTask(){
   if(isSup()){showToast('ผู้ดูแลสร้างงานไม่ได้');return;}
+  if(newType==='post')document.getElementById('n-name').value=document.getElementById('n-page').value;
   const name=document.getElementById('n-name').value.trim();
   if(!name){showToast('กรุณาใส่ชื่องาน');return;}
   if(!selectedNewMembers.size){showToast('กรุณาเลือกผู้รับผิดชอบ');return;}
   let recurDay=null;
-  if(newType==='recur'){const rc=document.getElementById('n-recur').value;recurDay=rc==='daily'?null:Number(document.getElementById('n-recur-day').value);document.getElementById('n-due').value=firstDue(rc,recurDay);}
+  const isRec=newType==='recur'||newType==='post',rc=newType==='post'?'daily':document.getElementById('n-recur').value;
+  if(isRec){recurDay=rc==='daily'?null:Number(document.getElementById('n-recur-day').value);document.getElementById('n-due').value=firstDue(rc,recurDay);}
   const tt=ts();
-  const task={id:uid(),name,client:document.getElementById('n-client').value.trim()||'-',assignees:Array.from(selectedNewMembers),due:document.getElementById('n-due').value,priority:document.getElementById('n-priority').value,status:'new',step:0,note:document.getElementById('n-note').value,recur:newType==='recur'?document.getElementById('n-recur').value:'',recurDay,links:[],comments:[],log:[{time:tt,user:currentUser,action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'}]};
+  const task={id:uid(),name,client:document.getElementById('n-client').value.trim()||(newType==='post'?'โพสต์เพจรายวัน':'-'),assignees:Array.from(selectedNewMembers),due:document.getElementById('n-due').value,priority:document.getElementById('n-priority').value,status:'new',step:0,note:document.getElementById('n-note').value,recur:isRec?rc:'',recurDay,dueTime:document.getElementById('n-time').value||'',pagePost:newType==='post'||undefined,links:[],comments:[],log:[{time:tt,user:currentUser,action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'}]};
   const nl=safeUrl(document.getElementById('n-link').value);
   if(nl){const ft=detectFT(nl);task.links.push({id:uid(),name:(mediaInfo(nl)||{}).label||ft.label,url:nl,addedBy:currentUser,time:tt});}
   if(newType==='trial'){
@@ -3183,7 +3228,7 @@ function viewMemberDetail(name){
       <div class="stat-card"><div class="stat-num" style="color:var(--amber)">${active.length}</div><div class="stat-label">งานอยู่ระหว่างทำ</div></div>
       <div class="stat-card"><div class="stat-num" style="color:var(--green)">${done.length}</div><div class="stat-label">งานเสร็จแล้ว</div></div>
     </div>
-    ${active.length?`<div style="padding:0 16px 6px;font-size:13px;font-weight:600;color:var(--text3)">งานอยู่ระหว่างทำ</div>${active.map(t=>`<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface);border-bottom:0.5px solid var(--border);cursor:pointer" onclick="switchPage('board');openDetail(${t.id})">${sIcon(t.status,36)}<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--text)">${t.name}</div><div style="font-size:12px;color:var(--text3)">${t.client} · ${fmtDue(t.due)||'-'}</div></div>${sPill(t.status)}</div>`).join('')}`:''}
+    ${active.length?`<div style="padding:0 16px 6px;font-size:13px;font-weight:600;color:var(--text3)">งานอยู่ระหว่างทำ</div>${active.map(t=>`<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface);border-bottom:0.5px solid var(--border);cursor:pointer" onclick="switchPage('board');openDetail(${t.id})">${sIcon(t.status,36)}<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--text)">${t.name}</div><div style="font-size:12px;color:var(--text3)">${t.client} · ${fmtDueT(t)||'-'}</div></div>${sPill(t.status)}</div>`).join('')}`:''}
     <div style="padding:14px 16px 6px;font-size:13px;font-weight:600;color:var(--text3)">งานเสร็จแล้ว (${done.length})</div>
     ${done.length?done.map(t=>`<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface);border-bottom:0.5px solid var(--border)"><div class="status-icon" style="width:36px;height:36px;background:var(--gray-light)"><i class="ti ti-archive" style="color:var(--gray);font-size:18px"></i></div><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--text)">${t.name}</div><div style="font-size:12px;color:var(--text3)">${t.client} · ทีม: ${(t.assignees||[]).join(', ')}</div></div><span style="font-size:11px;color:var(--text3)">${(t.log[t.log.length-1]||{}).time||''}</span></div>`).join(''):`<div style="text-align:center;padding:24px;color:var(--text3)">ยังไม่มีงานเสร็จ</div>`}
   `;
@@ -3269,7 +3314,7 @@ function taskDoneDate(t){
   if(diff>180)d=new Date(d.getFullYear()-1,d.getMonth(),d.getDate());else if(diff<-180)d=new Date(d.getFullYear()+1,d.getMonth(),d.getDate());
   return d;
 }
-function isOverdue(t){return t.status!=='done'&&!!t.due&&daysUntil(t.due)<0&&!(t.submittedAt&&t.submittedAt<=t.due);}
+function isOverdue(t){return taskOverdue(t)&&!(t.submittedAt&&t.submittedAt<=t.due);}
 /* สูตรเดียวกันทั้งรายคนและทีม — div = จำนวนคน ใช้เฉลี่ยค่าหักคะแนนของทีมให้เทียบกับรายคนได้ */
 function kpiFromTasks(all,div=1){
   const total=all.length,doneTasks=all.filter(t=>t.status==='done'),done=doneTasks.length;
@@ -3448,7 +3493,7 @@ function renderTimeline(){
     const isBlocked=t.status==='blocked';
     const isDone=t.status==='done';
     const dueDate=t.due?new Date(t.due):null;
-    const overdue=dueDate&&!isDone&&dueDate<new Date();
+    const overdue=!isDone&&taskOverdue(t);
 
     const stepsHTML=STEP_NAMES.map((sname,si)=>{
       const wasHere=logs.filter(l=>{
