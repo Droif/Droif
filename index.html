@@ -1089,7 +1089,6 @@ html.desk #home-body .ann-card{grid-column:1/-1;margin:0}
     <div class="seg">
       <button class="seg-btn sel" id="nt-task" onclick="pickNewType('task')"><i class="ti ti-clipboard-plus"></i>งาน</button>
       <button class="seg-btn" id="nt-recur" onclick="pickNewType('recur')"><i class="ti ti-repeat"></i>งานประจำ</button>
-      <button class="seg-btn" id="nt-post" onclick="pickNewType('post')"><i class="ti ti-brand-facebook"></i>โพสต์เพจรายวัน</button>
       <button class="seg-btn" id="nt-trial" onclick="pickNewType('trial')"><i class="ti ti-plant-2"></i>ทดลองงาน</button>
       <button class="seg-btn" id="nt-appt" onclick="pickNewType('appt')"><i class="ti ti-calendar-event"></i>นัดหมาย</button>
       <button class="seg-btn" id="nt-announce" onclick="pickNewType('announce')"><i class="ti ti-speakerphone"></i>ประกาศ</button>
@@ -1097,7 +1096,7 @@ html.desk #home-body .ann-card{grid-column:1/-1;margin:0}
     <div class="sheet-body" id="n-task-fields">
       <div id="n-recur-wrap" style="display:none">
         <label class="f-label">ทำซ้ำ</label>
-        <select class="f-select" id="n-recur" onchange="fillRecurDay('n-recur','n-recur-day','n-recur-day-wrap')"><option value="daily">ทุกวัน</option><option value="weekly">ทุกสัปดาห์</option><option value="monthly">ทุกเดือน</option></select>
+        <select class="f-select" id="n-recur" onchange="onRecurChange()"><option value="daily">ทุกวัน</option><option value="weekly">ทุกสัปดาห์</option><option value="monthly">ทุกเดือน</option><option value="post">โพสต์เพจรายวัน</option></select>
         <div id="n-recur-day-wrap" style="display:none">
           <label class="f-label" id="n-recur-day-label">วัน</label>
           <select class="f-select" id="n-recur-day" onchange="showFirstDue()"></select>
@@ -1115,7 +1114,6 @@ html.desk #home-body .ann-card{grid-column:1/-1;margin:0}
       <div id="n-page-wrap" style="display:none">
         <label class="f-label">ชื่องาน (เลื่อนเลือกเพจ)</label>
         <select class="f-select" id="n-page"></select>
-        <div style="font-size:12px;color:var(--text3);margin-top:6px">ทำซ้ำทุกวัน · อนุมัติแล้วระบบสร้างรอบพรุ่งนี้ให้อัตโนมัติ</div>
       </div>
       <div id="n-name-wrap">
         <label class="f-label">ชื่องาน</label>
@@ -2109,7 +2107,7 @@ function recurDayOf(t){
   return t.recur==='weekly'?d.getDay():d.getDate();
 }
 function recurLabel(t){
-  if(t.recur==='daily')return'ทุกวัน';
+  if(t.recur==='daily')return t.pagePost?'โพสต์เพจทุกวัน':'ทุกวัน';
   if(t.recur==='weekly')return'ทุกวัน'+WEEKDAYS[recurDayOf(t)];
   if(t.recur==='monthly')return'ทุกวันที่ '+recurDayOf(t);
   return'';
@@ -2129,9 +2127,19 @@ function fillRecurDay(recurId,dayId,wrapId){
   wrap.style.display='block';
   if(recurId==='n-recur')showFirstDue();
 }
+/* "ทำซ้ำ" = โพสต์เพจรายวัน → ชื่องานเลือกจากรายชื่อเพจ และทำซ้ำทุกวัน */
+function isPagePost(){return newType==='recur'&&document.getElementById('n-recur').value==='post';}
+function recurValue(){const v=document.getElementById('n-recur').value;return v==='post'?'daily':v;}
+function applyPageMode(){
+  const on=isPagePost(),sel=document.getElementById('n-page');
+  if(on&&!sel.options.length)sel.innerHTML=PAGE_LIST.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');
+  document.getElementById('n-page-wrap').style.display=on?'block':'none';
+  document.getElementById('n-name-wrap').style.display=on?'none':'block';
+}
+function onRecurChange(){fillRecurDay('n-recur','n-recur-day','n-recur-day-wrap');applyPageMode();}
 function showFirstDue(){
-  const rc=document.getElementById('n-recur').value;
-  const day=rc==='daily'?null:Number(document.getElementById('n-recur-day').value);
+  const rc=recurValue();
+  const day=rc==='weekly'||rc==='monthly'?Number(document.getElementById('n-recur-day').value):null;
   const nd=document.getElementById('n-due');
   if(nd&&!nd.dataset.touched)nd.value=firstDue(rc,day);// ยังไม่ได้แก้เอง → ใช้วันแรกที่ตรงรอบ
   const d=(nd&&nd.value)||firstDue(rc,day);
@@ -2780,7 +2788,7 @@ function markRatingSeen(id){
 let newType='task';let apTo=new Set();let apLinks=[];
 function pickNewType(tp){
   newType=tp;
-  ['task','recur','post','trial','appt','announce'].forEach(x=>document.getElementById('nt-'+x).classList.toggle('sel',x===tp));
+  ['task','recur','trial','appt','announce'].forEach(x=>document.getElementById('nt-'+x).classList.toggle('sel',x===tp));
   document.getElementById('n-trial-wrap').style.display=tp==='trial'?'block':'none';
   if(tp==='trial'){
     const leads=db.members.filter(m=>!m.probation);
@@ -2794,18 +2802,16 @@ function pickNewType(tp){
   document.getElementById('n-ann-fields').style.display=tp==='announce'?'block':'none';
   if(tp==='announce')['an-subject','an-message','an-link','an-until'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('n-appt-fields').style.display=tp==='appt'?'block':'none';
-  const rec=tp==='recur'||tp==='post';
+  const rec=tp==='recur';
   document.getElementById('n-recur-wrap').style.display=tp==='recur'?'block':'none';
-  document.getElementById('n-page-wrap').style.display=tp==='post'?'block':'none';
-  document.getElementById('n-name-wrap').style.display=tp==='post'?'none':'block';
+  applyPageMode();
   const nd=document.getElementById('n-due');
   nd.dataset.touched='';
-  if(rec)nd.value=firstDue(tp==='post'?'daily':document.getElementById('n-recur').value,null);// วันแรกที่แนะนำ แก้ได้
+  if(rec)nd.value=firstDue(recurValue(),null);// วันแรกที่แนะนำ แก้ได้
   document.getElementById('n-due-label').textContent=rec?'วันกำหนดส่งรอบแรก / เวลาส่งแต่ละรอบ':'วันกำหนดส่ง / เวลา';
-  if(tp==='post'){document.getElementById('n-page').innerHTML=PAGE_LIST.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');}
   if(tp==='recur')fillRecurDay('n-recur','n-recur-day','n-recur-day-wrap');
-  document.getElementById('new-sheet-title').textContent=tp==='announce'?'สร้างประกาศ':tp==='appt'?'สร้างนัดหมาย':tp==='post'?'สร้างโพสต์เพจรายวัน':tp==='recur'?'สร้างงานประจำ':tp==='trial'?'มอบงานทดลองงาน':'สร้างงานใหม่';
-  document.getElementById('n-create-btn').textContent=tp==='post'?'สร้างโพสต์เพจรายวัน':tp==='recur'?'สร้างงานประจำ':tp==='trial'?'มอบงานทดลองงาน':'สร้างงาน';
+  document.getElementById('new-sheet-title').textContent=tp==='announce'?'สร้างประกาศ':tp==='appt'?'สร้างนัดหมาย':tp==='recur'?'สร้างงานประจำ':tp==='trial'?'มอบงานทดลองงาน':'สร้างงานใหม่';
+  document.getElementById('n-create-btn').textContent=tp==='recur'?'สร้างงานประจำ':tp==='trial'?'มอบงานทดลองงาน':'สร้างงาน';
   if(tp==='appt'){
     apTo=new Set(db.members.filter(m=>m.name!==currentUser).map(m=>m.name));apLinks=[];
     ['ap-subject','ap-message','ap-link-url','ap-time'].forEach(i=>document.getElementById(i).value='');
@@ -3044,15 +3050,16 @@ function renderNewMemberChips(){
 function toggleNewM(name){if(selectedNewMembers.has(name))selectedNewMembers.delete(name);else selectedNewMembers.add(name);renderNewMemberChips();}
 function createTask(){
   if(isSup()){showToast('ผู้ดูแลสร้างงานไม่ได้');return;}
-  if(newType==='post')document.getElementById('n-name').value=document.getElementById('n-page').value;
+  const pagePost=isPagePost();
+  if(pagePost)document.getElementById('n-name').value=document.getElementById('n-page').value;
   const name=document.getElementById('n-name').value.trim();
   if(!name){showToast('กรุณาใส่ชื่องาน');return;}
   if(!selectedNewMembers.size){showToast('กรุณาเลือกผู้รับผิดชอบ');return;}
   let recurDay=null;
-  const isRec=newType==='recur'||newType==='post',rc=newType==='post'?'daily':document.getElementById('n-recur').value;
+  const isRec=newType==='recur',rc=recurValue();
   if(isRec){recurDay=rc==='daily'?null:Number(document.getElementById('n-recur-day').value);if(!document.getElementById('n-due').value)document.getElementById('n-due').value=firstDue(rc,recurDay);}
   const tt=ts();
-  const task={id:uid(),name,client:document.getElementById('n-client').value.trim()||(newType==='post'?'โพสต์เพจรายวัน':'-'),assignees:Array.from(selectedNewMembers),due:document.getElementById('n-due').value,priority:document.getElementById('n-priority').value,status:'new',step:0,note:document.getElementById('n-note').value,recur:isRec?rc:'',recurDay,dueTime:document.getElementById('n-time').value||'',pagePost:newType==='post'||undefined,links:[],comments:[],log:[{time:tt,user:currentUser,action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'}]};
+  const task={id:uid(),name,client:document.getElementById('n-client').value.trim()||(pagePost?'โพสต์เพจรายวัน':'-'),assignees:Array.from(selectedNewMembers),due:document.getElementById('n-due').value,priority:document.getElementById('n-priority').value,status:'new',step:0,note:document.getElementById('n-note').value,recur:isRec?rc:'',recurDay,dueTime:document.getElementById('n-time').value||'',pagePost:pagePost||undefined,links:[],comments:[],log:[{time:tt,user:currentUser,action:'สร้างงาน',icon:'ti-circle-plus',color:'#7F77DD'}]};
   const nl=safeUrl(document.getElementById('n-link').value);
   if(nl){const ft=detectFT(nl);task.links.push({id:uid(),name:(mediaInfo(nl)||{}).label||ft.label,url:nl,addedBy:currentUser,time:tt});}
   if(newType==='trial'){
