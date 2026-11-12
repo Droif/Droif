@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <script>/* ตั้งธีมก่อนแสดงผล กันหน้าจอกระพริบ */(function(){try{var t=localStorage.getItem('gf_theme')||'light';var d=t==='dark'||(t==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mali:wght@600;700&family=Prompt:wght@500;600;700&display=swap">
 <style>
 :root{
   --purple:#7F77DD;--purple-light:#EEEDFE;--purple-dark:#534AB7;--purple-border:#AFA9EC;
@@ -866,6 +866,134 @@ html.desk #home-body .ann-card{grid-column:1/-1;margin:0}
 .due-row{display:grid;grid-template-columns:1fr 112px;gap:8px}
 .due-row.time-only{grid-template-columns:1fr}
 .seg{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+
+/* ═════════ FAIRYTALE · ธีมการ์ตูนเทพนิยายทั้งแอป ═════════ */
+html.season-fairytale{
+  --display:'Mali','Prompt',-apple-system,BlinkMacSystemFont,sans-serif;
+  --purple:#8B6FE8;--purple-dark:#5B3FC4;--purple-light:#F1EBFF;--purple-border:#CDBEFB;
+  --bg:#FDF8FF;--radius:22px;--radius-sm:14px;
+  --gold:#FFC23D;--gold-light:#FFF1B8;
+  --swatch:linear-gradient(90deg,#FF9EC0,#FFC9A3,#FFE58A,#A8E6C9,#A9D3FF,#C4B5FD,#FF9EC0);
+  --card-shadow:0 2px 0 rgba(139,111,232,.08),0 8px 22px rgba(139,111,232,.10);
+}
+html.season-fairytale,html.season-fairytale body,html.season-fairytale .login-wrap{
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg fill='%23E2D6FF'%3E%3Cpath d='M20 12 l1.6 5.4 5.4 1.6 -5.4 1.6 -1.6 5.4 -1.6 -5.4 -5.4 -1.6 5.4 -1.6z'/%3E%3Ccircle cx='86' cy='30' r='1.6'/%3E%3Ccircle cx='54' cy='96' r='1.3'/%3E%3C/g%3E%3Cpath fill='%23FFE3A3' d='M92 78 l1.2 4 4 1.2 -4 1.2 -1.2 4 -1.2 -4 -4 -1.2 4 -1.2z'/%3E%3Ccircle cx='30' cy='70' r='1.4' fill='%23FFD1E2'/%3E%3C/svg%3E") 0 0/120px 120px,
+    linear-gradient(180deg,#FFF6FB 0%,#F7F1FF 45%,#EEF6FF 100%) fixed}
+html.season-fairytale .topbar::after{height:4px;bottom:-4px;background:var(--swatch)}
+html.season-fairytale .logo-mark{background:linear-gradient(135deg,#FFD1E2,#D9CCFF 55%,#BEE0FF);color:#5B3FC4;border-radius:50%;box-shadow:0 0 0 2px #fff,0 3px 8px rgba(139,111,232,.3)}
+html.season-fairytale .logo{font-family:var(--display)}
+html.season-fairytale .btn-add{background:linear-gradient(135deg,#FF8FB4,#B49CF7);box-shadow:0 3px 0 #9B7FE6,0 6px 14px rgba(139,111,232,.35)}
+html.season-fairytale .btn-add:active{transform:translateY(2px);box-shadow:0 1px 0 #9B7FE6}
+html.season-fairytale .sec-title{font-weight:700;background:linear-gradient(transparent 60%,#FFE3EE 60%,#FFE3EE 92%,transparent 92%)}
+html.season-fairytale .sec-title::after{content:' ✨';font-size:.8em}
+/* การ์ด: ขอบนุ่ม + เงาเด้งแบบการ์ตูน */
+html.season-fairytale .task-card,html.season-fairytale .home-sec,html.season-fairytale .bc-card,html.season-fairytale .stat-card,html.season-fairytale .kpi-card,html.season-fairytale .kpi-member-card,html.season-fairytale .prob-card,html.season-fairytale .ck-task,html.season-fairytale .cal-item{border:1.5px solid #EFE6FF;border-radius:20px}
+html.season-fairytale .big-btn{font-family:var(--display);background:linear-gradient(135deg,#9B7FE6,#FF8FB4);border-radius:20px;box-shadow:0 4px 0 #7C5FD6,0 8px 18px rgba(139,111,232,.3)}
+html.season-fairytale .big-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #7C5FD6}
+html.season-fairytale .accept-btn,html.season-fairytale .ann-ack{background:linear-gradient(135deg,#9B7FE6,#FF8FB4)}
+html.season-fairytale .home-tab.on,html.season-fairytale #bc-filter-chips .chip.on{background:linear-gradient(135deg,#9B7FE6,#FF8FB4)!important}
+html.season-fairytale .kpi-bar-fill{background:linear-gradient(90deg,#9B7FE6,#FF8FB4,#FFC23D)}
+html.season-fairytale .cal-cell.today .cal-num{background:linear-gradient(135deg,#9B7FE6,#FF8FB4)}
+html.season-fairytale .nav-btn.active i{background:linear-gradient(135deg,#F1EBFF,#FFE3EE);position:relative}
+html.season-fairytale .nav-btn.active i::after{content:'✦';position:absolute;right:4px;top:-6px;font-size:10px;color:var(--gold);font-style:normal}
+html.season-fairytale .sheet{border-radius:28px 28px 0 0}
+html.season-fairytale .sheet-title,html.season-fairytale .home-hello-title,html.season-fairytale .kpi-stage-title,html.season-fairytale .login-title{font-family:var(--display)}
+/* การ์ดทักทายหน้าแรก + ตัวการ์ตูน */
+html.season-fairytale .home-hello{min-height:96px;padding-right:104px;background:linear-gradient(135deg,#E9DEFF 0%,#FFE0EC 55%,#FFF0D2 100%);border:2px solid #fff;box-shadow:var(--card-shadow)}
+html.season-fairytale .home-hello::before{width:auto;height:auto;inset:0;border-radius:0;background:
+  radial-gradient(circle at 70% 22%,#fff 0 1.5px,transparent 2px),radial-gradient(circle at 60% 70%,#fff 0 1.2px,transparent 1.8px),radial-gradient(circle at 88% 14%,#FFE58A 0 1.8px,transparent 2.4px)}
+html.season-fairytale .home-hello::after{display:none}
+.hello-mascot{position:absolute;right:8px;bottom:-6px;width:92px;z-index:1;pointer-events:none;animation:ftBob 2.6s ease-in-out infinite}
+.hello-mascot svg{width:100%;display:block;filter:drop-shadow(0 4px 6px rgba(139,111,232,.25))}
+@keyframes ftBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-5px) rotate(2deg)}}
+/* หน้าว่าง: ตัวการ์ตูนแทนไอคอน */
+.empty-mascot{width:110px;margin:0 auto 10px;animation:ftBob 2.8s ease-in-out infinite}
+.empty-mascot svg{width:100%;display:block}
+html.season-fairytale .empty p{font-family:var(--display);color:var(--text2)}
+/* หน้า login */
+html.season-fairytale .login-hero{background:linear-gradient(180deg,#E6DCFF 0%,#FFE3EE 55%,#FFF4DE 100%);min-height:260px}
+html.season-fairytale .login-hero .deco-circle,html.season-fairytale .login-hero .deco-tri,html.season-fairytale .login-hero .deco-square,html.season-fairytale .login-hero .deco-ring,html.season-fairytale .login-hero .deco-bezier{display:none}
+.login-castle{position:absolute;left:50%;bottom:4px;width:250px;margin-left:-125px;opacity:.55;pointer-events:none}
+.login-mascot{position:absolute;bottom:0;width:78px;pointer-events:none;animation:ftBob 2.6s ease-in-out infinite;z-index:2}
+.login-mascot.m1{left:6px}.login-mascot.m2{right:6px;animation-delay:-1.3s}
+.login-mascot svg{width:100%;display:block}
+.login-hero .ft-spark{position:absolute}
+html.season-fairytale .login-icon{border-radius:50%;box-shadow:0 0 0 4px rgba(255,255,255,.7),0 8px 20px rgba(139,111,232,.3)}
+/* ผู้ช่วยลอยมุมจอ */
+.buddy{position:fixed;left:max(8px,calc(50% - 207px));bottom:calc(70px + env(safe-area-inset-bottom,0px));z-index:60;pointer-events:none;display:flex;align-items:flex-end}
+html.desk .buddy{left:244px;bottom:14px}
+.buddy-fig{pointer-events:auto;width:58px;height:62px;border:none;background:none;padding:0;cursor:pointer;filter:drop-shadow(0 4px 6px rgba(91,63,196,.25));animation:ftBob 3s ease-in-out infinite}
+.buddy-fig svg{width:100%;height:100%;display:block}
+.buddy-fig.hop{animation:ftHop .6s ease-out,ftBob 3s ease-in-out .6s infinite}
+@keyframes ftHop{0%{transform:translateY(0)}35%{transform:translateY(-16px) scale(1.06)}60%{transform:translateY(0) scale(.96,1.04)}100%{transform:translateY(0)}}
+.buddy-bubble{order:2;margin:0 0 40px 2px;max-width:200px;padding:8px 12px;border-radius:16px 16px 16px 4px;background:#fff;border:2px solid #E4DAFF;color:var(--text);font-family:var(--display);font-size:13px;font-weight:600;line-height:1.35;box-shadow:0 6px 16px rgba(91,63,196,.18);opacity:0;transform:translateY(6px) scale(.9);transform-origin:0 100%;transition:opacity .2s,transform .2s;pointer-events:none}
+.buddy-bubble.show{opacity:1;transform:none;pointer-events:auto}
+.buddy-bubble button{display:block;margin-top:4px;border:none;background:none;padding:2px 0;font-size:11px;color:var(--text3);cursor:pointer;font-family:inherit;text-decoration:underline}
+/* ═════════ KPI · ฉากปราสาทเทพนิยาย ═════════ */
+.kpi-stage.fairytale{position:relative;isolation:isolate;padding:14px 6px 40px;border:2px solid #fff;box-shadow:var(--card-shadow);
+  background:linear-gradient(180deg,#CFE6FF 0%,#E7DEFF 38%,#FFE3EE 64%,#FFF1DA 78%,#FFF1DA 100%)}
+.fairytale .kpi-stage-title{position:relative;z-index:6;display:table;margin:0 auto 2px;padding:4px 14px;border-radius:20px;background:rgba(255,255,255,.85);color:#5B3FC4;box-shadow:0 2px 8px rgba(91,63,196,.15)}
+.fairytale .chars{position:relative;z-index:5}
+.fairytale .char{padding-top:30px}
+.fairytale .char-name{background:rgba(255,255,255,.92);border-radius:10px;padding:0 6px}
+.fairytale .char-mood{color:#6A5AA8}
+.fairytale .mood-happy .char-fx{top:-34px}
+.ft-rainbow{position:absolute;z-index:0;left:-60px;top:-30px;width:260px;height:260px;border-radius:50%;pointer-events:none;opacity:.55;
+  background:radial-gradient(circle,transparent 0 52%,#C4B5FD 52% 56%,#A9D3FF 56% 60%,#A8E6C9 60% 64%,#FFE58A 64% 68%,#FFC9A3 68% 72%,#FFB3C7 72% 76%,transparent 76%)}
+.ft-cloud{position:absolute;z-index:1;pointer-events:none;opacity:.95;animation:ftDrift 22s linear infinite}
+.ft-cloud.c1{width:80px;left:4%;top:30px}.ft-cloud.c2{width:60px;left:62%;top:14px;animation-duration:30s;animation-delay:-8s}.ft-cloud.c3{width:50px;left:36%;top:64px;opacity:.75;animation-duration:26s;animation-delay:-14s}
+@keyframes ftDrift{0%{transform:translateX(-14px)}50%{transform:translateX(14px)}100%{transform:translateX(-14px)}}
+.ft-spark{position:absolute;z-index:1;pointer-events:none;animation:ftTwinkle 2.4s ease-in-out infinite}
+@keyframes ftTwinkle{0%,100%{transform:scale(.5) rotate(0);opacity:.3}50%{transform:scale(1.1) rotate(25deg);opacity:1}}
+.tw{animation:ftTwinkle 2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}.tw.d2{animation-delay:.7s}.tw.d3{animation-delay:1.3s}
+.ft-castle{position:absolute;z-index:1;left:50%;bottom:44px;width:220px;margin-left:-110px;opacity:.9;pointer-events:none;overflow:visible}
+.ft-hill{position:absolute;z-index:2;pointer-events:none;border-radius:50% 50% 0 0}
+.ft-hill.h1{left:-10%;right:40%;bottom:0;height:70px;background:#BFEBD0}
+.ft-hill.h2{left:35%;right:-12%;bottom:0;height:58px;background:#A8E2BF}
+.ft-flowers{position:absolute;z-index:3;left:0;right:0;bottom:4px;height:14px;pointer-events:none;
+  background:radial-gradient(circle at 6px 7px,#FF9EC0 0 3px,transparent 3.5px) 0 0/46px 14px repeat-x,radial-gradient(circle at 28px 6px,#FFE58A 0 2.5px,transparent 3px) 0 0/46px 14px repeat-x,radial-gradient(circle at 40px 9px,#fff 0 2.4px,transparent 3px) 0 0/46px 14px repeat-x}
+.ft-fly{position:absolute;z-index:4;width:22px;pointer-events:none;animation:ftFly 9s ease-in-out infinite}
+.ft-fly .wing{transform-origin:15px 11px;animation:ftFlap .35s ease-in-out infinite alternate}
+.ft-fly.f1{left:12%;top:38%}.ft-fly.f2{left:78%;top:30%;width:18px;animation-delay:-4s;animation-duration:11s}
+@keyframes ftFly{0%,100%{transform:translate(0,0)}25%{transform:translate(18px,-12px)}50%{transform:translate(4px,-22px)}75%{transform:translate(-14px,-8px)}}
+@keyframes ftFlap{from{transform:scaleX(1)}to{transform:scaleX(.45)}}
+.ft-buddy{position:absolute;z-index:6;bottom:6px;width:44px;pointer-events:none;animation:ftBob 2.4s ease-in-out infinite}
+.ft-buddy svg{width:100%;display:block}
+.ft-buddy.b1{left:4px}.ft-buddy.b2{right:4px;width:48px;animation-delay:-1.2s}
+/* ชุดเทพนิยาย */
+.cos-hat.ft-crown{width:36px;margin-left:-18px;top:-20px}
+.cos-hat.ft-tiara{width:34px;margin-left:-17px;top:-8px}
+.cos-hat.ft-wizard{width:62px;margin-left:-34px;top:-36px;transform:rotate(-8deg)}
+.cos-hat.ft-flower{width:56px;margin-left:-28px;top:-4px}
+.cos-hat.ft-plume{width:52px;margin-left:-24px;top:-16px}
+.cos-hat.ft-bunny{width:48px;margin-left:-24px;top:-28px}
+.mood-happy .cos-hat.ft-wizard{animation:hatBob .7s ease-in-out infinite}
+.fairy-wand{position:absolute;z-index:4;right:-16px;bottom:26px;width:24px;pointer-events:none;transform-origin:30% 100%}
+.mood-happy .fairy-wand{animation:ftWave .9s ease-in-out infinite}
+@keyframes ftWave{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(14deg)}}
+.cos-tag.fairy{color:#5B3FC4;background:rgba(255,255,255,.85);border:1px solid #E4DAFF}
+html.desk .kpi-stage.fairytale{padding-bottom:50px}
+/* ── โหมดมืด: ปราสาทยามค่ำคืน ── */
+html.dark.season-fairytale{--bg:#1B1730}
+html.dark.season-fairytale,html.dark.season-fairytale body,html.dark.season-fairytale .login-wrap{background:
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg fill='%23403A78'%3E%3Cpath d='M20 12 l1.6 5.4 5.4 1.6 -5.4 1.6 -1.6 5.4 -1.6 -5.4 -5.4 -1.6 5.4 -1.6z'/%3E%3Ccircle cx='86' cy='30' r='1.6'/%3E%3Ccircle cx='54' cy='96' r='1.3'/%3E%3C/g%3E%3Cpath fill='%237A6A3A' d='M92 78 l1.2 4 4 1.2 -4 1.2 -1.2 4 -1.2 -4 -4 -1.2 4 -1.2z'/%3E%3C/svg%3E") 0 0/120px 120px,linear-gradient(180deg,#1B1730,#1E1B36 60%,#1A2036) fixed}
+html.dark.season-fairytale .home-hello{background:linear-gradient(135deg,#3A2F6B,#4A2A4E 60%,#4A3A2A);border-color:rgba(255,255,255,.08)}
+html.dark.season-fairytale .sec-title{background:linear-gradient(transparent 60%,rgba(255,143,180,.25) 60%,rgba(255,143,180,.25) 92%,transparent 92%)}
+html.dark.season-fairytale .login-hero{background:linear-gradient(180deg,#2A2350,#3A2446 60%,#3A2E26)}
+html.dark.season-fairytale .nav-btn.active i{background:rgba(157,143,245,.22)}
+html.dark.season-fairytale .home-tab.on{color:#fff}
+html.dark .buddy-bubble{background:#2A2545;border-color:#4A4280;color:var(--text)}
+html.dark .kpi-stage.fairytale{border-color:#2E2A45;background:radial-gradient(circle at 82% 14%,rgba(255,240,190,.35) 0,rgba(255,240,190,0) 22%),linear-gradient(180deg,#141A44 0%,#2A2463 45%,#4A2F6B 70%,#5A3A5E 100%)}
+html.dark .kpi-stage.fairytale .ft-rainbow{opacity:.18}
+html.dark .kpi-stage.fairytale .ft-cloud{opacity:.25}
+html.dark .kpi-stage.fairytale .ft-castle{--cs-wall:#5A4A8A;--cs-wall2:#6A579C;--cs-tower:#6E5FA8;--cs-roof:#3E3580;--cs-roof2:#352C70;--cs-door:#2E2660;opacity:1;filter:drop-shadow(0 0 14px rgba(255,214,120,.25))}
+html.dark .kpi-stage.fairytale .ft-hill.h1{background:#2C5A46}html.dark .kpi-stage.fairytale .ft-hill.h2{background:#24503D}
+html.dark .fairytale .kpi-stage-title{background:rgba(30,27,46,.85);color:#E4DAFF}
+html.dark .fairytale .char-name{background:rgba(30,27,46,.85)}
+html.dark .fairytale .char-mood{color:#C9BEF7}
+html.dark .cos-tag.fairy{background:rgba(30,27,46,.85);color:#E4DAFF;border-color:#4A4280}
+@media (prefers-reduced-motion:reduce){.ft-cloud,.ft-spark,.tw,.ft-fly,.ft-fly .wing,.ft-buddy,.hello-mascot,.empty-mascot,.login-mascot,.buddy-fig,.fairy-wand{animation:none!important}}
 </style>
 </head>
 <body>
@@ -1780,6 +1908,7 @@ function switchPage(p){
   if(p==='broadcast'){if(notifTotal()&&bcFilter==='all'){bcFilter='mine';document.querySelectorAll('#bc-filter-chips .chip').forEach(b=>b.classList.toggle('on',b.dataset.f==='mine'));}renderBroadcast();document.getElementById('bc-fab').classList.add('visible');}
   else document.getElementById('bc-fab').classList.remove('visible');
   document.getElementById('scroll-area').scrollTop=0;
+  if(typeof updateBuddy==='function')updateBuddy(p);
 }
 
 /* ── BOARD ── */
@@ -1801,7 +1930,7 @@ function renderTasks(){
   const list=document.getElementById('task-list');if(!list)return;
   const filtered=getFiltered();
   updateNotifDot();
-  if(!filtered.length){list.innerHTML=`<div class="empty"><i class="ti ti-mood-empty"></i><p>ไม่มีงานในหมวดนี้</p></div>`;return;}
+  if(!filtered.length){list.innerHTML=`<div class="empty">${emptyArt('ti-mood-empty')}<p>ไม่มีงานในหมวดนี้</p></div>`;return;}
   list.innerHTML=filtered.map(t=>`
     <div class="task-card ${t.status==='blocked'?'blocked':''}" onclick="openDetail(${t.id})">
       <div class="card-inner">
@@ -2299,7 +2428,7 @@ function renderChecklistPage(){
   const groups=[['over','เกินกำหนด','ti-alert-triangle','var(--red)'],['today','วันนี้','ti-sun','#D85A30'],['week','7 วันข้างหน้า','ti-calendar-week','var(--amber)'],['later','ภายหลัง','ti-calendar','var(--text3)'],['none','ไม่มีกำหนดส่ง','ti-calendar-off','var(--text3)']];
   const gOf=t=>{const n=daysUntil(t.due);return n===null?'none':taskOverdue(t)?'over':n===0?'today':n<=7?'week':'later';};
   document.getElementById('ck-count').textContent=`${list.length} งานค้าง`;
-  if(!list.length){el.innerHTML=`<div class="empty" style="grid-column:1/-1"><i class="ti ti-checks"></i><p>ไม่มีงานค้าง เยี่ยมมาก!</p></div>`;return;}
+  if(!list.length){el.innerHTML=`<div class="empty" style="grid-column:1/-1">${emptyArt('ti-checks')}<p>ไม่มีงานค้าง เยี่ยมมาก!</p></div>`;return;}
   el.innerHTML=groups.map(([g,label,icon,color])=>{
     const ts_=list.filter(t=>gOf(t)===g).sort((a,b)=>(a.due||'').localeCompare(b.due||''));
     if(!ts_.length)return'';
@@ -2498,17 +2627,18 @@ function charHTML(m,score,opts={}){
   const sh=shirtOf(m),skirt=opts.thai?thaiSilk(m.name):/^#(F06292|D4537E|E24B4A)$/i.test(sh)?'#7E57C2':'#F06292';
   const hairBack=g==='female'?'<div class="char-hair long"></div>':g==='lgbt'?'<div class="char-hair bob"></div>':'';
   const emo=m.photo?`<div class="char-emo">${mood==='happy'?'😄':mood==='mid'?'🙂':'😢'}</div>`:'';
-  const cos=opts.costume?costumeOf(m.name):null,cz=opts.thai?{back:'',...thaiDressHTML(g,mood)}:cos?costumeHTML(cos[0],mood,g==='female'):{back:'',front:'',hat:''};
-  const fx=opts.thai?(mood==='happy'?'<div class="char-fx">🪷</div>':''):cos?(mood==='happy'?'<div class="char-fx">🍬</div>':mood==='sad'?'<div class="char-fx">👻</div>':''):(mood==='happy'?'<div class="char-fx">🎉</div>':mood==='sad'?'<div class="char-fx">🌧️</div>':'');
+  const fc=opts.fairy?fairyCostume(m.name,mood,g):null;
+  const cos=opts.costume?costumeOf(m.name):null,cz=fc?fc:opts.thai?{back:'',...thaiDressHTML(g,mood)}:cos?costumeHTML(cos[0],mood,g==='female'):{back:'',front:'',hat:''};
+  const fx=fc?(mood==='happy'?'<div class="char-fx">✨</div>':mood==='sad'?'<div class="char-fx">🌧️</div>':''):opts.thai?(mood==='happy'?'<div class="char-fx">🪷</div>':''):cos?(mood==='happy'?'<div class="char-fx">🍬</div>':mood==='sad'?'<div class="char-fx">👻</div>':''):(mood==='happy'?'<div class="char-fx">🎉</div>':mood==='sad'?'<div class="char-fx">🌧️</div>':'');
   const tear=mood==='sad'?'<div class="char-tear"></div>':'';
   const label=mood==='happy'?'เยี่ยมมาก! 🎶':mood==='mid'?'พอใช้ ค่อยๆ ไป':'สู้ๆ นะ';
   return`<div class="char mood-${mood} g-${g} ${me?'me':''}" style="--shirt:${sh};--skirt:${skirt}${opts.thai?';--pants:'+skirt:''}${opts.click?';cursor:pointer':''}" ${opts.click?`onclick="viewMemberDetail('${esc(m.name)}')"`:''} aria-label="${esc(m.name)} KPI ${score==null?'ยังไม่มีงาน':score}">
     ${opts.noScore?'':`<div class="char-score" style="background:${gradeColor(score)}">${score==null?'–':score}</div>`}
-    <div class="char-fig">${fx}${opts.rain&&mood!=='sad'?umbrellaSVG(m.name,mood):''}${cz.back}${hairBack}<div class="char-head">${head}</div>${cz.hat}${emo}${tear}<svg class="char-body" viewBox="0 0 80 88">${charBodySVG(mood,g)}</svg>${cz.front}${cos&&mood!=='sad'?bucketSVG():''}${opts.thai?`<div class="char-krathong">${krathongSVG(mood!=='sad')}</div>`:''}<div class="char-shadow"></div></div>
+    <div class="char-fig">${fx}${opts.rain&&mood!=='sad'?umbrellaSVG(m.name,mood):''}${cz.back}${hairBack}<div class="char-head">${head}</div>${cz.hat}${emo}${tear}<svg class="char-body" viewBox="0 0 80 88">${charBodySVG(mood,g)}</svg>${cz.front}${cos&&mood!=='sad'?bucketSVG():''}${fc&&mood!=='sad'?fc.prop:''}${opts.thai?`<div class="char-krathong">${krathongSVG(mood!=='sad')}</div>`:''}<div class="char-shadow"></div></div>
     <div class="char-name">${esc(m.name)}${me?' (คุณ)':''}</div>
     ${m.position?`<div class="char-pos">${esc(m.position)}</div>`:''}
     <div class="char-mood">${opts.sub!=null?opts.sub:label}</div>
-    ${cos?`<div class="cos-tag">${cos[1]}</div>`:''}
+    ${cos?`<div class="cos-tag">${cos[1]}</div>`:''}${fc?`<div class="cos-tag fairy">${fc.label}</div>`:''}
   </div>`;
 }
 const UMB_COLORS=[['#FFB3C7','#FFD6E2'],['#A9D3FF','#D2E8FF'],['#FFE58A','#FFF1BE'],['#A8E6C9','#D3F4E4'],['#C4B5FD','#E2DAFE'],['#FFC9A3','#FFE3D0']];
@@ -2524,9 +2654,165 @@ function umbrellaSVG(name,mood){
     <line x1="48" y1="-2" x2="48" y2="-8" stroke="#6B6488" stroke-width="2.2" stroke-linecap="round"/>
   </svg></div>`;
 }
-/* ── ฤดูกาลของฉาก KPI: 'loykrathong' | 'halloween' | 'rain' ── */
-const SEASON='loykrathong';
+/* ── ฤดูกาลของฉาก KPI: 'fairytale' | 'loykrathong' | 'halloween' | 'rain' ── */
+const SEASON='fairytale';
 document.documentElement.classList.add('season-'+SEASON);
+/* ═════════ FAIRYTALE · ตัวการ์ตูนประจำแอป (ออกแบบเอง) ═════════ */
+const _eye=(x,y,s=1)=>`<ellipse cx="${x}" cy="${y}" rx="${5*s}" ry="${6.4*s}" fill="#2B2545"/><circle cx="${x+1.8*s}" cy="${y-2.3*s}" r="${2.1*s}" fill="#fff"/><circle cx="${x-1.6*s}" cy="${y+2.2*s}" r="${.9*s}" fill="#fff"/>`;
+const _blush=(x,y)=>`<ellipse cx="${x}" cy="${y}" rx="5" ry="3" fill="#FF9EC0" opacity=".55"/>`;
+const SPARK='M0.0 -10.0 L2.1 -2.1 L10.0 0.0 L2.1 2.1 L0.0 10.0 L-2.1 2.1 L-10.0 0.0 L-2.1 -2.1 Z';
+const sparkSVG=(x,y,s,c='#FFD45C',cls='')=>`<path class="${cls}" d="${SPARK}" transform="translate(${x} ${y}) scale(${s})" fill="${c}"/>`;
+const MASCOTS={
+  bunny:{name:'ปุยฝ้าย',svg:()=>`<svg viewBox="0 0 100 110" aria-hidden="true">
+    <g stroke="#E6DCF5" stroke-width="2"><ellipse cx="36" cy="28" rx="9.5" ry="25" fill="#fff" transform="rotate(-12 36 28)"/><ellipse cx="64" cy="28" rx="9.5" ry="25" fill="#fff" transform="rotate(12 64 28)"/></g>
+    <ellipse cx="36" cy="30" rx="4.5" ry="17" fill="#FFC7DA" transform="rotate(-12 36 30)"/><ellipse cx="64" cy="30" rx="4.5" ry="17" fill="#FFC7DA" transform="rotate(12 64 30)"/>
+    <ellipse cx="50" cy="98" rx="23" ry="12" fill="#fff" stroke="#E6DCF5" stroke-width="2"/>
+    <circle cx="50" cy="64" r="30" fill="#fff" stroke="#E6DCF5" stroke-width="2"/>
+    ${_eye(39,62)}${_eye(61,62)}${_blush(31,72)}${_blush(69,72)}
+    <path d="M47 70 L53 70 L50 73.5 Z" fill="#FF7FA8"/><path d="M44 76 Q47 79 50 76 Q53 79 56 76" fill="none" stroke="#2B2545" stroke-width="1.8" stroke-linecap="round"/>
+    <g transform="translate(70 14) rotate(14)"><path d="M0 0 L-11 -7 L-11 7 Z M0 0 L11 -7 L11 7 Z" fill="#FF8FB4" stroke="#F06A9A" stroke-width="1.2" stroke-linejoin="round"/><circle r="3.6" fill="#F06A9A"/></g>
+    <ellipse cx="40" cy="104" rx="7" ry="4" fill="#FFE3EE"/><ellipse cx="60" cy="104" rx="7" ry="4" fill="#FFE3EE"/></svg>`},
+  star:{name:'ดาวจ๋า',svg:()=>`<svg viewBox="0 0 100 100" aria-hidden="true">
+    <path d="M50.0 14.0 L62.3 39.0 L89.9 43.0 L70.0 62.5 L74.7 90.0 L50.0 77.0 L25.3 90.0 L30.0 62.5 L10.1 43.0 L37.7 39.0 Z" fill="#FFD45C" stroke="#FFC23D" stroke-width="9" stroke-linejoin="round"/>
+    <path d="M50 22 L58 40" stroke="#FFF1B0" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+    ${_eye(42,55,.85)}${_eye(58,55,.85)}${_blush(35,64)}${_blush(65,64)}
+    <path d="M45 64 Q50 69 55 64" fill="none" stroke="#2B2545" stroke-width="2" stroke-linecap="round"/>
+    ${sparkSVG(88,14,.7,'#FFB3C7','tw')}${sparkSVG(12,20,.5,'#A9D3FF','tw d2')}${sparkSVG(92,80,.45,'#C4B5FD','tw d3')}</svg>`},
+  dragon:{name:'มังกรมินต์',svg:()=>`<svg viewBox="0 0 100 110" aria-hidden="true">
+    <path d="M24 70 Q2 56 8 38 Q18 52 30 54 Z M76 70 Q98 56 92 38 Q82 52 70 54 Z" fill="#C9B8FF" stroke="#A891F0" stroke-width="1.6" stroke-linejoin="round"/>
+    <path d="M70 96 Q92 98 94 84 Q90 88 84 86" fill="none" stroke="#7FD8B4" stroke-width="7" stroke-linecap="round"/>
+    <ellipse cx="50" cy="90" rx="25" ry="18" fill="#9EE6C9"/><ellipse cx="50" cy="94" rx="15" ry="12" fill="#FFF3D6"/>
+    <path d="M36 28 L32 12 L44 24 Z M64 28 L68 12 L56 24 Z" fill="#FFD45C" stroke="#F2B33D" stroke-width="1.2" stroke-linejoin="round"/>
+    <path d="M44 20 L50 10 L56 20 Z" fill="#FFB3C7"/>
+    <circle cx="50" cy="50" r="29" fill="#9EE6C9"/>
+    ${_eye(39,48)}${_eye(61,48)}${_blush(30,60)}${_blush(70,60)}
+    <ellipse cx="50" cy="63" rx="13" ry="8.5" fill="#BDF0DB"/><circle cx="45.5" cy="61" r="1.4" fill="#4C9C7E"/><circle cx="54.5" cy="61" r="1.4" fill="#4C9C7E"/>
+    <path d="M44 67 Q50 71 56 67" fill="none" stroke="#2B2545" stroke-width="1.8" stroke-linecap="round"/><path d="M47 68.3 L48.5 71 L50 68.9 Z" fill="#fff"/>
+    <ellipse cx="38" cy="106" rx="8" ry="4" fill="#7FD8B4"/><ellipse cx="62" cy="106" rx="8" ry="4" fill="#7FD8B4"/></svg>`},
+  owl:{name:'ฮูกปราชญ์',svg:()=>`<svg viewBox="0 0 100 112" aria-hidden="true">
+    <path d="M22 50 Q20 104 50 106 Q80 104 78 50 Q76 30 50 30 Q24 30 22 50 Z" fill="#B9A8F5"/>
+    <path d="M24 64 Q14 80 26 94 M76 64 Q86 80 74 94" fill="#9A86E8" stroke="#9A86E8" stroke-width="8" stroke-linecap="round"/>
+    <ellipse cx="50" cy="84" rx="17" ry="18" fill="#EDE6FF"/><path d="M42 78 q3 3 6 0 M52 78 q3 3 6 0 M46 88 q3 3 6 0" fill="none" stroke="#C9BCF4" stroke-width="1.6" stroke-linecap="round"/>
+    <circle cx="38" cy="56" r="12" fill="#fff"/><circle cx="62" cy="56" r="12" fill="#fff"/>
+    ${_eye(39,56,1.05)}${_eye(61,56,1.05)}
+    <path d="M46 64 L54 64 L50 71 Z" fill="#FFB347" stroke="#F2952B" stroke-width="1" stroke-linejoin="round"/>
+    ${_blush(27,68)}${_blush(73,68)}
+    <path d="M22 36 L50 33 L78 36 L72 40 L28 40 Z" fill="#3E3A8C"/><path d="M30 36 Q44 18 54 2 Q60 14 70 36 Z" fill="#4E49A8"/>
+    ${sparkSVG(46,22,.45,'#FFD45C')}${sparkSVG(58,12,.32,'#FFD45C')}
+    <path d="M54 2 Q66 0 66 10" fill="none" stroke="#4E49A8" stroke-width="4" stroke-linecap="round"/>${sparkSVG(66,12,.4,'#FFD45C')}
+    <ellipse cx="42" cy="106" rx="6" ry="3.5" fill="#FFB347"/><ellipse cx="58" cy="106" rx="6" ry="3.5" fill="#FFB347"/></svg>`},
+  kitty:{name:'เจ้าหญิงเหมียว',svg:()=>`<svg viewBox="0 0 100 110" aria-hidden="true">
+    <path d="M74 96 Q96 92 90 70 Q88 64 94 60" fill="none" stroke="#FFC9A3" stroke-width="7" stroke-linecap="round"/>
+    <ellipse cx="50" cy="94" rx="23" ry="15" fill="#FFE3CF"/>
+    <path d="M24 46 L22 14 L46 32 Z M76 46 L78 14 L54 32 Z" fill="#FFC9A3" stroke="#F4AE80" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M27 38 L26 22 L38 31 Z M73 38 L74 22 L62 31 Z" fill="#FFB3C7"/>
+    <ellipse cx="50" cy="58" rx="31" ry="27" fill="#FFE3CF"/>
+    <path d="M38 34 L40 24 L45 30 L50 20 L55 30 L60 24 L62 34 Z" fill="#FFD45C" stroke="#F2B33D" stroke-width="1.3" stroke-linejoin="round"/><circle cx="50" cy="29" r="2.4" fill="#FF8FB4"/>
+    ${_eye(39,58)}${_eye(61,58)}${_blush(30,68)}${_blush(70,68)}
+    <path d="M47.5 66 L52.5 66 L50 69 Z" fill="#FF7FA8"/><path d="M45 72 Q47.5 75 50 72 Q52.5 75 55 72" fill="none" stroke="#2B2545" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M28 66 L14 63 M28 70 L14 72 M72 66 L86 63 M72 70 L86 72" stroke="#D9A98A" stroke-width="1.4" stroke-linecap="round"/>
+    <ellipse cx="40" cy="106" rx="7" ry="4" fill="#FFC9A3"/><ellipse cx="60" cy="106" rx="7" ry="4" fill="#FFC9A3"/></svg>`},
+};
+function mascotSVG(k){return(MASCOTS[k]||MASCOTS.bunny).svg();}
+function mascotOfDay(){const ks=Object.keys(MASCOTS);let h=3;for(const c of todayStr())h=(h*31+c.charCodeAt(0))>>>0;return ks[h%ks.length];}
+function castleSVG(cls){
+  return`<svg class="${cls}" viewBox="0 0 200 150" aria-hidden="true">
+    <g class="cs-flag"><path d="M100 4 L100 -14 L114 -9 L100 -4" fill="#FF8FB4"/></g>
+    <path d="M58 34 L64 34 L64 22 L76 22 L76 0" fill="none"/>
+    <rect x="20" y="70" width="160" height="80" fill="var(--cs-wall,#FFE3EE)"/>
+    <path d="M20 70 h12 v-8 h12 v8 h12 v-8 h12 v8 h12 v-8 h12 v8 h12 v-8 h12 v8 h12 v-8 h12 v8 h12 v-8 h12 v8 h8 v4 h-160 Z" fill="var(--cs-wall2,#FFD1E2)"/>
+    <rect x="30" y="44" width="26" height="106" fill="var(--cs-tower,#F5E9FF)"/><path d="M26 46 L43 8 L60 46 Z" fill="var(--cs-roof,#B9A8F5)"/><line x1="43" y1="8" x2="43" y2="-2" stroke="#8E7AE0" stroke-width="1.6"/><path d="M43 -2 l9 3 l-9 3 Z" fill="#FFD45C"/>
+    <rect x="144" y="44" width="26" height="106" fill="var(--cs-tower,#F5E9FF)"/><path d="M140 46 L157 8 L174 46 Z" fill="var(--cs-roof,#B9A8F5)"/><line x1="157" y1="8" x2="157" y2="-2" stroke="#8E7AE0" stroke-width="1.6"/><path d="M157 -2 l9 3 l-9 3 Z" fill="#A9D3FF"/>
+    <rect x="82" y="30" width="36" height="120" fill="var(--cs-tower,#F5E9FF)"/><path d="M76 32 L100 -8 L124 32 Z" fill="var(--cs-roof2,#9C8AF0)"/><line x1="100" y1="-8" x2="100" y2="-20" stroke="#7C6EE0" stroke-width="1.8"/><path d="M100 -20 l12 4 l-12 4 Z" fill="#FF8FB4"/>
+    <g fill="var(--cs-win,#FFE58A)"><path d="M37 70 v-8 a6 6 0 0 1 12 0 v8 Z"/><path d="M151 70 v-8 a6 6 0 0 1 12 0 v8 Z"/><path d="M93 62 v-12 a7 7 0 0 1 14 0 v12 Z"/><circle cx="100" cy="88" r="5"/></g>
+    <path d="M86 150 v-26 a14 14 0 0 1 28 0 v26 Z" fill="var(--cs-door,#C59BE8)"/><circle cx="108" cy="138" r="1.6" fill="#FFD45C"/>
+    <path d="M60 104 q4 -6 8 0 M132 104 q4 -6 8 0" fill="none" stroke="var(--cs-wall2,#FFD1E2)" stroke-width="2"/>
+  </svg>`;
+}
+/* ชุดเทพนิยาย: สุ่มใหม่ทุกวัน */
+const FAIRY_COS=['crown','tiara','wizard','fairy','knight','bunny'];
+function fairyCostume(name,mood,g){
+  let h=11;for(const c of String(name)+'#'+todayStr())h=(h*37+c.charCodeAt(0))>>>0;
+  const kind=FAIRY_COS[h%FAIRY_COS.length],T=mood==='sad'?3:0,fem=g==='female';
+  let back='',front='',hat='',prop='',label='';
+  const wand=`<svg class="fairy-wand" viewBox="0 0 30 46" aria-hidden="true"><line x1="8" y1="44" x2="20" y2="14" stroke="#C59BE8" stroke-width="3" stroke-linecap="round"/><path d="${SPARK}" transform="translate(21 11) scale(1.05)" fill="#FFD45C" stroke="#F2B33D" stroke-width=".8"/><circle class="tw" cx="6" cy="8" r="1.6" fill="#FFB3C7"/><circle class="tw d2" cx="27" cy="26" r="1.4" fill="#A9D3FF"/></svg>`;
+  if(kind==='crown'){
+    label=fem?'ราชินีน้อย 👑':g==='lgbt'?'ราชวงศ์ 👑':'ราชาน้อย 👑';
+    back=`<path d="M20 ${12+T} Q6 ${46+T} 4 80 Q22 74 40 80 Q58 74 76 80 Q74 ${46+T} 60 ${12+T} Z" fill="#D9475F"/><path d="M4 80 Q22 74 40 80 Q58 74 76 80 L76 76 Q58 70 40 76 Q22 70 4 76 Z" fill="#fff"/>`;
+    front=`<path d="M22 ${11+T} Q40 ${20+T} 58 ${11+T} Q56 ${17+T} 40 ${22+T} Q24 ${17+T} 22 ${11+T} Z" fill="#fff"/>${[28,36,44,52].map(x=>`<circle cx="${x}" cy="${15+T}" r=".9" fill="#2B2545"/>`).join('')}<circle cx="40" cy="${26+T}" r="3" fill="#FFD45C" stroke="#E9A23B" stroke-width="1"/>`;
+    hat=`<svg class="cos-hat ft-crown" viewBox="0 0 44 30"><path d="M4 28 L2 8 L13 16 L22 2 L31 16 L42 8 L40 28 Z" fill="#FFD45C" stroke="#E9A23B" stroke-width="1.6" stroke-linejoin="round"/><rect x="4" y="22" width="36" height="6" rx="2" fill="#F2B33D"/><circle cx="22" cy="17" r="3" fill="#FF6F91"/><circle cx="12" cy="22" r="2" fill="#6FC3FF"/><circle cx="32" cy="22" r="2" fill="#7FE0B8"/><circle cx="2" cy="7" r="2" fill="#FFD45C"/><circle cx="22" cy="2" r="2" fill="#FFD45C"/><circle cx="42" cy="7" r="2" fill="#FFD45C"/></svg>`;
+  }else if(kind==='tiara'){
+    label=fem||g==='lgbt'?'เจ้าหญิง 👸':'เจ้าชาย 🤴';
+    if(fem||g==='lgbt'){
+      front=`<path d="M20 ${16+T} Q14 ${10+T} 22 ${8+T} Q28 ${8+T} 30 ${14+T} Z M60 ${16+T} Q66 ${10+T} 58 ${8+T} Q52 ${8+T} 50 ${14+T} Z" fill="#A9D3FF" stroke="#7DB7F2" stroke-width="1"/><path d="M32 ${14+T} Q40 ${18+T} 48 ${14+T}" fill="none" stroke="#FFD45C" stroke-width="2"/><circle cx="40" cy="${18+T}" r="2.6" fill="#FF8FB4" stroke="#fff" stroke-width=".8"/>`;
+      hat=`<svg class="cos-hat ft-tiara" viewBox="0 0 40 18"><path d="M2 16 Q20 8 38 16 L34 9 L28 12 L20 1 L12 12 L6 9 Z" fill="#FFF3C4" stroke="#E9C25A" stroke-width="1.4" stroke-linejoin="round"/><circle cx="20" cy="9" r="2.6" fill="#A9D3FF"/><circle cx="11" cy="13" r="1.4" fill="#FF8FB4"/><circle cx="29" cy="13" r="1.4" fill="#FF8FB4"/></svg>`;
+    }else{
+      front=`<path d="M22 ${14+T} L30 ${16+T} L30 ${48+T} L24 ${48+T} Z M58 ${14+T} L50 ${16+T} L50 ${48+T} L56 ${48+T} Z" fill="#fff" opacity=".9"/>${[22,30,38].map(y=>`<line x1="31" y1="${y+T}" x2="49" y2="${y+T}" stroke="#FFD45C" stroke-width="1.8"/>`).join('')}<path d="M22 ${12+T} L30 ${10+T} L30 ${15+T} Z M58 ${12+T} L50 ${10+T} L50 ${15+T} Z" fill="#FFD45C"/>`;
+      hat=`<svg class="cos-hat ft-tiara" viewBox="0 0 40 18"><path d="M4 17 L6 7 L13 12 L20 3 L27 12 L34 7 L36 17 Z" fill="#FFD45C" stroke="#E9A23B" stroke-width="1.4" stroke-linejoin="round"/><circle cx="20" cy="11" r="2.2" fill="#6FC3FF"/></svg>`;
+    }
+  }else if(kind==='wizard'){
+    label=fem?'แม่มดน้อยใจดี 🔮':'พ่อมดน้อย 🔮';
+    back=`<path d="M22 ${14+T} Q8 ${50+T} 6 78 L74 78 Q72 ${50+T} 58 ${14+T} Z" fill="#4E49A8"/>`;
+    front=`<g fill="#FFD45C">${sparkSVG(30,30+T,.35)}${sparkSVG(50,40+T,.3)}${sparkSVG(34,48+T,.25)}</g><path d="M33 ${14+T} L40 ${20+T} L47 ${14+T}" fill="none" stroke="#FFD45C" stroke-width="2" stroke-linecap="round"/>`;
+    hat=`<svg class="cos-hat ft-wizard" viewBox="0 0 66 54"><ellipse cx="33" cy="46" rx="31" ry="7" fill="#3E3A8C"/><path d="M14 45 Q22 24 30 10 Q36 0 48 6 Q40 10 42 20 L52 45 Z" fill="#4E49A8"/>${sparkSVG(30,30,.45,'#FFD45C')}${sparkSVG(40,20,.3,'#FFE58A')}<circle cx="48" cy="6" r="3.4" fill="#FFD45C"/></svg>`;
+    prop=wand;
+  }else if(kind==='fairy'){
+    label='นางฟ้าตัวน้อย 🧚';
+    back=`<g opacity=".85"><path d="M30 ${22+T} Q4 ${-6+T} 2 ${18+T} Q4 ${36+T} 30 ${30+T} Z M50 ${22+T} Q76 ${-6+T} 78 ${18+T} Q76 ${36+T} 50 ${30+T} Z" fill="#D5ECFF" stroke="#A9D3FF" stroke-width="1.4"/><path d="M30 ${32+T} Q8 ${36+T} 10 ${52+T} Q22 ${56+T} 32 ${38+T} Z M50 ${32+T} Q72 ${36+T} 70 ${52+T} Q58 ${56+T} 48 ${38+T} Z" fill="#FFE3EE" stroke="#FFB3C7" stroke-width="1.4"/></g>`;
+    front=`<path d="M30 ${14+T} Q40 ${22+T} 50 ${14+T}" fill="none" stroke="#FFB3C7" stroke-width="3" stroke-linecap="round"/>${sparkSVG(40,32+T,.35,'#FFF3C4')}`;
+    hat=`<svg class="cos-hat ft-flower" viewBox="0 0 58 18"><path d="M3 12 Q29 2 55 12" fill="none" stroke="#7FD8B4" stroke-width="2.4"/>${[[8,10,'#FF8FB4'],[19,6,'#FFD45C'],[29,5,'#A9D3FF'],[39,6,'#FF8FB4'],[50,10,'#C4B5FD']].map(([x,y,c])=>`<g transform="translate(${x} ${y})">${[0,72,144,216,288].map(a=>`<circle cx="0" cy="-3" r="2.6" fill="${c}" transform="rotate(${a})"/>`).join('')}<circle r="1.8" fill="#fff"/></g>`).join('')}</svg>`;
+    prop=wand;
+  }else if(kind==='knight'){
+    label='อัศวินผู้กล้า 🛡️';
+    back=`<path d="M22 ${14+T} Q10 ${46+T} 10 76 L70 76 Q70 ${46+T} 58 ${14+T} Z" fill="#6FA8F5"/>`;
+    front=`<path d="M31 ${22+T} L49 ${22+T} L49 ${36+T} Q49 ${46+T} 40 ${50+T} Q31 ${46+T} 31 ${36+T} Z" fill="#E9EEF7" stroke="#A9B6CC" stroke-width="1.4"/><path d="M40 ${25+T} L40 ${46+T} M33 ${32+T} L47 ${32+T}" stroke="#FF6F91" stroke-width="3" stroke-linecap="round"/>`;
+    hat=`<svg class="cos-hat ft-plume" viewBox="0 0 54 34"><path d="M30 18 Q34 2 52 2 Q48 10 40 14 Q50 12 50 18 Q40 22 30 20 Z" fill="#FF8FB4" stroke="#F06A9A" stroke-width="1"/><path d="M4 26 Q26 12 50 26 Q46 30 27 30 Q8 30 4 26 Z" fill="#4E7FD8"/><path d="M10 26 Q27 20 44 26" fill="none" stroke="#FFD45C" stroke-width="2"/></svg>`;
+  }else{
+    label='กระต่ายวิเศษ 🐰';
+    front=`<g transform="translate(40 ${15+T})"><path d="M0 0 L-9 -5 L-9 5 Z M0 0 L9 -5 L9 5 Z" fill="#FF8FB4" stroke="#F06A9A" stroke-width="1" stroke-linejoin="round"/><circle r="2.6" fill="#F06A9A"/></g><circle cx="58" cy="${50+T}" r="5" fill="#fff" stroke="#EDE6FF"/>`;
+    hat=`<svg class="cos-hat ft-bunny" viewBox="0 0 50 40"><ellipse cx="14" cy="18" rx="7" ry="18" fill="#fff" stroke="#E6DCF5" stroke-width="1.5" transform="rotate(-14 14 18)"/><ellipse cx="36" cy="18" rx="7" ry="18" fill="#fff" stroke="#E6DCF5" stroke-width="1.5" transform="rotate(14 36 18)"/><ellipse cx="14" cy="19" rx="3.2" ry="12" fill="#FFC7DA" transform="rotate(-14 14 19)"/><ellipse cx="36" cy="19" rx="3.2" ry="12" fill="#FFC7DA" transform="rotate(14 36 19)"/><path d="M6 36 Q25 30 44 36" fill="none" stroke="#FFB3C7" stroke-width="4" stroke-linecap="round"/></svg>`;
+  }
+  return{back:back?`<svg class="cos-back" viewBox="0 0 80 88">${back}</svg>`:'',front:front?`<svg class="cos-front" viewBox="0 0 80 88">${front}</svg>`:'',hat,prop,label};
+}
+function fairySceneHTML(){
+  const cloud=c=>`<svg class="ft-cloud ${c}" viewBox="0 0 110 54" aria-hidden="true"><g fill="#fff"><circle cx="30" cy="32" r="18"/><circle cx="54" cy="22" r="22"/><circle cx="80" cy="30" r="17"/><rect x="18" y="30" width="76" height="20" rx="10"/></g></svg>`;
+  const fly=c=>`<svg class="ft-fly ${c}" viewBox="0 0 30 22" aria-hidden="true"><g class="wing"><ellipse cx="9" cy="8" rx="8" ry="6.5" fill="#FFB3C7"/><ellipse cx="21" cy="8" rx="8" ry="6.5" fill="#FFB3C7"/><ellipse cx="10" cy="15" rx="5.5" ry="4.5" fill="#C4B5FD"/><ellipse cx="20" cy="15" rx="5.5" ry="4.5" fill="#C4B5FD"/></g><rect x="14" y="4" width="2.4" height="15" rx="1.2" fill="#5E5880"/></svg>`;
+  const sp=(x,y,s,c,d)=>`<svg class="ft-spark" style="left:${x}%;top:${y}%;width:${s}px;animation-delay:${d}s" viewBox="-10 -10 20 20" aria-hidden="true"><path d="${SPARK}" fill="${c}"/></svg>`;
+  return`<div class="ft-rainbow" aria-hidden="true"></div>${cloud('c1')}${cloud('c2')}${cloud('c3')}
+    ${sp(8,10,12,'#FFD45C',0)}${sp(30,6,9,'#FFB3C7',.6)}${sp(52,14,8,'#A9D3FF',1.1)}${sp(70,4,11,'#FFD45C',1.6)}${sp(92,20,9,'#C4B5FD',.3)}${sp(18,34,7,'#FFE58A',2)}${sp(84,40,8,'#FFB3C7',1.3)}
+    ${castleSVG('ft-castle')}
+    <div class="ft-hill h1" aria-hidden="true"></div><div class="ft-hill h2" aria-hidden="true"></div>
+    ${fly('f1')}${fly('f2')}
+    <div class="ft-buddy b1" aria-hidden="true">${mascotSVG('bunny')}</div><div class="ft-buddy b2" aria-hidden="true">${mascotSVG('dragon')}</div>
+    <div class="ft-flowers" aria-hidden="true"></div>`;
+}
+/* ผู้ช่วยตัวการ์ตูนประจำหน้า */
+const BUDDY_PAGES={home:['bunny','สวัสดีจ้า! วันนี้ก็สู้ๆ นะ ✨'],broadcast:['owl','มีข่าวอะไรมาบ้างน้า 🦉'],calendar:['star','ลากการ์ดเลื่อนวันได้นะ ⭐'],board:['kitty','งานเยอะก็ไม่หวั่น 💪'],timeline:['owl','ดูคอขวดตรงนี้เลย 🔍'],team:['bunny','ทีมเราน่ารักที่สุด 💕'],kpi:['star','ดาวเต็มฟ้ารออยู่ 🌟'],checklist:['dragon','ติ๊กทีละข้อ เดี๋ยวก็เสร็จ ✔️'],export:['dragon','ส่งออกรายงานได้ที่นี่ 📦'],activity:['kitty','ใครทำอะไรไปบ้างน้า 👀'],'member-detail':['bunny','เก่งมากเลย! 🎉']};
+const BUDDY_TIPS=['พักสายตาบ้างนะ 👀','ดื่มน้ำด้วยน้า 💧','งานดีๆ เริ่มจากใจที่สดใส 🌈','เก่งที่สุดในสามโลก ✨','อย่าลืมกดส่งงานนะ 📮','ยิ้มหน่อยน้า 😊'];
+let buddyOn=true,_buddyT=0,_buddyTip=0;
+try{buddyOn=localStorage.getItem('gf_buddy')!=='off';}catch(e){}
+function setBuddy(on){buddyOn=!!on;try{localStorage.setItem('gf_buddy',on?'on':'off');}catch(e){}updateBuddy(curPageBuddy,!!on);}
+let curPageBuddy='home';
+function updateBuddy(p,force){
+  let el=document.getElementById('buddy');const say=force||p!==curPageBuddy||!el||el.style.display==='none';curPageBuddy=p;
+  if(!buddyOn||SEASON!=='fairytale'){if(el)el.style.display='none';return;}
+  if(!el){el=document.createElement('div');el.id='buddy';el.className='buddy';el.innerHTML='<div class="buddy-bubble" id="buddy-bubble"></div><button class="buddy-fig" id="buddy-fig" aria-label="ผู้ช่วยตัวการ์ตูน" onclick="buddyTap()"></button>';document.body.appendChild(el);}
+  el.style.display='';
+  const[k,msg]=BUDDY_PAGES[p]||BUDDY_PAGES.home;
+  const fig=document.getElementById('buddy-fig');
+  if(fig.dataset.k!==k){fig.dataset.k=k;fig.innerHTML=mascotSVG(k);}
+  if(say)buddySay(msg);
+}
+function buddySay(msg){
+  const b=document.getElementById('buddy-bubble'),fig=document.getElementById('buddy-fig');if(!b)return;
+  b.innerHTML=`${esc(msg)}<button onclick="event.stopPropagation();setBuddy(false);showToast('ซ่อนผู้ช่วยแล้ว · เปิดคืนได้ที่โปรไฟล์')" aria-label="ซ่อนผู้ช่วย">ซ่อน</button>`;
+  b.classList.add('show');fig.classList.remove('hop');void fig.offsetWidth;fig.classList.add('hop');
+  clearTimeout(_buddyT);_buddyT=setTimeout(()=>b.classList.remove('show'),3800);
+}
+function buddyTap(){const b=document.getElementById('buddy-bubble');if(b&&b.classList.contains('show')){b.classList.remove('show');return;}buddySay(BUDDY_TIPS[_buddyTip++%BUDDY_TIPS.length]);}
+function emptyArt(ic){if(SEASON!=='fairytale')return`<i class="ti ${ic}"></i>`;const k={'ti-mood-empty':'kitty','ti-checks':'dragon','ti-history':'owl','ti-bell-off':'owl','ti-users':'bunny'}[ic]||'star';return`<div class="empty-mascot">${mascotSVG(k)}</div>`;}
+(function(){if(SEASON!=='fairytale')return;const h=document.querySelector('.login-hero');if(!h)return;
+  h.insertAdjacentHTML('afterbegin',castleSVG('deco login-castle')+`<div class="deco login-mascot m1">${mascotSVG('bunny')}</div><div class="deco login-mascot m2">${mascotSVG('star')}</div>`+[[10,14,12,'#FFD45C',0],[86,10,10,'#FFB3C7',.8],[24,46,8,'#A9D3FF',1.4],[74,40,9,'#FFD45C',.4]].map(([x,y,w,c,d])=>`<svg class="deco ft-spark" style="left:${x}%;top:${y}%;width:${w}px;animation-delay:${d}s" viewBox="-10 -10 20 20"><path d="${SPARK}" fill="${c}"/></svg>`).join(''));})();
 const COSTUMES=[['ghost','ผีผ้าห่ม 👻'],['witch','แม่มด 🧙'],['vampire','แวมไพร์ 🧛'],['pumpkin','ฟักทอง 🎃'],['mummy','มัมมี่'],['cat','แมวดำ 🐈‍⬛'],['devil','ปีศาจน้อย 😈'],['skeleton','โครงกระดูก 💀']];
 function costumeOf(name){let h=7;for(const c of String(name)+'|'+todayStr())h=(h*33+c.charCodeAt(0))>>>0;return COSTUMES[h%COSTUMES.length];}// สุ่มใหม่ทุกวัน
 let _cosSeq=0;
@@ -2620,6 +2906,7 @@ function loyKrathongSceneHTML(){
 }
 function kpiStageHTML(allScores){
   if(!allScores.length)return'';
+  if(SEASON==='fairytale')return`<div class="kpi-stage fairytale">${fairySceneHTML()}<div class="kpi-stage-title">🏰 ดินแดนเทพนิยายของทีมเรา</div><div class="chars">${allScores.map(({m,k})=>charHTML(m,k.score,{click:true,sub:gradeLabel(k.score),fairy:true})).join('')}</div></div>`;
   if(SEASON==='loykrathong')return`<div class="kpi-stage loykrathong">${loyKrathongSceneHTML()}<div class="kpi-stage-title">🪷 ลอยกระทงกับทีมของเรา</div><div class="chars">${allScores.map(({m,k})=>charHTML(m,k.score,{click:true,sub:gradeLabel(k.score),thai:true})).join('')}</div></div>`;
   if(SEASON==='halloween')return`<div class="kpi-stage halloween">${halloweenSceneHTML()}<div class="kpi-stage-title">🎃 ทีมของเรา · KPI เดือนนี้</div><div class="chars">${allScores.map(({m,k})=>charHTML(m,k.score,{click:true,sub:gradeLabel(k.score),costume:true})).join('')}</div></div>`;
   return`<div class="kpi-stage rain">${rainSceneHTML()}<div class="kpi-stage-title">🌧️ ทีมของเรา · KPI เดือนนี้</div><div class="chars">${allScores.map(({m,k})=>charHTML(m,k.score,{click:true,sub:gradeLabel(k.score),rain:true})).join('')}</div></div>`;
@@ -2947,7 +3234,7 @@ function renderHome(){
     ['due','ti-alarm','ใกล้กำหนด',h.due.length,overdue>0],
     ['appts','ti-calendar-event','นัดหมาย',h.appts.length,h.appts.some(b=>!(b.readBy||[]).includes(me))]];
   const hr=new Date().getHours();
-  let html=`<div class="home-hello"><div class="home-hello-title">${hr<12?'สวัสดีตอนเช้า':hr<17?'สวัสดีตอนบ่าย':'สวัสดีตอนเย็น'}, ${esc(me)}</div><div class="home-hello-sub">${fmtThaiDate(todayStr())} · สรุปสิ่งที่ต้องรู้วันนี้</div></div>`;
+  let html=`<div class="home-hello"><div class="home-hello-title">${hr<12?'สวัสดีตอนเช้า':hr<17?'สวัสดีตอนบ่าย':'สวัสดีตอนเย็น'}, ${esc(me)}</div><div class="home-hello-sub">${fmtThaiDate(todayStr())} · สรุปสิ่งที่ต้องรู้วันนี้</div>${SEASON==='fairytale'?`<div class="hello-mascot" aria-hidden="true">${mascotSVG(mascotOfDay())}</div>`:''}</div>`;
   if(!(getM(me).pw))html+=`<div class="home-sec" style="border-color:var(--red);background:var(--red-light);cursor:pointer" onclick="openMeSheet()"><div class="home-item"><i class="ti ti-lock-exclamation" style="font-size:22px;color:var(--red)"></i><div style="flex:1"><div class="home-item-title" style="color:var(--red)">ยังไม่ได้ตั้งชื่อผู้ใช้และรหัสผ่าน</div><div class="home-item-sub">แตะเพื่อตั้งค่า ไม่งั้นจะเข้าใช้ไม่ได้หลังออกจากระบบ</div></div><i class="ti ti-chevron-right" style="color:var(--red)"></i></div></div>`;
   html+=announcementsHTML();
   html+=`<div class="home-tabs" role="tablist">${tabs.map(([id,icon,label,n,hot])=>`<button class="home-tab ${homeTab===id?'on':''}" role="tab" aria-selected="${homeTab===id}" onclick="setHomeTab('${id}')"><i class="ti ${icon}"></i>${label}${n!=null?`<span class="tab-count ${hot&&homeTab!==id?'hot':''}">${n}</span>`:''}</button>`).join('')}</div>`;
@@ -3014,7 +3301,7 @@ function renderHome(){
 
   if(!any){
     const msg={all:['ti-mood-happy','ไม่มีอะไรค้าง เยี่ยมมาก!'],new:['ti-inbox','ไม่มีงานใหม่'],review:['ti-eye-check','ไม่มีงานรอตรวจ'],rate:['ti-star',lead?'ไม่มีงานรอให้ดาว':'ยังไม่ได้รับดาว'],due:['ti-alarm-off','ไม่มีงานใกล้ถึงกำหนดใน 3 วัน'],appts:['ti-calendar-off','ไม่มีนัดหมาย']}[homeTab];
-    html+=`<div class="empty home-empty"><i class="ti ${msg[0]}"></i><p>${msg[1]}</p>${homeTab==='all'?'<p style="font-size:13px;margin-top:6px">กด + เพื่อสร้างงาน งานประจำ หรือนัดหมาย</p>':''}</div>`;
+    html+=`<div class="empty home-empty">${emptyArt(msg[0])}<p>${msg[1]}</p>${homeTab==='all'?'<p style="font-size:13px;margin-top:6px">กด + เพื่อสร้างงาน งานประจำ หรือนัดหมาย</p>':''}</div>`;
   }
   el.innerHTML=html;
 }
@@ -3118,6 +3405,8 @@ function openMeSheet(){
     </div>
     <label class="f-label">ธีม (เฉพาะเครื่องนี้)</label>
     <div class="g-row">${[['light','สว่าง','ti-sun'],['dark','มืด','ti-moon'],['auto','ตามเครื่อง','ti-device-mobile-cog']].map(([k,l,ic])=>`<button class="role-chip ${themeMode===k?'sel':''}" onclick="setTheme('${k}');openMeSheet()" style="min-height:56px"><i class="ti ${ic}"></i>${l}</button>`).join('')}</div>
+    ${SEASON==='fairytale'?`<label class="f-label">ผู้ช่วยตัวการ์ตูนมุมจอ</label>
+    <div class="view-seg"><button class="role-chip ${buddyOn?'sel':''}" onclick="setBuddy(true);openMeSheet()"><i class="ti ti-mood-heart"></i>แสดง</button><button class="role-chip ${buddyOn?'':'sel'}" onclick="setBuddy(false);openMeSheet()"><i class="ti ti-eye-off"></i>ซ่อน</button></div>`:''}
     <label class="f-label">การแสดงผล (เฉพาะเครื่องนี้)</label>
     <div class="view-seg">
       <button class="role-chip ${viewMode==='mobile'?'sel':''}" onclick="setView('mobile');openMeSheet()"><i class="ti ti-device-mobile"></i>มือถือ</button>
@@ -3195,7 +3484,7 @@ function renderActivity(){
       <div class="act-head">${avHTML(a.actor,20)}&nbsp;<span style="font-weight:600">${a.actor}</span> <span style="color:var(--text3)">${a.action}</span> <span style="color:var(--purple-dark)">${a.target}</span></div>
       <div class="act-time">${a.time}</div>
     </div>
-  </div>`).join('')||`<div class="empty"><i class="ti ti-history"></i><p>ยังไม่มีกิจกรรม</p></div>`;
+  </div>`).join('')||`<div class="empty">${emptyArt('ti-history')}<p>ยังไม่มีกิจกรรม</p></div>`;
 }
 
 /* ── TEAM ── */
@@ -3265,7 +3554,7 @@ function fbCardsHTML(){
 function openFbNotif(taskId,cid){const n=notifications.find(x=>x.taskId===taskId&&x.comment.id===cid);if(n)markNotifsRead([n]);openDetail(taskId);detailSubPage='comments';const t=db.tasks.find(x=>x.id===taskId);if(t)renderDetailSheet(t);updateBcDot();renderBroadcast();}
 function renderNotif(){
   const el=document.getElementById('notif-list');if(!el)return;
-  if(!notifications.length){el.innerHTML=`<div class="empty"><i class="ti ti-bell-off"></i><p>ไม่มีการแจ้งเตือน</p></div>`;return;}
+  if(!notifications.length){el.innerHTML=`<div class="empty">${emptyArt('ti-bell-off')}<p>ไม่มีการแจ้งเตือน</p></div>`;return;}
   el.innerHTML=notifications.slice().reverse().map(n=>`<div style="display:flex;gap:10px;padding:14px 16px;background:${n.read?'var(--surface)':'#F5F4FF'};border-bottom:0.5px solid var(--border);cursor:pointer" onclick="openDetail(${n.taskId});switchPage('board')">
     ${avHTML(n.comment.author,32)}
     <div style="flex:1;min-width:0">
@@ -3405,7 +3694,7 @@ function kpiRankHTML(allScores,selected){
 }
 function kpiPersonHTML(allScores){
   const entry=allScores.find(x=>x.m.name===kpiPerson)||allScores.find(x=>x.m.name===currentUser)||allScores[0];
-  if(!entry)return`<div class="empty"><i class="ti ti-users"></i><p>ยังไม่มีสมาชิกในทีม</p></div>`;
+  if(!entry)return`<div class="empty">${emptyArt('ti-users')}<p>ยังไม่มีสมาชิกในทีม</p></div>`;
   const{m,k}=entry,me=m.name===currentUser,ranked=allScores.filter(x=>!x.k.noData);
   const rank=ranked.findIndex(x=>x.m.name===m.name)+1;
   return`<div class="chip-row kpi-people">${allScores.map(({m:x})=>`<button class="chip ${x.name===m.name?'on':''}" onclick="setKpiPerson('${esc(x.name)}')">${avHTML(x.name,20)} ${esc(x.name)}</button>`).join('')}</div>
